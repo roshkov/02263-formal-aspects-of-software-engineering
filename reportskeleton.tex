@@ -25,14 +25,21 @@ This document contains a solution to ... .
 
 \lstinputlisting{Basics.rsl}  
 
-{\em Here you must informally explain the purpose of your auxiliary functions}
+% Informal explanation of the purpose of auxiliary functions.
+\begin{description}
+  \item[areRelatives] \hfill \\ This function can be used to test whether two persons belong to the same family.
+\end{description}
 
 \section{Requirement Specification}
 
 \lstinputlisting{Requirements.rsl}  
 
-{\em Here you must informally explain which requirements the post
-  condition expresses.}
+% Informal explanation of which requirements the post condition expresses.
+\begin{description}
+  \item[isCorrectPlan] \hfill \\ This function can be used to test if all persons of all families have been assigned to a table. As well as no more than one person from the same family is assigned to the same table. Furthermore that no tables are empty.
+  \item[isCorrectTable] \hfill \\ This function can be used to test if all persons assigned to the same table are from different families.
+  \item[isWellformed] \hfill \\ Families is well formed if every person is in a family and only one family, and that a family contains at least one person.
+\end{description}
 
 \section{Refined, explicit specification}
 
