@@ -7,5 +7,14 @@ class
     plan : Families -~-> Plan
     plan(fs) as p 
     post isCorrectPlan(p, fs)
-    pre isWellformed(fs)
+    pre isWellformed(fs),
+
+    isCorrectPlan : Plan >< Families -> Bool
+    isCorrectPlan(p, 
+    
+    isCorrectTable : Table >< Families -> Bool
+    isCorrectTable(t, fs) is
+    
+    isWellformed : Families -> Bool
+    isWellformed(fs) is 
  end

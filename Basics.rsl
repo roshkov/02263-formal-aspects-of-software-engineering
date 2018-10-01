@@ -7,9 +7,9 @@ class
       Table = Person-set, 
       Plan = Table-set 
     
-  value /* auxilliary functions */ 
+  value /* auxilliary functions */
+  
      areRelatives : Person >< Person >< Families -> Bool
-     areRelatives(p1, p2, fs) is  ...,
+     areRelatives(p1, p2, fs) is (all f : Family :- f isin fs /\ p1 isin f /\ p2 isin f /\ p1 ~= p2)
 
-    ...
- end
+end
