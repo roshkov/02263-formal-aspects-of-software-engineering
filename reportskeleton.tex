@@ -1,0 +1,67 @@
+\documentclass[a4]{article}
+\usepackage{rsllisting}
+\lstset{language=rsl}
+
+%Comments in the Latex source are written after the % sign
+
+\title{Course 02263 Mandatory Assignment 1, 2018} 
+
+\author{name1 (study number1),\\ 
+        name2 (study number2)}
+
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+\newpage
+
+\section{Introduction}
+This document contains a solution to ... . 
+
+\section{Specification of Types and Auxiliary Functions}
+
+
+\lstinputlisting{Basics.rsl}  
+
+{\em Here you must informally explain the purpose of your auxiliary functions}
+
+\section{Requirement Specification}
+
+\lstinputlisting{Requirements.rsl}  
+
+{\em Here you must informally explain which requirements the post
+  condition expresses.}
+
+\section{Refined, explicit specification}
+
+\lstinputlisting{Design.rsl}  
+
+{\em Here you must  explain the idea behind your algorithm.}
+{\em If you in this scheme introduce auxiliary functions in order to explicitly
+  define the plan function, you must explain these as well.}
+
+\section{Testing by translation to SML}
+
+\subsection{Test specification}
+
+\lstinputlisting{DesignTest.rsl}
+        
+{\em Here you must  explain what the purpose of the individual test
+  cases are.}
+
+
+\subsection{Results of evaluations}
+
+
+The results of evaluating the SML translation of the RSL test cases are:
+
+{\em Here you must  insert the output of the test run.}
+
+
+
+\noindent From this we can conclude ...
+
+
+\end{document}

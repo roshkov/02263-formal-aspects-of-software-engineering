@@ -1,0 +1,15 @@
+scheme  Basics =
+class
+  type 
+      Person = Text, 
+      Family = Person-set,
+      Families = Family-set,
+      Table = Person-set, 
+      Plan = Table-set 
+    
+  value /* auxilliary functions */ 
+     areRelatives : Person >< Person >< Families -> Bool
+     areRelatives(p1, p2, fs) is  ...,
+
+    ...
+ end

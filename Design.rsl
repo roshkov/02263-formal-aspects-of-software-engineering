@@ -1,0 +1,11 @@
+Basics
+
+scheme Design =
+extend Basics with 
+class
+  value
+    ...,
+
+    plan: Families -~-> Plan
+    plan(fs) is ...
+end

@@ -1,0 +1,13 @@
+Design
+
+scheme DesignTest =
+extend Design with 
+class
+  value 
+   ... 
+
+  test_case 
+    ...
+
+ end
+ 
