@@ -36,9 +36,9 @@ This document contains a solution to ... .
 
 % Informal explanation of which requirements the post condition expresses.
 \begin{description}
-  \item[isCorrectPlan] \hfill \\ This function can be used to test if all persons of all families have been assigned to a table. As well as no more than one person from the same family is assigned to the same table. Furthermore that no tables are empty.
-  \item[isCorrectTable] \hfill \\ This function can be used to test if all persons assigned to the same table are from different families.
-  \item[isWellformed] \hfill \\ Families is well formed if every person is in a family and only one family, and that a family contains at least one person.
+  \item[isCorrectPlan] \hfill \\ This function can be used to test if all persons of all families have been assigned to a table and only one table. As well as no more than one person from the same family is assigned to the same table. Furthermore that no tables are empty.
+  \item[isWellformedTable] \hfill \\ This function can be used to test a table is not empty and if all persons assigned to the table are from different families.
+  \item[isWellformed] \hfill \\ Families is well formed if it contains at least one family and every family contains at least one person. Furthermore every person from a family can only be part of one family.
 \end{description}
 
 \section{Refined, explicit specification}
