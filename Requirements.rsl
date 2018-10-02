@@ -9,12 +9,24 @@ class
     post isCorrectPlan(p, fs)
     pre isWellformed(fs),
 
-    isCorrectPlan : Plan >< Families -> Bool
-    isCorrectPlan(p, 
+    isCorrectPlan : Plan >< Families -> Bool,
+    isCorrectPlan(p, fs) is,
     
-    isCorrectTable : Table >< Families -> Bool
-    isCorrectTable(t, fs) is
-    
+    isWellformedTable : Table >< Families -> Bool
+    isWellformedTable(t, fs) is card t = 1 \/
+    		      	     (t ~= {} /\ (all p : Person :- p isin t =>
+    		      	     	      	      (all p' : Person :- p' isin t /\ p ~= p' =>
+				     	      	   (exists! f : Family :- f isin fs /\ p isin f /\ p' isin f
+				     		   )
+					      )
+					 )
+    		      	     ),
+			     
     isWellformed : Families -> Bool
-    isWellformed(fs) is 
+    isWellformed(fs) is fs ~= {} /\ (all f : Family :- f isin fs /\ f ~= {} =>
+    		     	     (all f' : Family :- f' isin fs /\ f' ~= {} /\ f ~= f' =>
+			     	  (all p : Person :- p isin f /\ p ~isin f'
+				  )
+			     )
+			)
  end
