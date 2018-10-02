@@ -3,8 +3,9 @@ Design
 scheme DesignTest =
 extend Design with 
 class
-  value 
-   ... 
+  value
+
+  variable
 
   test_case 
     ...
