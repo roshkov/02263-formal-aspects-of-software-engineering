@@ -10,6 +10,36 @@ class
   value /* auxilliary functions */
   
      areRelatives : Person >< Person >< Families -> Bool
-     areRelatives(p1, p2, fs) is (all f : Family :- f isin fs /\ p1 isin f /\ p2 isin f /\ p1 ~= p2)
+     areRelatives(p1, p2, fs) is (all f : Family :- f isin fs /\ p1 isin f /\ p2 isin f /\ p1 ~= p2),
+
+     isCorrectPlan : Plan >< Families -> Bool
+     isCorrectPlan(plan, fs) is (all t : Table :- t isin plan /\ isWellformedTable(t, fs)
+    			       	) /\
+    			       	(all t : Table :- t isin plan =>
+			       	     (all t' : Table :- t' isin plan /\ t inter t' = {}
+				     )
+			       	) /\
+			       	(all f : Family :- f isin fs =>
+			       	     (all p : Person :- p isin f =>
+				    	  (exists t : Table :- t isin plan /\ p isin t)
+				     )
+			        ),
+    
+     isWellformedTable : Table >< Families -> Bool
+     isWellformedTable(t, fs) is card t = 1 \/
+     		      	      (t ~= {} /\ (all p : Person :- p isin t =>
+    		      	     	      	       (all p' : Person :- p' isin t /\ p ~= p' =>
+				     	      	    (exists! f : Family :- f isin fs /\ p isin f /\ p' isin f
+				     		    )
+					       )
+					  )
+    		      	      ),
+			     
+     isWellformed : Families -> Bool
+     isWellformed(fs) is fs ~= {} /\ (all f : Family :- f isin fs /\ f ~= {} =>
+    		     	       	     	  (all f' : Family :- f' isin fs /\ f' ~= {} =>
+			     	   	       f ~= f' /\ f inter f' = {}
+			      		  )
+			 	     )
 
 end

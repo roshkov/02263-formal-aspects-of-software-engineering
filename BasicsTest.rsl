@@ -1,0 +1,55 @@
+Basics
+
+scheme BasicsTest =
+extend Basics with 
+class
+  variable
+	p1 : Person := "Elisabeth",
+	p2 : Person := "Lillian",
+	p3 : Person := "Erik",
+	p4 : Person := "Frederik",
+	p5 : Person := "Henrik",
+	p6 : Person := "Anne",
+	p7 : Person := "Lotte",
+	p8 : Person := "Torsten",
+	p9 : Person := "Camilla",
+	p10 : Person := "Jacob",
+	p11 : Person := "Pernille",
+	f1 : Family := {p1},
+	f2 : Family := {p2, p3},
+	f3 : Family := {p4, p5, p6},
+	f4 : Family := {p7, p8, p9, p10, p11},
+	families : Families := {f1, f2, f3, f4},
+	tGood : Table := {p1, p2, p4, p7},
+	tGoodOneP : Table := {p1},
+	tBadEmpty : Table := {},
+	tBadSameF : Table := {p2, p3}
+  test_case
+	/** ---- Tests for isWellformedTable  ----  **/
+
+	/* Test that true is returned when a correct table with one person from each family is passed. */
+	[t1] isWellformedTable(tGood, families),
+
+	/* Test that true is returned when a correct table with only one person is passed. */
+	[t2] isWellformedTable(tGoodOneP, families),
+
+	/* Test that false is returned when an incorrect empty table is passed. */
+	[t3] isWellformedTable(tBadEmpty, families),
+	
+	/* Test that false is returned when an incorrect table with two members from the same is passed. */
+	[t4] isWellformedTable(tBadSameF, families)
+	/*
+	[t1] db := register_man("John", false, db) ; db, 
+      	[t2] db := register_man("Henry", false, db) ; db,
+      	[t3] db := register_man("George", false, db) ; db,
+      	[t4] db := register_woman("Anne", false, db) ; db,
+      	[t5] is_married_man("George", db),
+      	[t6] is_married_woman("Anne", db),
+      	[t7] db := marry("George", "Anne", db) ; db,
+      	[t8] is_married_woman("Anne", db),
+      	[t9] is_married_man("George", db),
+      	[t10] db := marry("John", "Anne", db) ; db,
+      	[t11] is_married_man("John", db)
+	*/
+ end
+ 
