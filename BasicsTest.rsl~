@@ -43,6 +43,7 @@ class
 	tGood : Table := {p1, p2, p4, p7},
 	tGoodOneP : Table := {p1},
 	tBadEmpty : Table := {},
+	tBadSameF : Table := {p2, p3},
 
 	/* Plan variables */
 	plan : Plan := {t1, t2, t3, t4, t5},
