@@ -4,8 +4,13 @@ scheme Design =
 extend Basics with 
 class
   value
-    ...,
 
-    plan: Families -~-> Plan
-    plan(fs) is ...
+    addPerson : (Table >< Person) -> Table
+    addPerson(t, p) is t union {p},
+
+    plan : Families -~-> Plan
+    plan(fs) is {} 
+    post isCorrectPlan(p, fs)
+    pre isWellformed(fs),
+
 end

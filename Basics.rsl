@@ -24,7 +24,8 @@ class
 				    	  (exists t : Table :- t isin plan /\ p isin t)
 				     )
 			        ),
-    
+
+     /* Consider to use the areRelatives function here instead of exists! */ 
      isWellformedTable : Table >< Families -> Bool
      isWellformedTable(t, fs) is card t = 1 \/
      		      	      (t ~= {} /\ (all p : Person :- p isin t =>
