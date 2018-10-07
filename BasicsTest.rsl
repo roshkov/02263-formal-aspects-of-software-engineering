@@ -4,6 +4,7 @@ scheme BasicsTest =
 extend Basics with 
 class
   variable
+	/* Person variables */
 	p1 : Person := "Elisabeth",
 	p2 : Person := "Lillian",
 	p3 : Person := "Erik",
@@ -15,59 +16,92 @@ class
 	p9 : Person := "Camilla",
 	p10 : Person := "Jacob",
 	p11 : Person := "Pernille",
+
+	/* Family variables */
 	f1 : Family := {p1},
 	f2 : Family := {p2, p3},
 	f3 : Family := {p4, p5, p6},
 	f4 : Family := {p7, p8, p9, p10, p11},
+	fEmpty : Family := {},
+	f1Rep: Family := {p1},
+
+	/* Families variables */
 	families : Families := {f1, f2, f3, f4},
+	famBadTable : Families := {f2},
+	famBadEmptyF : Families := {f1, f2, f3, f4, fEmpty},
+	famBadEmpty: Families := {},
+	famBadPerRep: Families := {f1, f1Rep},
+
+	/* Table variables */
+	t1 : Table := {p8, p4},
+	t2 : Table := {p2, p9, p6},
+	t3 : Table := {p10, p5},
+	t4 : Table := {p3, p11, p1},
+	t5 : Table := {p7},
+	tBadRep : Table := {p1},
+	tBadSameF : Table := {p2, p3},
 	tGood : Table := {p1, p2, p4, p7},
 	tGoodOneP : Table := {p1},
 	tBadEmpty : Table := {},
 	tBadSameF : Table := {p2, p3},
-	tBadFamilies1: Families := {f1},
-	tF1Rep: Family := {p1},
-	tBadFamilies2: Families := {f1, tF1Rep}
-  test_case
-	/** ---- Tests for isWellformedTable  ----  **/
 
+	/* Plan variables */
+	plan : Plan := {t1, t2, t3, t4, t5},
+	planBadNotAllPer : Plan := {t1, t2, t3, t4},
+	planBadPerRep : Plan := {t1, t2, t3, t4, t5, tBadRep},
+	planBadSameF : Plan := {tBadSameF},
+	planBadEmptyTable : Plan := {t1, t2, t3, t4, t5, tBadEmpty}
+	
+  test_case
+	/** ---- Tests for isCorrectPlan ----  **/
+
+	/* Test that true is returned when a correct Plan, where all persons from all families have been assigned to a table and only one table, where no more than one person from the same Family is assigned to a table and no tables are empty. */
+	[t101] isCorrectPlan(plan, families),
+
+	/* Test that false is returned when not every person from Families have been assigned to a table. */
+	[t102] isCorrectPlan(planBadNotAllPer, families),
+
+	/* Test that false is returned when a person has been assigned to multiple tables. */
+	[t103] isCorrectPlan(planBadPerRep, families),
+	
+	/* Test that false is returned when more than one person from the same Family has been assigned to the same Table. */
+	[t104] isCorrectPlan(planBadSameF, famBadTable),
+
+	/* Test that false is returned when the Plan contains an empty Table. */
+	[t105] isCorrectPlan(planBadEmptyTable, families),
+
+
+	/** ---- Tests for isWellformedTable  ----  **/
+	
 	/* Test that true is returned when a correct table with one person from each family is passed. */
-	[t1] isWellformedTable(tGood, families),
+	[t201] isWellformedTable(tGood, families),
 
 	/* Test that true is returned when a correct table with only one person is passed. */
-	[t2] isWellformedTable(tGoodOneP, families),
+	[t202] isWellformedTable(tGoodOneP, families),
 
 	/* Test that false is returned when an incorrect empty table is passed. */
-	[t3] isWellformedTable(tBadEmpty, families),
+	[t203] isWellformedTable(tBadEmpty, families),
 	
-	/* Test that false is returned when an incorrect table with two members from the same is passed. */
-	[t4] isWellformedTable(tBadSameF, families),
-	/*
-	[t1] db := register_man("John", false, db) ; db, 
-      	[t2] db := register_man("Henry", false, db) ; db,
-      	[t3] db := register_man("George", false, db) ; db,
-      	[t4] db := register_woman("Anne", false, db) ; db,
-      	[t5] is_married_man("George", db),
-      	[t6] is_married_woman("Anne", db),
-      	[t7] db := marry("George", "Anne", db) ; db,
-      	[t8] is_married_woman("Anne", db),
-      	[t9] is_married_man("George", db),
-      	[t10] db := marry("John", "Anne", db) ; db,
-      	[t11] is_married_man("John", db)
-	*/
+	/* Test that false is returned when an incorrect table with two members from the same Family is passed. */
+	[t204] isWellformedTable(tBadSameF, families),
+
 
 	/** ---- Tests for isWellFormed ---- **/
 
-	/* Test that true is returned when every Person belong to a Family and only one */
+	/* Test that true is returned when every Person belong to a Family and only one and no families are empty. */
 	[t301] isWellformed(families),
 
-	/* Test that false is returned when a Person not belong to a Family */
-	[t302] isWellformed(tBadFamilies1),
+	/* Test that false is returned when an empty Family is part of Families. */
+	[t302] isWellformed(famBadEmptyF),
 
-	/* Test that false is returned when a Person belong to different Families*/
-	[t303] isWellformed(tBadFamilies2),
+	/* Test that false is returned when an empty Families is passed. */
+	[t303] isWellformed(famBadEmpty),
+
+	/* Test that false is returned when a Person belong to more than one Family in Families*/
+	[t304] isWellformed(famBadPerRep),
 
 
-	/** ---- Tests for AreRelatives  ---- **/
+	/** ---- Tests for areRelatives  ---- **/
 	
 	/* Test that true is returned when two Persons are from the same family */
 	[t401] areRelatives(p2, p3, families),
