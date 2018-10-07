@@ -23,7 +23,10 @@ class
 	tGood : Table := {p1, p2, p4, p7},
 	tGoodOneP : Table := {p1},
 	tBadEmpty : Table := {},
-	tBadSameF : Table := {p2, p3}
+	tBadSameF : Table := {p2, p3},
+	tBadFamilies1: Families := {f1},
+	tF1Rep: Family := {p1},
+	tBadFamilies2: Families := {f1, tF1Rep}
   test_case
 	/** ---- Tests for isWellformedTable  ----  **/
 
@@ -37,7 +40,7 @@ class
 	[t3] isWellformedTable(tBadEmpty, families),
 	
 	/* Test that false is returned when an incorrect table with two members from the same is passed. */
-	[t4] isWellformedTable(tBadSameF, families)
+	[t4] isWellformedTable(tBadSameF, families),
 	/*
 	[t1] db := register_man("John", false, db) ; db, 
       	[t2] db := register_man("Henry", false, db) ; db,
@@ -51,5 +54,26 @@ class
       	[t10] db := marry("John", "Anne", db) ; db,
       	[t11] is_married_man("John", db)
 	*/
+
+	/** ---- Tests for isWellFormed ---- **/
+
+	/* Test that true is returned when every Person belong to a Family and only one */
+	[t301] isWellformed(families),
+
+	/* Test that false is returned when a Person not belong to a Family */
+	[t302] isWellformed(tBadFamilies1),
+
+	/* Test that false is returned when a Person belong to different Families*/
+	[t303] isWellformed(tBadFamilies2),
+
+
+	/** ---- Tests for AreRelatives  ---- **/
+	
+	/* Test that true is returned when two Persons are from the same family */
+	[t401] areRelatives(p2, p3, families),
+
+	/* Test that false is returned when two Persons are from different families */
+	[t402] areRelatives(p1, p2, families)
+	
  end
  
