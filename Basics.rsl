@@ -10,13 +10,13 @@ class
   value /* auxilliary functions */
   
      areRelatives : Person >< Person >< Families -> Bool
-     areRelatives(p1, p2, fs) is (all f : Family :- f isin fs /\ p1 isin f /\ p2 isin f /\ p1 ~= p2),
+     areRelatives(p1, p2, fs) is (exists f : Family :- f isin fs /\ p1 ~= p2 /\ p1 isin f /\ p2 isin f),
 
      isCorrectPlan : Plan >< Families -> Bool
-     isCorrectPlan(plan, fs) is (all t : Table :- t isin plan /\ isWellformedTable(t, fs)
+     isCorrectPlan(plan, fs) is (all t : Table :- t isin plan => isWellformedTable(t, fs)
     			       	) /\
     			       	(all t : Table :- t isin plan =>
-			       	     (all t' : Table :- t' isin plan /\ t inter t' = {}
+			       	     (all t' : Table :- t' isin plan /\ t ~=t' => t inter t' = {}
 				     )
 			       	) /\
 			       	(all f : Family :- f isin fs =>
@@ -24,23 +24,23 @@ class
 				    	  (exists t : Table :- t isin plan /\ p isin t)
 				     )
 			        ),
-
-     /* Consider to use the areRelatives function here instead of exists! */ 
+ 
      isWellformedTable : Table >< Families -> Bool
      isWellformedTable(t, fs) is card t = 1 \/
      		      	      (t ~= {} /\ (all p : Person :- p isin t =>
     		      	     	      	       (all p' : Person :- p' isin t /\ p ~= p' =>
-				     	      	    (exists! f : Family :- f isin fs /\ p isin f /\ p' isin f
-				     		    )
+					       	    ~areRelatives(p, p', fs)
 					       )
 					  )
     		      	      ),
-			     
+
+     /* If Families contains the exact same Family twice, the function will return true because the two identical Family's can't be differentiated. */
      isWellformed : Families -> Bool
-     isWellformed(fs) is fs ~= {} /\ (all f : Family :- f isin fs /\ f ~= {} =>
-    		     	       	     	  (all f' : Family :- f' isin fs /\ f' ~= {} =>
-			     	   	       f ~= f' /\ f inter f' = {}
+     isWellformed(fs) is fs ~= {} /\ if card fs > 1 then (all f : Family :- f isin fs /\ f ~= {} =>
+    		     	       	     	  (all f' : Family :- f' isin fs /\ f ~= f' =>
+			     	   	        f' ~= {} /\ f inter f' = {}
 			      		  )
 			 	     )
+				     else true end
 
 end
