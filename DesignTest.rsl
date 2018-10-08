@@ -4,11 +4,139 @@ scheme DesignTest =
 extend Design with 
 class
   value
+	/* Person variables */
+	p1 : Person = "Elisabeth",
+	p2 : Person = "Lillian",
+	p3 : Person = "Erik",
+	p4 : Person = "Frederik",
+	p5 : Person = "Henrik",
+	p6 : Person = "Anne",
+	p7 : Person = "Lotte",
+	p8 : Person = "Torsten",
+	p9 : Person = "Camilla",
+	p10 : Person = "Jacob",
+	p11 : Person = "Pernille",
 
-  variable
+	/* Family variables */
+	f1 : Family = {p1},
+	f2 : Family = {p2, p3},
+	f3 : Family = {p4, p5, p6},
+	f4 : Family = {p7, p8, p9, p10, p11},
+	f5 : Family = {p7, p8, p9},
+	fEmpty : Family = {},
+	f2Rep: Family = {p2},
 
-  test_case 
-    ...
+	/* Families variables */
+	families : Families = {f1, f2, f3, f4},
+	familiesTest : Families = {f1, f3},
+	famBadTable : Families = {f2},
+	famBadEmptyF : Families = {f1, f2, f3, f4, fEmpty},
+	famBadEmpty: Families = {},
+	famBadPerRep: Families = {f2, f2Rep},
 
+	/* Table variables */
+	t1 : Table = {p8, p4},
+	t2 : Table = {p2, p9, p6},
+	t3 : Table = {p10, p5},
+	t4 : Table = {p3, p11, p1},
+	t5 : Table = {p7},
+	tBadRep : Table = {p1},
+	tBadSameF : Table = {p2, p3},
+	tGood : Table = {p1, p2, p4, p7},
+	tGoodOneP : Table = {p1},
+	tBadEmpty : Table = {},
+
+	/* Plan variables */
+	plan : Plan = {t1, t2, t3, t4, t5},
+	planBadNotAllPer : Plan = {t1, t2, t3, t4},
+	planBadPerRep : Plan = {t1, t2, t3, t4, t5, tBadRep},
+	planBadSameF : Plan = {tBadSameF},
+	planBadEmptyTable : Plan = {t1, t2, t3, t4, t5, tBadEmpty}
+	
+  test_case
+	
+	[t1] hd {f2} union hd {f1},
+	[t2] {f2} union {f1},
+	[t3] {hd {f2} union hd {f1}},
+	[t4] {f2},
+	[t5] hd(f2),
+	[t6] card({f2}),
+	/** ---- Tests for isCorrectPlan ----  **/
+
+	/* Test that true is returned when a correct Plan, where all persons from all families have been assigned to a table and only one table, where no more than one person from the same Family is assigned to a table and no tables are empty. */
+	[t101] isCorrectPlan(plan, families) = true,
+
+	/* Test that false is returned when not every person from Families have been assigned to a table. */
+	[t102] isCorrectPlan(planBadNotAllPer, families) = false,
+
+	/* Test that false is returned when a person has been assigned to multiple tables. */
+	[t103] isCorrectPlan(planBadPerRep, families) = false,
+	
+	/* Test that false is returned when more than one person from the same Family has been assigned to the same Table. */
+	[t104] isCorrectPlan(planBadSameF, famBadTable) = false,
+
+	/* Test that false is returned when the Plan contains an empty Table. */
+	[t105] isCorrectPlan(planBadEmptyTable, families) = false,
+
+
+	/** ---- Tests for isWellformedTable  ----  **/
+	
+	/* Test that true is returned when a correct table with one person from each family is passed. */
+	[t201] isWellformedTable(tGood, families) = true,
+
+	/* Test that true is returned when a correct table with only one person is passed. */
+	[t202] isWellformedTable(tGoodOneP, families) = true,
+
+	/* Test that false is returned when an incorrect empty table is passed. */
+	[t203] isWellformedTable(tBadEmpty, families) = false,
+	
+	/* Test that false is returned when an incorrect table with two members from the same Family is passed. */
+	[t204] isWellformedTable(tBadSameF, families) = false,
+
+
+	/** ---- Tests for isWellFormed ---- **/
+
+	/* Test that true is returned when every Person belong to a Family and only one and no families are empty. */
+	[t301] isWellformed(families) = true,
+
+	/* Test that false is returned when an empty Family is part of Families. */
+	[t302] isWellformed(famBadEmptyF) = false,
+
+	/* Test that false is returned when an empty Families is passed. */
+	[t303] isWellformed(famBadEmpty) = false,
+
+	/* Test that false is returned when a Person belong to more than one Family in Families*/
+	[t304] isWellformed(famBadPerRep) = false,
+
+
+	/** ---- Tests for areRelatives  ---- **/
+	
+	/* Test that true is returned when two Persons are from the same family */
+	[t401] areRelatives(p2, p3, families) = true,
+
+	/* Test that false is returned when two Persons are from different families */
+	[t402] areRelatives(p1, p2, families) = false,
+
+
+	/** ---- Tests for createPlanForFamily  ---- **/
+	
+	/* Test that when a plan is created for a single family, that they are seated at an individual table. */
+	[t501] createPlanForFamily(f3) = {{p6},{p4},{p5}},
+
+
+	/** ---- Tests for mergePlans  ---- **/
+	
+	/* Test that when two plans are merged, that it looks correct. */
+	[t601] createPlanForFamily(f3),
+	[t602] createPlanForFamily(f5),
+	[t603] mergePlans({{"Anne"},{"Frederik"},{"Henrik"}},{{"Camilla"},{"Lotte"},{"Torsten"}}) = {{"Henrik","Torsten"},{"Anne","Camilla"},{"Frederik","Lotte"}},
+	/*[t604] hd({{"Camilla"},{"Lotte"},{"Torsten"}}) union hd({{}}),
+	[t605] {{"Camilla"},{"Lotte"},{"Torsten"}}\{hd({{"Camilla"},{"Lotte"},{"Torsten"}})},
+	[t606] card({{"Camilla"},{"Lotte"},{"Torsten"}}),
+	[t607] card({{"Lotte"},{"Torsten"}}),
+	[t608] card({{"Torsten"}}),
+	[t609] hd({{"Torsten"}})\hd({{"Torsten"}}) = {}*/
+	[t610] mergePlans(createPlanForFamily(f3),createPlanForFamily(f1)),
+	[t611] plan(families)
  end
  

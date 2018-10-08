@@ -9,9 +9,38 @@ class
     addPerson(t, p) is t union {p}
     pre p ~isin t,
 
+    createPlanForFamily : Family -> Plan
+    createPlanForFamily(f) is if card(f) > 1 then
+    			      	 {{hd(f)}} union createPlanForFamily(f\{hd(f)})
+			      else {{hd(f)}} end,
+
+    createPlanForFamilies : Families -> Plan
+    createPlanForFamilies(fs) is if card(fs) > 1 then
+    			      	 mergePlans(createPlanForFamily(hd(fs)), createPlanForFamilies(fs\{hd(fs)}))
+			      else createPlanForFamily(hd(fs)) end,
+
+    mergePlans : (Plan >< Plan) -> Plan
+    mergePlans(pl1, pl2) is if card(pl1) = 1 /\ card(pl2) = 1 then /* =1, =1 : No recursion */
+    		    	       {hd(pl1) union hd(pl2)}
+    		    	    elsif card(pl1) >= 1 /\ card(pl2) >= 1 then /* >=1, >=1 : Recurse*/
+    			       {hd(pl1) union hd(pl2)} union mergePlans(pl1\{hd(pl1)}, pl2\{hd(pl2)})
+			    elsif card(pl1) > 1 /\ pl2 = {} then /* >1, {} : Recurse */
+			       {hd(pl1) union {}} union mergePlans(pl1\{hd(pl1)}, {})
+			    elsif pl1 = {} /\ card(pl2) > 1 then /* {}, >1 : Recurse */
+			       {{} union hd(pl2)} union mergePlans({}, pl2\{hd(pl2)})
+			    elsif card(pl1) = 1 /\ pl2 = {} then /* =1, {} : No recursion */
+			       {hd(pl1) union {}}
+			    else  /* {}, >1 : No recursion */
+			       {{} union hd(pl2)}
+			    end,
+			       
     plan : Families -~-> Plan
-    plan(fs) is {} 
-    post isCorrectPlan(p, fs)
-    pre isWellformed(fs),
+    plan(fs) is if card(fs) = 1 then
+    	     	   createPlanForFamily(hd(fs))
+		else
+		   createPlanForFamilies(fs)
+		end
+    /*post isCorrectPlan(p, fs)*/
+    pre isWellformed(fs)
 
 end
