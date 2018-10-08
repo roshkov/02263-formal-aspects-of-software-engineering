@@ -35,12 +35,12 @@ class
 			    end,
 			       
     plan : Families -~-> Plan
-    plan(fs) is if card(fs) = 1 then
+    plan(fs) is ( if card(fs) = 1 then
     	     	   createPlanForFamily(hd(fs))
 		else
 		   createPlanForFamilies(fs)
-		end
-    /*post isCorrectPlan(p, fs)*/
+		end) as p
+    post isCorrectPlan(p, fs)
     pre isWellformed(fs)
 
 end
