@@ -6,7 +6,8 @@ class
   value
 
     addPerson : (Table >< Person) -> Table
-    addPerson(t, p) is t union {p},
+    addPerson(t, p) is t union {p}
+    pre p ~isin t,
 
     plan : Families -~-> Plan
     plan(fs) is {} 
