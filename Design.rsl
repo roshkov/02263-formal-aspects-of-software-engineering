@@ -5,10 +5,6 @@ extend Basics with
 class
   value
 
-    addPerson : (Table >< Person) -> Table
-    addPerson(t, p) is t union {p}
-    pre p ~isin t,
-
     createPlanForFamily : Family -> Plan
     createPlanForFamily(f) is if card(f) > 1 then
     			      	 {{hd(f)}} union createPlanForFamily(f\{hd(f)})
