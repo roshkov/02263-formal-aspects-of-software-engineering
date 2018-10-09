@@ -12,7 +12,8 @@ class
 
     createPlanForFamilies : Families -> Plan
     createPlanForFamilies(fs) is if card(fs) > 1 then
-    			      	 mergePlans(createPlanForFamily(hd(fs)), createPlanForFamilies(fs\{hd(fs)}))
+    			      	 mergePlans(createPlanForFamily(hd(fs)),
+				 createPlanForFamilies(fs\{hd(fs)}))
 			      else createPlanForFamily(hd(fs)) end,
 
     mergePlans : (Plan >< Plan) -> Plan

@@ -55,16 +55,22 @@ class
   test_case
 	/** ---- Tests for isCorrectPlan ----  **/
 
-	/* Test that true is returned when a correct Plan, where all persons from all families have been assigned to a table and only one table, where no more than one person from the same Family is assigned to a table and no tables are empty. */
+	/* Test that true is returned when a correct Plan, where all persons
+	from all families have been assigned to a table and only one table,
+	where no more than one person from the same Family is assigned to a
+	table and no tables are empty. */
 	[t101] isCorrectPlan(plan, families) = true,
 
-	/* Test that false is returned when not every person from Families have been assigned to a table. */
+	/* Test that false is returned when not every person from Families 
+	have been assigned to a table. */
 	[t102] isCorrectPlan(planBadNotAllPer, families) = false,
 
-	/* Test that false is returned when a person has been assigned to multiple tables. */
+	/* Test that false is returned when a person has been assigned to 
+	multiple tables. */
 	[t103] isCorrectPlan(planBadPerRep, families) = false,
 	
-	/* Test that false is returned when more than one person from the same Family has been assigned to the same Table. */
+	/* Test that false is returned when more than one person from the
+	same Family has been assigned to the same Table. */
 	[t104] isCorrectPlan(planBadSameF, famBadTable) = false,
 
 	/* Test that false is returned when the Plan contains an empty Table. */
@@ -73,31 +79,38 @@ class
 
 	/** ---- Tests for isWellformedTable  ----  **/
 	
-	/* Test that true is returned when a correct table with one person from each family is passed. */
+	/* Test that true is returned when a correct table with one person
+	from each family is passed. */
 	[t201] isWellformedTable(tGood, families) = true,
 
-	/* Test that true is returned when a correct table with only one person is passed. */
+	/* Test that true is returned when a correct table with only one
+	person is passed. */
 	[t202] isWellformedTable(tGoodOneP, families) = true,
 
-	/* Test that false is returned when an incorrect empty table is passed. */
+	/* Test that false is returned when an incorrect empty table is
+	passed. */
 	[t203] isWellformedTable(tBadEmpty, families) = false,
 	
-	/* Test that false is returned when an incorrect table with two members from the same Family is passed. */
+	/* Test that false is returned when an incorrect table with two
+	members from the same Family is passed. */
 	[t204] isWellformedTable(tBadSameF, families) = false,
 
 
 	/** ---- Tests for isWellFormed ---- **/
 
-	/* Test that true is returned when every Person belong to a Family and only one and no families are empty. */
+	/* Test that true is returned when every Person belong to a Family
+	and only one and no families are empty. */
 	[t301] isWellformed(families) = true,
 
-	/* Test that false is returned when an empty Family is part of Families. */
+	/* Test that false is returned when an empty Family is part of
+	Families. */
 	[t302] isWellformed(famBadEmptyF) = false,
 
 	/* Test that false is returned when an empty Families is passed. */
 	[t303] isWellformed(famBadEmpty) = false,
 
-	/* Test that false is returned when a Person belong to more than one Family in Families*/
+	/* Test that false is returned when a Person belong to more than one
+	Family in Families*/
 	[t304] isWellformed(famBadPerRep) = false,
 
 
@@ -106,40 +119,49 @@ class
 	/* Test that true is returned when two Persons are from the same family */
 	[t401] areRelatives(p2, p3, families) = true,
 
-	/* Test that false is returned when two Persons are from different families */
+	/* Test that false is returned when two Persons are from different
+	families */
 	[t402] areRelatives(p1, p2, families) = false,
 
 
 	/** ---- Tests for createPlanForFamily  ---- **/
 	
-	/* Test that when a plan is created for a single Family, that they are seated at an individual table. */
+	/* Test that when a plan is created for a single Family, that they are
+	seated at an individual table. */
 	[t501] createPlanForFamily(f3) = {{p6},{p4},{p5}},
 
 
 	/** ---- Tests for mergePlans  ---- **/
 
-	/* Test that when a non-empty plan is merged with an empty, the non-empty plan is returned. */
+	/* Test that when a non-empty plan is merged with an empty, the non-empty
+	plan is returned. */
 	[t601] mergePlans({{p6},{p4},{p5}}, {{}}) = {{p6},{p4},{p5}},
 
-	/* Test that when two non-empty equally sized plans are merged, that only tables from different plans are merged. */
+	/* Test that when two non-empty equally sized plans are merged, that only
+	tables from different plans are merged. */
 	[t602] mergePlans({{p6},{p4},{p5}}, {{p1},{p2},{p3}}) = {{p6, p1},{p4, p2},{p5, p3}},
 
-	/* Test that when two non-empty plans, when one plan is 1 bigger than the other, are merged correctly. */
+	/* Test that when two non-empty plans, when one plan is 1 bigger than the
+	other, are merged correctly. */
 	[t603] mergePlans(createPlanForFamily(f1),createPlanForFamily(f2)) = {{p1, p3},{p2}},
 
-	/* Test that when two non-empty plans, when one plan is 1 bigger than the other, are merged correctly. */
+	/* Test that when two non-empty plans, when one plan is 1 bigger than the
+	other, are merged correctly. */
 	[t604] mergePlans(createPlanForFamily(f2),createPlanForFamily(f1)) = {{p3, p1},{p2}},
 
-	/* Test that when two non-empty plans, when one plan is >1 bigger than the other, are merged correctly. */
+	/* Test that when two non-empty plans, when one plan is >1 bigger than the
+	other, are merged correctly. */
 	[t605] mergePlans(createPlanForFamily(f1),createPlanForFamily(f3)) = {{p1, p6},{p4},{p5}},
 
-	/* Test that when two non-empty plans, when one plan is >1 bigger than the other, are merged correctly. */
+	/* Test that when two non-empty plans, when one plan is >1 bigger than the
+	other, are merged correctly. */
 	[t606] mergePlans(createPlanForFamily(f3),createPlanForFamily(f1)) = {{p6, p1},{p4},{p5}},
 
 
 	/** ---- Tests for createPlanForFamilies  ---- **/
 	
-	/* Test that when a plan is created for a single Family in Families, that they are seated at an individual table. */
+	/* Test that when a plan is created for a single Family in Families, that
+	they are seated at an individual table. */
 	[t701] createPlanForFamilies(famSingleFamily) = {{p7}, {p8}, {p9}, {p10}, {p11}},
 
 	/* Test that when a plan is created for two Family of same size in Families. */
@@ -153,7 +175,6 @@ class
 
 	/* Test that when a non-wellformed Families is passed the precondition fails. */
 	[t802] plan(famBadPerRep)
-
 	
  end
  
