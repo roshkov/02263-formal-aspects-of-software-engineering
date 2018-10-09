@@ -22,13 +22,12 @@ class
 	f2 : Family = {p2, p3},
 	f3 : Family = {p4, p5, p6},
 	f4 : Family = {p7, p8, p9, p10, p11},
-	f5 : Family = {p7, p8, p9},
 	fEmpty : Family = {},
 	f2Rep: Family = {p2},
 
 	/* Families variables */
 	families : Families = {f1, f2, f3, f4},
-	familiesTest : Families = {f1, f3},
+	famSingleFamily : Families = {f4},
 	famBadTable : Families = {f2},
 	famBadEmptyF : Families = {f1, f2, f3, f4, fEmpty},
 	famBadEmpty: Families = {},
@@ -113,23 +112,48 @@ class
 
 	/** ---- Tests for createPlanForFamily  ---- **/
 	
-	/* Test that when a plan is created for a single family, that they are seated at an individual table. */
+	/* Test that when a plan is created for a single Family, that they are seated at an individual table. */
 	[t501] createPlanForFamily(f3) = {{p6},{p4},{p5}},
 
 
 	/** ---- Tests for mergePlans  ---- **/
+
+	/* Test that when a non-empty plan is merged with an empty, the non-empty plan is returned. */
+	[t601] mergePlans({{p6},{p4},{p5}}, {{}}) = {{p6},{p4},{p5}},
+
+	/* Test that when two non-empty equally sized plans are merged, that only tables from different plans are merged. */
+	[t602] mergePlans({{p6},{p4},{p5}}, {{p1},{p2},{p3}}) = {{p6, p1},{p4, p2},{p5, p3}},
+
+	/* Test that when two non-empty plans, when one plan is 1 bigger than the other, are merged correctly. */
+	[t603] mergePlans(createPlanForFamily(f1),createPlanForFamily(f2)) = {{p1, p3},{p2}},
+
+	/* Test that when two non-empty plans, when one plan is 1 bigger than the other, are merged correctly. */
+	[t604] mergePlans(createPlanForFamily(f2),createPlanForFamily(f1)) = {{p3, p1},{p2}},
+
+	/* Test that when two non-empty plans, when one plan is >1 bigger than the other, are merged correctly. */
+	[t605] mergePlans(createPlanForFamily(f1),createPlanForFamily(f3)) = {{p1, p6},{p4},{p5}},
+
+	/* Test that when two non-empty plans, when one plan is >1 bigger than the other, are merged correctly. */
+	[t606] mergePlans(createPlanForFamily(f3),createPlanForFamily(f1)) = {{p6, p1},{p4},{p5}},
+
+
+	/** ---- Tests for createPlanForFamilies  ---- **/
 	
-	/* Test that when two plans are merged, that it looks correct. */
-	[t601] createPlanForFamily(f3),
-	[t602] createPlanForFamily(f5),
-	[t603] mergePlans({{"Anne"},{"Frederik"},{"Henrik"}},{{"Camilla"},{"Lotte"},{"Torsten"}}) = {{"Henrik","Torsten"},{"Anne","Camilla"},{"Frederik","Lotte"}},
-	/*[t604] hd({{"Camilla"},{"Lotte"},{"Torsten"}}) union hd({{}}),
-	[t605] {{"Camilla"},{"Lotte"},{"Torsten"}}\{hd({{"Camilla"},{"Lotte"},{"Torsten"}})},
-	[t606] card({{"Camilla"},{"Lotte"},{"Torsten"}}),
-	[t607] card({{"Lotte"},{"Torsten"}}),
-	[t608] card({{"Torsten"}}),
-	[t609] hd({{"Torsten"}})\hd({{"Torsten"}}) = {}*/
-	[t610] mergePlans(createPlanForFamily(f3),createPlanForFamily(f1)),
-	[t611] plan(families)
+	/* Test that when a plan is created for a single Family in Families, that they are seated at an individual table. */
+	[t701] createPlanForFamilies(famSingleFamily) = {{p7}, {p8}, {p9}, {p10}, {p11}},
+
+	/* Test that when a plan is created for two Family of same size in Families. */
+	[t702] createPlanForFamilies(families) = {{p1, p3, p6, p11}, {p2, p5, p9}, {p4, p7}, {p10}, {p8}},
+
+
+	/** ---- Tests for plan  ---- **/
+
+	/* Test that when a wellformed Families is passed a correct plan is generated. */
+	[t801] plan(families) = {{p1, p3, p6, p11}, {p2, p5, p9}, {p4, p7}, {p10}, {p8}},
+
+	/* Test that when a non-wellformed Families is passed the precondition fails. */
+	[t802] plan(famBadPerRep)
+
+	
  end
  
