@@ -23,7 +23,7 @@ class
 	f3 : Family = {p4, p5, p6},
 	f4 : Family = {p7, p8, p9, p10, p11},
 	fEmpty : Family = {},
-	f2Rep: Family = {p2},
+	f2Rep: Family = {p2, p3},
 
 	/* Families values */
 	families : Families = {f1, f2, f3, f4},
@@ -183,6 +183,6 @@ class
 
 	/* Test that when a non-wellformed Families is passed the precondition fails. */
 	[t802] plan(famBadPerRep)
-	
+
  end
  
