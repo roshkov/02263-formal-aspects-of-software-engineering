@@ -15,7 +15,7 @@
 \newpage
 
 \section{Introduction}
-This document contains a solution to the problem of allocating tables to the persons of a party in such a way that person from the same family are not seated at the same table. The plan that is a result of the solution will not specify the specific seat at a table that a person has to use.
+This document contains a solution to the problem of allocating the persons of multiple families to the tables of a party in such a way that persons from the same family are not seated at the same table. The plan that is a result of the solution will not specify the specific seat at a table that a person has to use.
 
 \section{Specification of Types and Auxiliary Functions}
 
@@ -28,12 +28,14 @@ This document contains a solution to the problem of allocating tables to the per
 
 \section{Requirement Specification}
 
- \lstinputlisting{Requirements.rsl}  
+\lstinputlisting{Requirements.rsl}  
+
+As seen from the content of the \verb=Requirements.rsl= file shown above, the auxiliary functions that were added in this step, has been added to the \verb=Basics.rsl= file rather than \verb=Requirements.rsl=, as both \verb=Requirements.rsl= and \verb=Design.rsl= extends \verb=Basics.rsl=. This will not only prevent us from having duplicated code but also making the code easier to maintain.
 
 % Informal explanation of which requirements the post condition expresses.
 \begin{description}
   \item[isCorrectPlan] \hfill \\ This function can be used to test if all persons of all families have been assigned to a table and only one table. As well as no more than one person from the same family is assigned to the same table. Furthermore that no tables are empty.
-  \item[isWellformedTable] \hfill \\ This function can be used to test a table is not empty and if all persons assigned to the table are from different families.
+  \item[isWellformedTable] \hfill \\ This function can be used to test if a table is not empty and if all persons assigned to the table are from different families.
   \item[isWellformed] \hfill \\ Families is well formed if it contains at least one family and every family contains at least one person. Furthermore every person from a family can only be part of one family.
 \end{description}
 
@@ -41,30 +43,65 @@ This document contains a solution to the problem of allocating tables to the per
 
 \lstinputlisting{Design.rsl}  
 
-{\em Here you must explain the idea behind your algorithm.}
-{\em If you in this scheme introduce auxiliary functions in order to explicitly
-  define the plan function, you must explain these as well.}
+% General idea behind our algorithm.
+The general idea behind the implemented algorithm for the \verb=plan= function is to use recursion. The algorithm will break the set of families down to single families and then create a plan for a single family. The plan for a single family is also created by the use of recursion. The family is broken down person by person, where a plan with a single table is created, where a single person from the family has been assigned to. The plans with one table and one person are then merged for a single family, resulting in a single plan with a table for each person in the family. Now that a plan is created for each family, will these plans be merged by recursion as well. The plans are broken down by the tables, so a table from each plan is merged with a table from another plan. This merge will continue until there is one plan left, containing all family members from all families.
+
+% Informal explanation of which requirements the auxiliary functions expresses.
+\begin{description}
+  \item[createPlanForFamily] \hfill \\ This function is used to create the trivial solution of a plan for a single family. That is each person from the family is assigned to its own table.
+  \item[createPlanForFamilies] \hfill \\ This function is similar to the \verb=createPlanForFamily= function. Instead of creating a plan for a single family, it will create a plan for multiple families.
+  \item[mergePlans] \hfill \\ This function is used to merge two plans into one. This is done by merging one table from one plan with a table from the other. Should a plan contain more tables than another one, will the "leftover" tables from the plan with more than the other stay as they are in the merged plan.
+\end{description}
 
 \section{Testing by translation to SML}
 
 \subsection{Test specification}
 
 \lstinputlisting{DesignTest.rsl}
-        
-{\em Here you must  explain what the purpose of the individual test
-  cases are.} Explain the general idea of the tests, like we have made tests for true input and with false input.
 
+The purpose of each individual test has been added as source code comments and can be seen in the content of the \verb=DesignTest.rsl= file, which is shown above. The tests have been divided into section, corresponding to an auxiliary function, to increase the readability.
+
+The general idea of the approach to test the auxiliary functions, have been as follows. For the functions that returns a \verb=Bool=, we have created test data for a few test cases, where we expect the result to be true. However, the focus has mainly been on creating invalid test data, that will test the robustness of the functions, that is test cases where we expect the result to be false. As for the functions that return something else than \verb=Bool=. Here has there also been created test data for test cases, where the result has been compared to the expected output, to get a truth value in the overview of the test results, which can be seen in the following section. The test data created for these functions have both been best case test data, where everything is as it should be, but also some of the test data has not been best case, to for example test the different cases in the \verb=if= statements that has been used in some of the auxiliary functions.
 
 \subsection{Results of evaluations}
 
-
 The results of evaluating the SML translation of the RSL test cases are:
 
-{\em Here you must  insert the output of the test run.}
+\begin{table}[h]
+\begin{tabular}{l|l}
+Test case  & Result                                                                                      \\ \hline
+{[}t101{]} & true                                                                                        \\
+{[}t102{]} & true                                                                                        \\
+{[}t103{]} & true                                                                                        \\
+{[}t104{]} & true                                                                                        \\
+{[}t105{]} & true                                                                                        \\
+{[}t201{]} & true                                                                                        \\
+{[}t202{]} & true                                                                                        \\
+{[}t204{]} & true                                                                                        \\
+{[}t301{]} & true                                                                                        \\
+{[}t302{]} & true                                                                                        \\
+{[}t303{]} & true                                                                                        \\
+{[}t304{]} & true                                                                                        \\
+{[}t401{]} & true                                                                                        \\
+{[}t402{]} & true                                                                                        \\
+{[}t501{]} & true                                                                                        \\
+{[}t601{]} & true                                                                                        \\
+{[}t602{]} & true                                                                                        \\
+{[}t603{]} & true                                                                                        \\
+{[}t604{]} & true                                                                                        \\
+{[}t605{]} & true                                                                                        \\
+{[}t606{]} & true                                                                                        \\
+{[}t701{]} & true                                                                                        \\
+{[}t702{]} & true                                                                                        \\
+{[}t801{]} & true                                                                                        \\
+{[}t802{]} & Design.rsl:41:9: Precondition of plan(\{\{"Lillian"\},\{"Erik","Lillian"\}\}) not satisfied
+\end{tabular}
+\end{table}
 
+It should be mentioned, that a "flaw" in the original files and choices made for the types was discovered. This "flaw" is somewhat mentioned as a source code comment in the \verb=Basics.rsl= file. The "flaw" was discovered when executing the {[}t304{]} test case, where it was attempted to check if an instance of \verb=Families= containing two identical instances of \verb=Family= would return false. This is the desired result, as the persons are appearing in two \verb=Family=. As \verb=Families= is defined as a set, it can not contain multiple instances of an element (then it should have been a multiset), here a \verb=Family=. However, when two instances of \verb=Family= are nearly identical, i.e. one or more persons are part of both of both \verb=Family=, the test case and auxiliary functions works as expected.
 
+The last test case is showing that the precondition correctly fails, as an instance of \verb=Families= with a person appearing in two \verb=Family= was passed to the \verb=plan= function. Besides from that are every other test case returning the results as expected.
 
-\noindent From this we can conclude ...
-
+\noindent From this we can conclude that we have successfully created an application for creating a plan of tables for families, such that no person from is sitting at a table with another person from the same family and that no empty tables is created in the plan.
 
 \end{document}
