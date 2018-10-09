@@ -139,39 +139,47 @@ class
 
 	/* Test that when two non-empty equally sized plans are merged, that only
 	tables from different plans are merged. */
-	[t602] mergePlans({{p6},{p4},{p5}}, {{p1},{p2},{p3}}) = {{p6, p1},{p4, p2},{p5, p3}},
+	[t602] mergePlans({{p6},{p4},{p5}}, {{p1},{p2},{p3}})
+	       = {{p6, p1},{p4, p2},{p5, p3}},
 
 	/* Test that when two non-empty plans, when one plan is 1 bigger than the
 	other, are merged correctly. */
-	[t603] mergePlans(createPlanForFamily(f1),createPlanForFamily(f2)) = {{p1, p3},{p2}},
+	[t603] mergePlans(createPlanForFamily(f1),createPlanForFamily(f2))
+	       = {{p1, p3},{p2}},
 
 	/* Test that when two non-empty plans, when one plan is 1 bigger than the
 	other, are merged correctly. */
-	[t604] mergePlans(createPlanForFamily(f2),createPlanForFamily(f1)) = {{p3, p1},{p2}},
+	[t604] mergePlans(createPlanForFamily(f2),createPlanForFamily(f1))
+	       = {{p3, p1},{p2}},
 
 	/* Test that when two non-empty plans, when one plan is >1 bigger than the
 	other, are merged correctly. */
-	[t605] mergePlans(createPlanForFamily(f1),createPlanForFamily(f3)) = {{p1, p6},{p4},{p5}},
+	[t605] mergePlans(createPlanForFamily(f1),createPlanForFamily(f3))
+	       = {{p1, p6},{p4},{p5}},
 
 	/* Test that when two non-empty plans, when one plan is >1 bigger than the
 	other, are merged correctly. */
-	[t606] mergePlans(createPlanForFamily(f3),createPlanForFamily(f1)) = {{p6, p1},{p4},{p5}},
+	[t606] mergePlans(createPlanForFamily(f3),createPlanForFamily(f1))
+	       = {{p6, p1},{p4},{p5}},
 
 
 	/** ---- Tests for createPlanForFamilies  ---- **/
 	
 	/* Test that when a plan is created for a single Family in Families, that
 	they are seated at an individual table. */
-	[t701] createPlanForFamilies(famSingleFamily) = {{p7}, {p8}, {p9}, {p10}, {p11}},
+	[t701] createPlanForFamilies(famSingleFamily)
+	       = {{p7}, {p8}, {p9}, {p10}, {p11}},
 
 	/* Test that when a plan is created for two Family of same size in Families. */
-	[t702] createPlanForFamilies(families) = {{p1, p3, p6, p11}, {p2, p5, p9}, {p4, p7}, {p10}, {p8}},
+	[t702] createPlanForFamilies(families)
+	       = {{p1, p3, p6, p11}, {p2, p5, p9}, {p4, p7}, {p10}, {p8}},
 
 
 	/** ---- Tests for plan  ---- **/
 
 	/* Test that when a wellformed Families is passed a correct plan is generated. */
-	[t801] plan(families) = {{p1, p3, p6, p11}, {p2, p5, p9}, {p4, p7}, {p10}, {p8}},
+	[t801] plan(families)
+	       = {{p1, p3, p6, p11}, {p2, p5, p9}, {p4, p7}, {p10}, {p8}},
 
 	/* Test that when a non-wellformed Families is passed the precondition fails. */
 	[t802] plan(famBadPerRep)
