@@ -34,7 +34,8 @@ class
 					  )
     		      	      ),
 
-     /* If Families contains the exact same Family twice, the function will return true because the two identical Family's can't be differentiated. */
+     /* If Families contains the exact same Family twice, the function will return true
+ because the two identical Family's can't be differentiated. */
      isWellformed : Families -> Bool
      isWellformed(fs) is fs ~= {} /\ if card fs > 1 then (all f : Family :- f isin fs /\ f ~= {} =>
     		     	       	     	  (all f' : Family :- f' isin fs /\ f ~= f' =>
