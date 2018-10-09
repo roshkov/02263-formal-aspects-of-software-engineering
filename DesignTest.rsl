@@ -54,13 +54,6 @@ class
 	planBadEmptyTable : Plan = {t1, t2, t3, t4, t5, tBadEmpty}
 	
   test_case
-	
-	[t1] hd {f2} union hd {f1},
-	[t2] {f2} union {f1},
-	[t3] {hd {f2} union hd {f1}},
-	[t4] {f2},
-	[t5] hd(f2),
-	[t6] card({f2}),
 	/** ---- Tests for isCorrectPlan ----  **/
 
 	/* Test that true is returned when a correct Plan, where all persons from all families have been assigned to a table and only one table, where no more than one person from the same Family is assigned to a table and no tables are empty. */
