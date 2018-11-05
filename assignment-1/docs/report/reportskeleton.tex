@@ -19,7 +19,7 @@ This document contains a solution to the problem of allocating the persons of mu
 
 \section{Specification of Types and Auxiliary Functions}
 
-\lstinputlisting{Basics.rsl}  
+\lstinputlisting{assignment-1/src/Basics.rsl}  
 
 % Informal explanation of the purpose of auxiliary functions.
 \begin{description}
@@ -28,7 +28,7 @@ This document contains a solution to the problem of allocating the persons of mu
 
 \section{Requirement Specification}
 
-\lstinputlisting{Requirements.rsl}  
+\lstinputlisting{assignment-1/src/Requirements.rsl}  
 
 As seen from the content of the \verb=Requirements.rsl= file shown above, the auxiliary functions that were added in this step, has been added to the \verb=Basics.rsl= file rather than \verb=Requirements.rsl=, as both \verb=Requirements.rsl= and \verb=Design.rsl= extends \verb=Basics.rsl=. This will not only prevent us from having duplicated code but also making the code easier to maintain.
 
@@ -41,7 +41,7 @@ As seen from the content of the \verb=Requirements.rsl= file shown above, the au
 
 \section{Refined, explicit specification}
 
-\lstinputlisting{Design.rsl}  
+\lstinputlisting{assignment-1/src/Design.rsl}  
 
 % General idea behind our algorithm.
 The general idea behind the implemented algorithm for the \verb=plan= function is to use recursion. The algorithm will break the set of families down to single families and then create a plan for a single family. The plan for a single family is also created by the use of recursion. The family is broken down person by person, where a plan with a single table is created, where a single person from the family has been assigned to. The plans with one table and one person are then merged for a single family, resulting in a single plan with a table for each person in the family. Now that a plan is created for each family, will these plans be merged by recursion as well. The plans are broken down by the tables, so a table from each plan is merged with a table from another plan. This merge will continue until there is one plan left, containing all family members from all families.
@@ -57,7 +57,7 @@ The general idea behind the implemented algorithm for the \verb=plan= function i
 
 \subsection{Test specification}
 
-\lstinputlisting{DesignTest.rsl}
+\lstinputlisting{assignment-1/src/DesignTest.rsl}
 
 The purpose of each individual test has been added as source code comments and can be seen in the content of the \verb=DesignTest.rsl= file, which is shown above. The tests have been divided into section, corresponding to an auxiliary function, to increase the readability.
 
