@@ -2,8 +2,10 @@ NET
 scheme TIMETABLE = extend NET with
 class
   type 
-    TimeTable = ..., -- time tables
-    ...,
+    TimeTable = TramId -m-> TimeSlot-list, -- time tables
+    TimeSlot :: stopId : StopId
+    	     	arrivalTime : Time
+		departureTime : Time,
     TramId = Text -- tram names
 
     value /* generators */
