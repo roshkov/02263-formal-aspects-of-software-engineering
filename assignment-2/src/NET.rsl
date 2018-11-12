@@ -1,0 +1,50 @@
+scheme NET =
+class
+  type 
+    Net = ..., -- tram nets
+    Headway = Time, -- minimum headways
+    DrivingTime = Time, -- minimum driving times
+    Time = Nat, -- times in number of minutes
+    Capacity = Nat, -- capacities
+    StopId = Text  -- names of stops
+  value /* generators */
+    empty :  Net = ... ,  -- the empty net
+
+    -- insert a stop with a given name and capacity 
+    insertStop : StopId >< Capacity >< Net -> Net
+    ...,
+
+    -- add a connection between given stops, 
+    -- with the given minimum headway, capacity and minimum driving time
+    addConnection : StopId >< StopId  >< Headway >< Capacity >< DrivingTime >< Net -> Net
+    ... 
+  value /* observers */
+    -- check whether a stop is in a network     
+    isIn : StopId >< Net -> Bool
+    ...,
+ 
+    -- get the capacity of a stop 
+    capacity : StopId >< Net -~-> Capacity
+    ...,
+
+    -- check whether two stops are directly connected in a network        
+    areDirectlyConnected : StopId >< StopId >< Net -> Bool
+    ...,
+
+    -- get minimum headway between two connected stops        
+    minHeadway : StopId >< StopId >< Net -~-> Headway
+    ..., 
+
+   -- get the capacity for a connection between two connected stops
+    capacity : StopId >< StopId >< Net -~-> Capacity
+    ...,
+ 
+    -- get minimum driving time between two connected stops        
+    minDrivingTime : StopId >< StopId >< Net -~-> DrivingTime
+    ...
+
+ 
+  value /* predicates to check nets */
+    isWellformed : Net -> Bool
+    isWellformed(n) is ...
+end  

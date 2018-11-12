@@ -1,0 +1,35 @@
+NET
+scheme TIMETABLE = extend NET with
+class
+  type 
+    TimeTable = ..., -- time tables
+    ...,
+    TramId = Text -- tram names
+
+    value /* generators */
+      -- the an empty timetable
+      empty : TimeTable = ...,
+
+      -- add to a time table an empty plan for a new tram
+      addTram : TramId >< TimeTable -> TimeTable
+      ...,
+
+      -- add a stop with arrival time and departure time to the plan for a given tram
+      addStop : TramId >< StopId >< Time >< Time >< TimeTable -> TimeTable
+      ...
+
+  value /* observers */
+     -- check whether a tram with a given name exists in a given time table
+     isIn : TramId >< TimeTable -> Bool
+      ...,
+
+     -- you can add more observers here
+     ...
+ 
+  value /* predicates to check time tables */   
+     isWellformed : TimeTable >< Net -> Bool
+     isWellformed(t, n) is ...,
+
+     ...
+     
+end  
