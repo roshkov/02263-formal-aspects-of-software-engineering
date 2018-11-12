@@ -18,23 +18,54 @@
 
 \section{Introduction}
 
-\section{Specification of Types and Auxiliary Functions}
+\section{Formal Specification of Nets}
 
-%\lstinputlisting{}  
+\lstinputlisting{assignment-2/src/NET.rsl}
 
-\section{Requirement Specification}
 
-%\lstinputlisting{}  
 
-\section{Refined, explicit specification}
+\begin{description}
+    \item[isIn] \hfill \\ Can be used to check whether or not a stop is in a network.
+    \item[capacity - stop] \hfill \\ Can be used to find out what the capacity of a stop is.
+    \item[areDirectlyConnected] \hfill \\ Can be used to check whether or not two stops are directly connected in a network.
+    \item[minHeadway] \hfill \\ Can be used to find out what the minimum headway between two connected stops is.
+    \item[capacity - connection] \hfill \\ Can be used to find out what the capacity of a connection is.
+    \item[minDrivingTime] \hfill \\ Can be used to find out what the minimum driving time between two connected stops is.
+    \item[isWellformed] \hfill \\ 
+        \begin{itemize}
+            \item A \emph{stop} must have at least one \emph{connection} to another \emph{stop}
+            \item A \emph{stop} can not have a direct \emph{connection} to itself.
+            \item A \emph{stop} can not have more than one direct \emph{connection} to another \emph{stop}.
+            \item A \emph{connection} between two \emph{stops} consists of two tracks, one track for each direction, i.e. a tram can travel back and forth between the two \emph{stops} using the same \emph{connection}.
+            % TODO: Can we make checks that the capacity of a stop and connected is exceeded?
+        \end{itemize}
+\end{description}
 
-%\lstinputlisting{}  
+\section{Formal Specification of Time Tables}
+
+\lstinputlisting{assignment-2/src/TIMETABLE.rsl}
+
+\begin{description}
+    \item[isIn] \hfill \\ Can be used to check whether or not a tram with a given name exists in a given time table.
+    \item[isWellformed] \hfill \\ 
+        \begin{itemize}
+            \item item 1
+        \end{itemize}
+\end{description}
+
+\section{Testing the Specifications}
+
+\subsection{Nets}
+
+%\lstinputlisting{}
+
+\subsection{Time Tables}
+
+%\lstinputlisting{}
 
 \section{Testing by translation to SML}
 
 \subsection{Test specification}
-
-%\lstinputlisting{}
 
 \subsection{Results of evaluations}
 
