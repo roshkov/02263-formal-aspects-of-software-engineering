@@ -17,20 +17,20 @@ class
     Connections = StopId -m-> Connection-set
   value /* generators */
 
-    empty : Stops = , -- the empty stops
+    empty_Stops : Stops = [], -- the empty stops
 
-    empty : Connections = , -- the empty connection
+    empty_Connections : Connections = [], -- the empty connection
 
-    empty : Net = ... ,  -- the empty net
+    empty : Net = mk_Net(empty_Stops, empty_Connections)   -- the empty net
 
     -- insert a stop with a given name and capacity 
-    insertStop : StopId >< Capacity >< Net -> Net
-    ...,
-
+    --insertStop : StopId >< Capacity >< Net -> Net
+    --insertStop(stopId, capacity, net) is,
+    
     -- add a connection between given stops, 
     -- with the given minimum headway, capacity and minimum driving time
-    addConnection : StopId >< StopId  >< Headway >< Capacity >< DrivingTime >< Net -> Net
-    ... 
+    --addConnection : StopId >< StopId  >< Headway >< Capacity >< DrivingTime >< Net -> Net
+    --addConnection(s1, s2, h, c, d, n) is connections(n) !! [s1 +> mk_Connection(s1,s2,h,c,d)] !! [s2 +> mk_Connection(s2,s1,h,c,d)]
 
  -- value /* observers */
   /*
