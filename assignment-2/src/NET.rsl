@@ -21,16 +21,18 @@ class
 
     empty_Connections : Connections = [], -- the empty connection
 
-    empty : Net = mk_Net(empty_Stops, empty_Connections)   -- the empty net
+    empty : Net = mk_Net(empty_Stops, empty_Connections),   -- the empty net
 
     -- insert a stop with a given name and capacity 
-    --insertStop : StopId >< Capacity >< Net -> Net
-    --insertStop(stopId, capacity, net) is,
+    insertStop : StopId >< Capacity >< Net -> Net
+    insertStop(s, c, n) is mk_Net(stops(n) !! [s +> c], connections(n))
     
     -- add a connection between given stops, 
     -- with the given minimum headway, capacity and minimum driving time
     --addConnection : StopId >< StopId  >< Headway >< Capacity >< DrivingTime >< Net -> Net
-    --addConnection(s1, s2, h, c, d, n) is connections(n) !! [s1 +> mk_Connection(s1,s2,h,c,d)] !! [s2 +> mk_Connection(s2,s1,h,c,d)]
+    --addConnection(s1, s2, h, c, d, n) is mk_Net(stops(n),
+    --						connections(n) !! [s1 +> (connections(n)(s1) union mk_Connection(s1,s2,h,c,d))]
+    --							       !! [s2 +> mk_Connection(s2,s1,h,c,d)])
 
  -- value /* observers */
   /*
