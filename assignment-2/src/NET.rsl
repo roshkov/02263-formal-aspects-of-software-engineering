@@ -65,11 +65,11 @@ class
     -- check whether two stops are directly connected in a network        
     areDirectlyConnected : StopId >< StopId >< Net -> Bool
     areDirectlyConnected(s1, s2, n) is toStop(getConnection(s1, s2, n)) = s2 /\ toStop(getConnection(s2, s1, n)) = s1,
-/*
+
     -- get minimum headway between two connected stops        
     minHeadway : StopId >< StopId >< Net -~-> Headway
-    ..., 
-*/
+    minHeadway(s1, s2, n) is headway(getConnection(s1, s2, n)), 
+
     -- get the capacity for a connection between two connected stops
     capacity : StopId >< StopId >< Net -~-> Capacity
     capacity(s1, s2, n) is capacity(getConnection(s1, s2, n))
