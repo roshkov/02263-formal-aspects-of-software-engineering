@@ -36,7 +36,7 @@ class
 
 	/** ---- Tests for addConnection ----  **/
 
-	/*   */
+	/* Test that a connection   */
 
 	/** ---- Tests for isIn ----  **/
 
@@ -56,12 +56,26 @@ class
 	
 	/** ---- Tests for getConnection ----  **/
 
-	/*   */
+	/* Test that a connection between two stops that is in the net is returned.  */
+	[t501] getConnection(s1, s2, net)
+
+	/* Test that a connection between two stops that is in the net is returned.  */
+	[t502] getConnection(s5, s4, net)
 	
 	/** ---- Tests for areDirectlyConnected ----  **/
 
-	/*   */
+	/* Test that true is returned for two stops that are directly connected. */
+	--[t601],
 	
+	/* Test that false is returned for two stops that are not directly connected. */
+	--[t602],
+	
+	/* Test that <> is returned for two stops, where one is in the net and the other is not. */	
+	--[t603],
+	
+	/* Test that <> is returned for two stops, where both are not in the net. */
+	--[t604],
+
 	/** ---- Tests for minHeadway ----  **/
 
 	/*   */

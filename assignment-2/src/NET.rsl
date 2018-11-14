@@ -66,7 +66,8 @@ class
     getConnection : StopId >< StopId >< Net -~-> Connection
     getConnection(s1, s2, n) is hd(connections(n)(s1) \ {c | c : Connection :- fromStop(c) = s1 /\ toStop(c) = s2}),
     
-    -- check whether two stops are directly connected in a network        
+    -- check whether two stops are directly connected in a network
+    /* TODO: Should we add a precondition saying that both stops should be in the net? */
     areDirectlyConnected : StopId >< StopId >< Net -> Bool
     areDirectlyConnected(s1, s2, n) is toStop(getConnection(s1, s2, n)) = s2 /\ toStop(getConnection(s2, s1, n)) = s1,
 
