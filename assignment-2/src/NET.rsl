@@ -56,7 +56,11 @@ class
  
     -- get the capacity of a stop 
     capacity : StopId >< Net -~-> Capacity
-    capacity(s, n) is stops(n)(s)
+    capacity(s, n) is stops(n)(s),
+
+    -- get the connection between two stops
+    getConnection : StopId >< StopId >< Net -~-> Connection
+    getConnection(s1, s2, n) is hd(connections(n)(s1) \ {c | c : Connection :- fromStop(c) = s1 /\ toStop(c) = s2}),
 /*
     -- check whether two stops are directly connected in a network        
     areDirectlyConnected : StopId >< StopId >< Net -> Bool
@@ -65,11 +69,11 @@ class
     -- get minimum headway between two connected stops        
     minHeadway : StopId >< StopId >< Net -~-> Headway
     ..., 
-
+*/
     -- get the capacity for a connection between two connected stops
     capacity : StopId >< StopId >< Net -~-> Capacity
-    ...,
- 
+    capacity(s1, s2, n) is capacity(getConnection(s1, s2, n))
+ /*
     -- get minimum driving time between two connected stops        
     minDrivingTime : StopId >< StopId >< Net -~-> DrivingTime
     ...
