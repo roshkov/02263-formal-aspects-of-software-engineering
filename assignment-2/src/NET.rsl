@@ -21,7 +21,7 @@ class
 
     empty_Connections : Connections = [], -- the empty connection
 
-    empty : Net = mk_Net(empty_Stops, empty_Connections),   -- the empty net
+    empty : Net = mk_Net(empty_Stops, empty_Connections), -- the empty net
 
     -- insert a stop with a given name and capacity 
     insertStop : StopId >< Capacity >< Net -> Net
