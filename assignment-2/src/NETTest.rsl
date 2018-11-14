@@ -21,7 +21,7 @@ class
 
 	/* Net values */
 	emptyNet : Net = empty,
-	netTwoStops : insertStop(s2, 3, insertStop(s1, 2, emptyNet)),
+	netTwoStops : Net = insertStop(s2, 3,insertStop(s1, 2, emptyNet)),
 	netStops : Net = insertStop(s4, 2, insertStop(s3, 2, insertStop(s2, 3, insertStop(s1, 2, emptyNet)))),
 	net : Net = addConnection(s2, s4, 2, 2, 7, addConnection(s2, s3, 2, 3, 12, addConnection(s1, s2, 1, 1, 10, netStops)))
 	
@@ -52,12 +52,12 @@ class
 	[t401] capacity(s2, net) = 3,
 
 	/* Test that a result can not be returned for a stop that does not exists in the net. */
-	[t402] capacity(s5, net) = chaos
+	[t402] capacity(s5, net) = chaos,
 	
 	/** ---- Tests for getConnection ----  **/
 
 	/* Test that a connection between two stops that is in the net is returned.  */
-	[t501] getConnection(s1, s2, net)
+	[t501] getConnection(s1, s2, net),
 
 	/* Test that a connection between two stops that is in the net is returned.  */
 	[t502] getConnection(s5, s4, net)
