@@ -26,14 +26,16 @@
 \lstinputlisting{assignment-2/src/NET.rsl}
 
 
-
+% ---------- NEEDS TO BE CLARIFIED ----------
+% - Should we make the functions below robust, check for legal input and so on, or should it allow illegal networks to be created?
 \begin{description}
     \item[isIn] \hfill \\ Can be used to check whether or not a stop is in a network.
+    \item[getConnection] \hfill \\ Can be used to get the \emph{connection} between two stops.
     \item[capacity - stop] \hfill \\ Can be used to find out what the capacity of a stop is.
-    \item[areDirectlyConnected] \hfill \\ Can be used to check whether or not two stops are directly connected in a network.
-    \item[minHeadway] \hfill \\ Can be used to find out what the minimum headway between two connected stops is.
-    \item[capacity - connection] \hfill \\ Can be used to find out what the capacity of a connection is.
-    \item[minDrivingTime] \hfill \\ Can be used to find out what the minimum driving time between two connected stops is.
+    \item[areDirectlyConnected] \hfill \\ Can be used to check whether or not two stops are directly connected in a network, by using the \verb=getConnection=.
+    \item[minHeadway] \hfill \\ Can be used to find out what the minimum headway between two connected stops is, by using the \verb=getConnection=.
+    \item[capacity - connection] \hfill \\ Can be used to find out what the capacity of a connection is, by using the \verb=getConnection=.
+    \item[minDrivingTime] \hfill \\ Can be used to find out what the minimum driving time between two connected stops is, by using the \verb=getConnection=.
     \item[isWellformed] \hfill \\ 
         \begin{itemize}
             \item The network must contain at least two \emph{stops}.
