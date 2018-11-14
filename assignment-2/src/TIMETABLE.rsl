@@ -10,7 +10,7 @@ class
 
     value /* generators */
       -- the an empty timetable
-      empty : TimeTable = ...,
+      empty : TimeTable = [],
 
       -- add to a time table an empty plan for a new tram
       addTram : TramId >< TimeTable -> TimeTable
@@ -23,12 +23,12 @@ class
   value /* observers */
      -- check whether a tram with a given name exists in a given time table
      isIn : TramId >< TimeTable -> Bool
-      ...,
+     ...,
 
      -- you can add more observers here
      ...
  
-  value /* predicates to check time tables */   
+  value /* predicates to check time tables */
      isWellformed : TimeTable >< Net -> Bool
      isWellformed(t, n) is ...,
 
