@@ -72,12 +72,11 @@ class
 
     -- get the capacity for a connection between two connected stops
     capacity : StopId >< StopId >< Net -~-> Capacity
-    capacity(s1, s2, n) is capacity(getConnection(s1, s2, n))
- /*
+    capacity(s1, s2, n) is capacity(getConnection(s1, s2, n)),
+ 
     -- get minimum driving time between two connected stops        
     minDrivingTime : StopId >< StopId >< Net -~-> DrivingTime
-    ...
-   */
+    minDrivingTime(s1, s2, net) is minDrivingTime(getConnection(s1, s2, net))
  
   --value /* predicates to check nets */
   /*
