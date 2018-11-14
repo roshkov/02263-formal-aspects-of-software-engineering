@@ -33,11 +33,14 @@
     \item[minDrivingTime] \hfill \\ Can be used to find out what the minimum driving time between two connected stops is.
     \item[isWellformed] \hfill \\ 
         \begin{itemize}
-            \item A \emph{stop} must have at least one \emph{connection} to another \emph{stop}
-            \item A \emph{stop} can not have a direct \emph{connection} to itself.
+            \item The network must contain at least two \emph{stops}.
+            \item A \emph{stop} must have at least one \emph{connection} to another \emph{stop}.
+            \item A \emph{stop} can not have a direct \emph{connection} to itself, by using the \verb=areDirectlyConnected=.
             \item A \emph{stop} can not have more than one direct \emph{connection} to another \emph{stop}.
             \item A \emph{connection} between two \emph{stops} consists of two tracks, one track for each direction, i.e. a tram can travel back and forth between the two \emph{stops} using the same \emph{connection}.
+            \item Any \emph{stop} should have a direct or indirect connection to every other \emph{stop} in the network, i.e. a tram can travel to any \emph{stop} from any \emph{stop}.
             % TODO: Can we make checks that the capacity of a stop and connected is exceeded?
+            % TODO: Should we make a check to see if all stops are in the network? We don't have a structure for all the StopId created, as we did in the previous assignment, where we could check that all persons from all families were part of the plan.
         \end{itemize}
 \end{description}
 
