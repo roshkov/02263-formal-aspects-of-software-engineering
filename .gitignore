@@ -491,5 +491,6 @@ $RECYCLE.BIN/
 
 # RSL and SML
 _.sml
-*.sml
+*.sml*
+.rsl.el*
 
