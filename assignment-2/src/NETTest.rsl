@@ -37,6 +37,7 @@ class
 	/** ---- Tests for addConnection ----  **/
 
 	/* Test that a connection   */
+     -- [t202],
 
 	/** ---- Tests for isIn ----  **/
 
@@ -45,6 +46,9 @@ class
 
 	/* Test that false is returned for a Stop that does not exists in the Net  */
 	[t302] isIn(s5, net) = false,
+
+        /* Test that false is returned for any Stop in an Empty Net*/
+	[t303] isIn(s1, emptyNet) = false,
 
 	/** ---- Tests for capacity (Stop) ----  **/
 
@@ -60,33 +64,61 @@ class
 	[t501] getConnection(s1, s2, net),
 
 	/* Test that a connection between two stops that is in the net is returned.  */
-	[t502] getConnection(s5, s4, net)
+	[t502] getConnection(s5, s4, net),
 	
 	/** ---- Tests for areDirectlyConnected ----  **/
 
-	/* Test that true is returned for two stops that are directly connected. */
-	--[t601],
+	/* Test that true is returned for two stops that are directly onnected. */
+        [t601] areDirectlyConnected(s1, s2, net) = true,
 	
 	/* Test that false is returned for two stops that are not directly connected. */
-	--[t602],
+	[t602] areDirectlyConnected(s1, s3, net) = false,
 	
-	/* Test that <> is returned for two stops, where one is in the net and the other is not. */	
-	--[t603],
+	/* Test that <>/false? is returned for two stops, where one is in the net and the other is not. */	
+	[t603] areDirectlyConnected(s4, s5, net) = false,
 	
-	/* Test that <> is returned for two stops, where both are not in the net. */
-	--[t604],
+	/* Test that <>/false? is returned for two stops, where both are not in the net. */
+	[t604] areDirectlyConnected(s5, s6, net) = false,
 
 	/** ---- Tests for minHeadway ----  **/
 
-	/*   */
+        /* Test that the correct Headway between two stops is returned. */
+        [t701] minHeadway(s1, s2, net) = 1,
+
+        /* Test that a result can not be returned for two stops, where
+	one is in the net and the other is not. */
+        [t702] minHeadway(s4, s5, net) = chaos,
+
+        /* Test that a result can not be returned for two stops, where
+	both are not in the net. */
+        [t703] minHeadway(s5, s6, net) = chaos,
+
 	
 	/** ---- Tests for capacity (connection) ----  **/
 
-	/*   */
+	/* Test that the correct capacity between two stops is returned. */
+        [t801] capacity(s1, s2, net) = 1,
+
+        /* Test that a result can not be returned for two stops, where
+	one is in the net and the other is not. */
+        [t802] capacity(s4, s5, net) = chaos,
+
+        /* Test that a result can not be returned for two stops, where
+	both are not in the net. */
+        [t803] capacity(s5, s6, net) = chaos,
 	
 	/** ---- Tests for minDrivingTime ----  **/
 
-	/*   */
+	/* Test that the correct capacity between two stops is returned. */
+        [t901] minDrivingTime(s1, s2, net) = 10,
+
+        /* Test that a result can not be returned for two stops, where
+	one is in the net and the other is not. */
+        [t902] minDrivingTime(s4, s5, net) = chaos,
+
+        /* Test that a result can not be returned for two stops, where
+	both are not in the net. */
+        [t903] minDrivingTime(s5, s6, net) = chaos
 	
 	/** ---- Tests for isWellformed ----  **/
 
