@@ -62,7 +62,8 @@ class
     capacity(s, n) is stops(n)(s),
 
     -- get the connection between two stops
-    /* TODO: Should we add a precondition for making sure the stops are in the net? It is a partial function, so I guess not. */
+    /* TODO: Should we add a precondition making sure the stops are in the net? It is a partial function, so I guess not. 
+       TODO: Should we add a precondition making sure that s1 and s2 is not the same? */
     getConnection : StopId >< StopId >< Net -~-> Connection
     getConnection(s1, s2, n) is hd(connections(n)(s1) \ {c | c : Connection :- fromStop(c) = s1 /\ toStop(c) = s2}),
     
