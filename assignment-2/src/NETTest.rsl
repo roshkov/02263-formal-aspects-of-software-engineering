@@ -70,13 +70,11 @@ class
 	[t101] insertStop(s1, 2, emptyNet),
 
 	/* That that a stop that is already in a net is overwritten when inserted again. */
-	[t102] insertStop(s1, 2, insertStop(s1, 20, emptyNet))
+	[t102] insertStop(s1, 2, insertStop(s1, 20, emptyNet)),
 
 	/** ---- Tests for addConnection ----  **/
 
 	/*   */
-	[t201] addConnection(
-
 
 	/** ---- Tests for isIn ----  **/
 
@@ -85,10 +83,14 @@ class
 
 	/* Test that false is returned for a Stop that does not exists in the Net  */
 	[t302] isIn(s5, net) = false,
-	
+
 	/** ---- Tests for capacity (Stop) ----  **/
 
-	/*   */
+	/* Test that the correct capacity of a stop is returned. */
+	[t401] capacity(s2, net) = 3,
+
+	/* Test that a result can not be returned for a stop that does not exists in the net. */
+	[t402] capacity(s5, net) = chaos
 	
 	/** ---- Tests for getConnection ----  **/
 
