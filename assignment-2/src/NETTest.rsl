@@ -21,6 +21,7 @@ class
 
 	/* Net values */
 	emptyNet : Net = empty,
+	netTwoStops : insertStop(s2, 3, insertStop(s1, 2, emptyNet)),
 	netStops : Net = insertStop(s4, 2, insertStop(s3, 2, insertStop(s2, 3, insertStop(s1, 2, emptyNet)))),
 	net : Net = addConnection(s2, s4, 2, 2, 7, addConnection(s2, s3, 2, 3, 12, addConnection(s1, s2, 1, 1, 10, netStops)))
 	/*
@@ -65,8 +66,53 @@ class
   test_case
 	/** ---- Tests for insertStop ----  **/
 
-	/*  */
-	[t101] insertStop(s1, 2, emptyNet)
+	/* Test that a stop is inserted correctly in a net. */
+	[t101] insertStop(s1, 2, emptyNet),
+
+	/* That that a stop that is already in a net is overwritten when inserted again. */
+	[t102] insertStop(s1, 2, insertStop(s1, 20, emptyNet))
+
+	/** ---- Tests for addConnection ----  **/
+
+	/*   */
+	[t201] addConnection(
+
+
+	/** ---- Tests for isIn ----  **/
+
+	/* Test that true is returned for a Stop that exists in the Net  */
+	[t301] isIn(s1, net) = true,
+
+	/* Test that false is returned for a Stop that does not exists in the Net  */
+	[t302] isIn(s5, net) = false,
+	
+	/** ---- Tests for capacity (Stop) ----  **/
+
+	/*   */
+	
+	/** ---- Tests for getConnection ----  **/
+
+	/*   */
+	
+	/** ---- Tests for areDirectlyConnected ----  **/
+
+	/*   */
+	
+	/** ---- Tests for minHeadway ----  **/
+
+	/*   */
+	
+	/** ---- Tests for capacity (connection) ----  **/
+
+	/*   */
+	
+	/** ---- Tests for minDrivingTime ----  **/
+
+	/*   */
+	
+	/** ---- Tests for isWellformed ----  **/
+
+	/*   */
 
 	/* Test that false is returned when not every person from Families 
 	have been assigned to a table. */
