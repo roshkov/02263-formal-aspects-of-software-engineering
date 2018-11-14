@@ -25,14 +25,27 @@ class
 
     -- insert a stop with a given name and capacity 
     insertStop : StopId >< Capacity >< Net -> Net
-    insertStop(s, c, n) is mk_Net(stops(n) !! [s +> c], connections(n))
+    insertStop(s, c, n) is mk_Net(stops(n) !! [s +> c], connections(n)),
     
     -- add a connection between given stops, 
     -- with the given minimum headway, capacity and minimum driving time
-    --addConnection : StopId >< StopId  >< Headway >< Capacity >< DrivingTime >< Net -> Net
-    --addConnection(s1, s2, h, c, d, n) is mk_Net(stops(n),
-    --						connections(n) !! [s1 +> (connections(n)(s1) union mk_Connection(s1,s2,h,c,d))]
-    --							       !! [s2 +> mk_Connection(s2,s1,h,c,d)])
+    addConnection : StopId >< StopId  >< Headway >< Capacity >< DrivingTime >< Net -> Net
+    addConnection(s1, s2, h, c, d, n) is if s1 isin dom(connections(n)) /\ s2 isin dom(connections(n)) then
+				      	    mk_Net(stops(n), connections(n) !!
+					    		     [s1 +> (connections(n)(s1) union {mk_Connection(s1,s2,h,c,d)})] !!
+							     [s2 +> (connections(n)(s2) union {mk_Connection(s2,s1,h,c,d)})])
+				      	 elsif s1 isin dom(connections(n)) /\ s2 ~isin dom(connections(n)) then
+					    mk_Net(stops(n), connections(n) !!
+					    		     [s1 +> (connections(n)(s1) union {mk_Connection(s1,s2,h,c,d)})] !!
+							     [s2 +> {mk_Connection(s2,s1,h,c,d)}])
+					 elsif s1 ~isin dom(connections(n)) /\ s2 isin dom(connections(n)) then
+					    mk_Net(stops(n), connections(n) !!
+					    		     [s1 +> {mk_Connection(s1,s2,h,c,d)}] !!
+							     [s2 +> (connections(n)(s2) union {mk_Connection(s2,s1,h,c,d)})])
+					 else
+					    mk_Net(stops(n), connections(n) !!
+					    		     [s1 +> {mk_Connection(s1,s2,h,c,d)}] !!
+							     [s2 +> {mk_Connection(s2,s1,h,c,d)}]) end
 
  -- value /* observers */
   /*
