@@ -52,15 +52,15 @@ class
 
     -- check whether a stop is in a network     
     isIn : StopId >< Net -> Bool
-    isIn(s, n) is s isin dom(stops(n))
- /*
+    isIn(s, n) is s isin dom(stops(n)),
+ 
     -- get the capacity of a stop 
     capacity : StopId >< Net -~-> Capacity
-    ...,
-
+    capacity(s, n) is stops(n)(s)
+/*
     -- check whether two stops are directly connected in a network        
     areDirectlyConnected : StopId >< StopId >< Net -> Bool
-    ...,
+    ,
 
     -- get minimum headway between two connected stops        
     minHeadway : StopId >< StopId >< Net -~-> Headway
