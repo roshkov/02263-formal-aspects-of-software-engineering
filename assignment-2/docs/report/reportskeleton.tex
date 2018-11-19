@@ -25,9 +25,6 @@
 
 \lstinputlisting{assignment-2/src/NET.rsl}
 
-
-% ---------- NEEDS TO BE CLARIFIED ----------
-% - Should we make the functions below robust, check for legal input and so on, or should it allow illegal networks to be created?
 \begin{description}
     \item[isIn] \hfill \\ Can be used to check whether or not a stop is in a network.
     \item[getConnection] \hfill \\ Can be used to get the \emph{connection} between two stops.
@@ -36,16 +33,21 @@
     \item[minHeadway] \hfill \\ Can be used to find out what the minimum headway between two connected stops is, by using the \verb=getConnection=.
     \item[capacity - connection] \hfill \\ Can be used to find out what the capacity of a connection is, by using the \verb=getConnection=.
     \item[minDrivingTime] \hfill \\ Can be used to find out what the minimum driving time between two connected stops is, by using the \verb=getConnection=.
-    \item[isWellformed] \hfill \\ 
+    \item[noDirectSelfConnections] \hfill \\ Can be used to check that any \emph{stop} in the \emph{net} does not have a direct connection to itself, by using \verb=areDirectlyConnected=.
+    \item[hasOneDirectConnection] \hfill \\ Can be used to check if any \emph{stop} in the \emph{net} only has one direct connection to another \emph{stop}, by using \verb=Connections=.
+    \item[hasBiDirectConnection] \hfill \\ Can be used to check that all direct connections between two \emph{stops} in the \emph{net} are connecting the stops in both directions, by using \verb=areDirectlyConnected=.
+    \item[areConnected] Can be used to check if two stops are connected.
+    \item[isNetConnected] Can be used to check that the \emph{net} is connected, i.e. there is a direct or indirect connection from any stop to all other stops, by using \verb=areConnected=.
+    \item[isWellformed] \hfill
         \begin{itemize}
             \item The network must contain at least two \emph{stops}.
-            \item A \emph{stop} must have at least one \emph{connection} to another \emph{stop}.
-            \item A \emph{stop} can not have a direct \emph{connection} to itself, by using the \verb=areDirectlyConnected=.
-            \item A \emph{stop} can not have more than one direct \emph{connection} to another \emph{stop}.
-            \item A \emph{connection} between two \emph{stops} consists of two tracks, one track for each direction, i.e. a tram can travel back and forth between the two \emph{stops} using the same \emph{connection}.
-            \item Any \emph{stop} should have a direct or indirect connection to every other \emph{stop} in the network, i.e. a tram can travel to any \emph{stop} from any \emph{stop}.
-            % TODO: Can we make checks that the capacity of a stop and connected is exceeded?
-            % TODO: Should we make a check to see if all stops are in the network? We don't have a structure for all the StopId created, as we did in the previous assignment, where we could check that all persons from all families were part of the plan.
+            %\item A \emph{stop} must have at least one direct \emph{connection} to another \emph{stop}, by using \verb=Connections=.
+            \item A \emph{stop} can not have a direct \emph{connection} to itself, by using the \verb=noDirectSelfConnections=.
+            \item A \emph{stop} can not have more than one direct \emph{connection} to the same \emph{stop}, \verb=hasOneDirectConnection=.
+            \item A \emph{connection} between two \emph{stops} consists of two tracks, one track for each direction, i.e. a tram can travel back and forth between the two \emph{stops} using the same \emph{connection}, by using the \verb=hasBiDirectConnection=.
+            \item Any \emph{stop} must have a direct or indirect connection to every other \emph{stop} in the \emph{net}, i.e. a tram can travel to any \emph{stop} from any \emph{stop}, by using \verb=isNetConnected=.
+            % TODO: Make sure the requirement below is correctly removed. The Net is not aware of the Stops outside of the net, so would it be possible to check if they are part of the net?
+            %\item All \emph{stops} must be in the \emph{net}, by using \verb=areAllStopsInNet=.
         \end{itemize}
 \end{description}
 
