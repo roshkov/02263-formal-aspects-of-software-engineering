@@ -108,26 +108,39 @@ class
     minDrivingTime : StopId >< StopId >< Net -~-> DrivingTime
     minDrivingTime(s1, s2, net) is minDrivingTime(getConnection(s1, s2, net)),
 
-    areConnected : StopId >< StopId >< Connection-set >< Net -> Bool
-    areConnected(s1, s2, cs, n) is let
+    areConnected : StopId >< Connection-set >< Connection-set >< Net -> Bool
+    areConnected(des, cs, v, n) is let
+					/* Extract a connection from the set. */
 					c = hd(cs),
-					cs' = cs \ {c}
+					/* Remove the extracted connection from the set. */
+					cs' = cs \ {c},
+					/* Add connection to visited connections. */
+					v' = v union {c}
 				   in
-					if toStop(c) = s2 then /* There is a connection between s1 and s2 */
+					/* There is a connection between s1 and s2. */
+					if toStop(c) = des then
 					   true
 					else
-					   false
+					   let
+						/* Add conections of new candidates and removed already visited connections. */
+						cs'' = (cs' union connections(n)(toStop(c))) \ v'
+					   in
+						/* If there are more candidates left, recurse, else done. */
+						if card cs'' >= 1 then
+							areConnected(des, cs'', v', n)
+						else
+							false
+						end
+					   end
 					end
 				   end
-    		     	     	      
-
 
   value /* predicates to check nets */
 
     isNetConnected : Net -> Bool
     isNetConnected(n) is (all s : StopId :- s isin dom(stops(n)) =>
     		      	      (all s' : StopId :- s' isin dom(stops(n)) /\ s ~= s' =>
-    		      	      	   areConnected(s, s', connections(n)(s), n)
+    		      	      	   areConnected(s', connections(n)(s), {}, n)
     		      	      )
     		      	 ),
 
