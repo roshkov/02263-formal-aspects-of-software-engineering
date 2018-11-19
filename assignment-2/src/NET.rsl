@@ -60,17 +60,38 @@ class
     capacity : StopId >< Net -~-> Capacity
     capacity(s, n) is stops(n)(s),
 
+    filterConnections : Connection-set >< StopId -> Connection
+    filterConnections(cs, s) is if card(cs) = 1 /\ toStop(hd(cs)) = s then
+    			     	   hd(cs)
+    			     	else
+				   let
+					c = hd(cs),
+				   	cs' = cs \ {c}
+				   in
+					if toStop(c) = s then
+					   c
+					else
+					   filterConnections(cs', s)
+					end
+				   end
+				end,
+
     -- get the connection between two stops
     /* Break down set by recursion */
     /* TODO: Should we add a precondition making sure the stops are in the net? It is a partial function, so I guess not. 
        TODO: Should we add a precondition making sure that s1 and s2 is not the same? */
     getConnection : StopId >< StopId >< Net -~-> Connection
-    getConnection(s1, s2, n) is hd(connections(n)(s1) \ {c | c : Connection :- fromStop(c) = s1 /\ toStop(c) = s2}),
+    getConnection(s1, s2, n) is filterConnections(connections(n)(s1), s2),
+
+    hasDirectConnection : StopId >< StopId >< Net -> Bool
+    hasDirectConnection(s1, s2, n) is (exists c : Connection :- c isin connections(n)(s1) =>
+    			     	       	      fromStop(c) = s1 /\ toStop(c) = s2
+    			     	      ),
     
     -- check whether two stops are directly connected in a network
     /* TODO: Should we add a precondition saying that both stops should be in the net? */
     areDirectlyConnected : StopId >< StopId >< Net -> Bool
-    areDirectlyConnected(s1, s2, n) is toStop(getConnection(s1, s2, n)) = s2 /\ toStop(getConnection(s2, s1, n)) = s1,
+    areDirectlyConnected(s1, s2, n) is hasDirectConnection(s1, s2, n) /\ hasDirectConnection(s2, s1, n),
 
     -- get minimum headway between two connected stops
     /* TODO: Should we add a precondition for making sure the stops and connection are in the net? It is a partial function, so I guess not. */
@@ -85,10 +106,21 @@ class
     -- get minimum driving time between two connected stops
     /* TODO: Should we add a precondition for making sure the stops and connection are in the net? It is a partial function, so I guess not. */
     minDrivingTime : StopId >< StopId >< Net -~-> DrivingTime
-    minDrivingTime(s1, s2, net) is minDrivingTime(getConnection(s1, s2, net)),
+    minDrivingTime(s1, s2, net) is minDrivingTime(getConnection(s1, s2, net))
+
+    areConnected : StopId >< StopId >< Net -> Bool
+    areConnected(s1, s2, n) is 
 
 
-  --value /* predicates to check nets */
+  value /* predicates to check nets */
+
+    isNetConnected : Net -> Bool
+    isNetConnected(n) is (all s : StopId :- s isin dom(stops(n)) =>
+    		      	      (all s' : StopId :- s' isin dom(stops(n)) /\ s ~= s' =>
+    		      	      	   areConnected(s, s', n)
+    		      	      )
+    		      	 ),
+
     noDirectSelfConnections : Net -> Bool
     noDirectSelfConnections(n) is (all s : StopId :- s isin dom(stops(n)) =>
     			       	       ~areDirectlyConnected(s,s,n)
@@ -104,10 +136,20 @@ class
 				      )
 				  ),
 
+    hasBiDirectConnection : Net -> Bool
+    hasBiDirectConnection(n) is (all cs : Connection-set :- cs isin rng(connections(n)) /\ card(cs) ~= 0 =>
+    			     	     (all c : Connection :- c isin cs =>
+				     	  areDirectlyConnected(fromStop(c), toStop(c), n) /\
+				     	  areDirectlyConnected(toStop(c), fromStop(c), n)
+				     )
+    			     	),
+
 
     isWellformed : Net -> Bool
     isWellformed(n) is card(dom(stops(n))) >= 2 /\
+    		       isNetConnected(n) /\
     		       noDirectSelfConnections(n) /\
-		       hasOneDirectConnection(n)
+		       hasOneDirectConnection(n) /\
+		       hasBiDirectConnection(n)
 
 end  
