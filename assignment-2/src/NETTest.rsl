@@ -111,13 +111,9 @@ class
 	[t902] minDrivingTime(s4, s5, net) = chaos,
 
 	/* Test that a result can not be returned for two stops, where both are not in the net. */
-	[t903] minDrivingTime(s5, s6, net) = chaos,
+	[t903] minDrivingTime(s5, s6, net) = chaos
 
 	/** ---- Tests for isWellformed ----  **/
-	
-	/* sadas*/
-
-	[test_mario] true = true
 
 	/*   */
 
