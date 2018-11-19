@@ -109,7 +109,8 @@ class
     minDrivingTime(s1, s2, net) is minDrivingTime(getConnection(s1, s2, net))
 
     areConnected : StopId >< StopId >< Net -> Bool
-    areConnected(s1, s2, n) is 
+    areConnected(s1, s2, n) is let
+				cs = connections(n)(s1)
 
 
   value /* predicates to check nets */
@@ -117,7 +118,7 @@ class
     isNetConnected : Net -> Bool
     isNetConnected(n) is (all s : StopId :- s isin dom(stops(n)) =>
     		      	      (all s' : StopId :- s' isin dom(stops(n)) /\ s ~= s' =>
-    		      	      	   areConnected(s, s', n)
+    		      	      	   areConnected(s, s', connections(n)(s1), n)
     		      	      )
     		      	 ),
 
