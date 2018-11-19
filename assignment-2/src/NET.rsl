@@ -56,10 +56,11 @@ class
     isIn(s, n) is s isin dom(stops(n)),
  
     -- get the capacity of a stop
-    /* TODO: Should we add a precondition for making sure the stop is in the net? It is a partial function, so I guess not. */
     capacity : StopId >< Net -~-> Capacity
-    capacity(s, n) is stops(n)(s),
+    capacity(s, n) is stops(n)(s)
+    pre isIn(s,n),
 
+    -- filter a set of connections to find a single connection with toStop being s.
     filterConnections : Connection-set >< StopId -> Connection
     filterConnections(cs, s) is if card(cs) = 1 /\ toStop(hd(cs)) = s then
     			     	   hd(cs)
@@ -74,39 +75,40 @@ class
 					   filterConnections(cs', s)
 					end
 				   end
-				end,
+				end
+    pre card(cs) ~= 0,
 
     -- get the connection between two stops
-    /* Break down set by recursion */
-    /* TODO: Should we add a precondition making sure the stops are in the net? It is a partial function, so I guess not. 
-       TODO: Should we add a precondition making sure that s1 and s2 is not the same? */
     getConnection : StopId >< StopId >< Net -~-> Connection
-    getConnection(s1, s2, n) is filterConnections(connections(n)(s1), s2),
+    getConnection(s1, s2, n) is filterConnections(connections(n)(s1), s2)
+    pre s1 ~= s2 /\ isIn(s1,n) /\ isIn(s2,n),
 
+    -- check whether two stops are directly connected in one direction in a network.
     hasDirectConnection : StopId >< StopId >< Net -> Bool
     hasDirectConnection(s1, s2, n) is (exists c : Connection :- c isin connections(n)(s1) =>
     			     	       	      fromStop(c) = s1 /\ toStop(c) = s2
-    			     	      ),
+    			     	      )
+    pre s1 ~= s2 /\ isIn(s1,n) /\ isIn(s2,n),
     
-    -- check whether two stops are directly connected in a network
-    /* TODO: Should we add a precondition saying that both stops should be in the net? */
+    -- check whether two stops are directly connected in both directions in a network.
     areDirectlyConnected : StopId >< StopId >< Net -> Bool
-    areDirectlyConnected(s1, s2, n) is hasDirectConnection(s1, s2, n) /\ hasDirectConnection(s2, s1, n),
+    areDirectlyConnected(s1, s2, n) is hasDirectConnection(s1, s2, n) /\ hasDirectConnection(s2, s1, n)
+    pre s1 ~= s2 /\ isIn(s1,n) /\ isIn(s2,n),
 
     -- get minimum headway between two connected stops
-    /* TODO: Should we add a precondition for making sure the stops and connection are in the net? It is a partial function, so I guess not. */
     minHeadway : StopId >< StopId >< Net -~-> Headway
-    minHeadway(s1, s2, n) is headway(getConnection(s1, s2, n)),
+    minHeadway(s1, s2, n) is headway(getConnection(s1, s2, n))
+    pre s1 ~= s2 /\ isIn(s1,n) /\ isIn(s2,n),
 
     -- get the capacity for a connection between two connected stops
-    /* TODO: Should we add a precondition for making sure the stops and connection are in the net? It is a partial function, so I guess not. */
     capacity : StopId >< StopId >< Net -~-> Capacity
-    capacity(s1, s2, n) is capacity(getConnection(s1, s2, n)),
+    capacity(s1, s2, n) is capacity(getConnection(s1, s2, n))
+    pre s1 ~= s2 /\ isIn(s1,n) /\ isIn(s2,n),
  
     -- get minimum driving time between two connected stops
-    /* TODO: Should we add a precondition for making sure the stops and connection are in the net? It is a partial function, so I guess not. */
     minDrivingTime : StopId >< StopId >< Net -~-> DrivingTime
-    minDrivingTime(s1, s2, net) is minDrivingTime(getConnection(s1, s2, net)),
+    minDrivingTime(s1, s2, net) is minDrivingTime(getConnection(s1, s2, net))
+    pre s1 ~= s2 /\ isIn(s1,n) /\ isIn(s2,n),
 
     areConnected : StopId >< Connection-set >< Connection-set >< Net -> Bool
     areConnected(des, cs, v, n) is let
