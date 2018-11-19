@@ -30,6 +30,7 @@ class
     
     -- add a connection between given stops, 
     -- with the given minimum headway, capacity and minimum driving time
+    /* TODO: Should we add a precondition, to make sure that the two stopIds are in the stops map? Right now we can add a connection between two stops that doesn't exists. */
     addConnection : StopId >< StopId  >< Headway >< Capacity >< DrivingTime >< Net -> Net
     addConnection(s1, s2, h, c, d, n) is
     		      if s1 isin dom(connections(n)) /\ s2 isin dom(connections(n)) then
@@ -48,8 +49,6 @@ class
 			 mk_Net(stops(n), connections(n) !!
 					  [s1 +> {mk_Connection(s1,s2,h,c,d)}] !!
 					  [s2 +> {mk_Connection(s2,s1,h,c,d)}]) end
-    pre isIn(s1, n) /\ isIn(s2, n)
-
 
   value /* observers */
 
