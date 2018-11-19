@@ -106,11 +106,20 @@ class
     -- get minimum driving time between two connected stops
     /* TODO: Should we add a precondition for making sure the stops and connection are in the net? It is a partial function, so I guess not. */
     minDrivingTime : StopId >< StopId >< Net -~-> DrivingTime
-    minDrivingTime(s1, s2, net) is minDrivingTime(getConnection(s1, s2, net))
+    minDrivingTime(s1, s2, net) is minDrivingTime(getConnection(s1, s2, net)),
 
-    areConnected : StopId >< StopId >< Net -> Bool
-    areConnected(s1, s2, n) is let
-				cs = connections(n)(s1)
+    areConnected : StopId >< StopId >< Connection-set >< Net -> Bool
+    areConnected(s1, s2, cs, n) is let
+					c = hd(cs),
+					cs' = cs \ {c}
+				   in
+					if toStop(c) = s2 then /* There is a connection between s1 and s2 */
+					   true
+					else
+					   false
+					end
+				   end
+    		     	     	      
 
 
   value /* predicates to check nets */
@@ -118,7 +127,7 @@ class
     isNetConnected : Net -> Bool
     isNetConnected(n) is (all s : StopId :- s isin dom(stops(n)) =>
     		      	      (all s' : StopId :- s' isin dom(stops(n)) /\ s ~= s' =>
-    		      	      	   areConnected(s, s', connections(n)(s1), n)
+    		      	      	   areConnected(s, s', connections(n)(s), n)
     		      	      )
     		      	 ),
 
