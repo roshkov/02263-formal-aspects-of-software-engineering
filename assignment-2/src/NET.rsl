@@ -15,6 +15,7 @@ class
 		  capacity : Capacity
 		  minDrivingTime : DrivingTime,
     Connections = StopId -m-> Connection-set
+    
   value /* generators */
 
     empty_Stops : Stops = [], -- the empty stops
@@ -24,13 +25,11 @@ class
     empty : Net = mk_Net(empty_Stops, empty_Connections), -- the empty net
 
     -- insert a stop with a given name and capacity
-    /* TODO: Should a stop be overwritten if a new stop with the same ID is inserted? */
     insertStop : StopId >< Capacity >< Net -> Net
     insertStop(s, c, n) is mk_Net(stops(n) !! [s +> c], connections(n)),
     
     -- add a connection between given stops, 
     -- with the given minimum headway, capacity and minimum driving time
-    /* TODO: Should we add a precondition, to make sure that the two stopIds are in the stops map? Right now we can add a connection between two stops that doesn't exists. */
     addConnection : StopId >< StopId  >< Headway >< Capacity >< DrivingTime >< Net -> Net
     addConnection(s1, s2, h, c, d, n) is
     		      if s1 isin dom(connections(n)) /\ s2 isin dom(connections(n)) then
@@ -62,6 +61,7 @@ class
     capacity(s, n) is stops(n)(s),
 
     -- get the connection between two stops
+    /* Break down set by recursion */
     /* TODO: Should we add a precondition making sure the stops are in the net? It is a partial function, so I guess not. 
        TODO: Should we add a precondition making sure that s1 and s2 is not the same? */
     getConnection : StopId >< StopId >< Net -~-> Connection
@@ -75,7 +75,7 @@ class
     -- get minimum headway between two connected stops
     /* TODO: Should we add a precondition for making sure the stops and connection are in the net? It is a partial function, so I guess not. */
     minHeadway : StopId >< StopId >< Net -~-> Headway
-    minHeadway(s1, s2, n) is headway(getConnection(s1, s2, n)), 
+    minHeadway(s1, s2, n) is headway(getConnection(s1, s2, n)),
 
     -- get the capacity for a connection between two connected stops
     /* TODO: Should we add a precondition for making sure the stops and connection are in the net? It is a partial function, so I guess not. */
@@ -85,11 +85,29 @@ class
     -- get minimum driving time between two connected stops
     /* TODO: Should we add a precondition for making sure the stops and connection are in the net? It is a partial function, so I guess not. */
     minDrivingTime : StopId >< StopId >< Net -~-> DrivingTime
-    minDrivingTime(s1, s2, net) is minDrivingTime(getConnection(s1, s2, net))
- 
+    minDrivingTime(s1, s2, net) is minDrivingTime(getConnection(s1, s2, net)),
+
+
   --value /* predicates to check nets */
-  /*
+    noDirectSelfConnections : Net -> Bool
+    noDirectSelfConnections(n) is (all s : StopId :- s isin dom(stops(n)) =>
+    			       	       ~areDirectlyConnected(s,s,n)
+				  ),
+
+    hasOneDirectConnection : Net -> Bool
+    hasOneDirectConnection(n) is (all cs : Connection-set :- cs isin rng(connections(n)) /\ card(cs) ~= 0 =>
+    			      	      card(cs) = 1 \/
+    			      	      (all c : Connection :- c isin cs =>
+				     	   (all c' : Connection :- c' isin cs /\ c ~= c' => 
+    			      	   	     	fromStop(c) = fromStop(c') /\ toStop(c) ~= toStop(c')
+					   )
+				      )
+				  ),
+
+
     isWellformed : Net -> Bool
-    isWellformed(n) is ...
-  */
+    isWellformed(n) is card(dom(stops(n))) >= 2 /\
+    		       noDirectSelfConnections(n) /\
+		       hasOneDirectConnection(n)
+
 end  
