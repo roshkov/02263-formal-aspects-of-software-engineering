@@ -39,26 +39,25 @@ This document contains a solution to the problem of representing tram nets and t
         \end{itemize}
 \end{description}
 
-\noindent In the list below one will find a description of all the functions.\\
+\noindent In the list below one will find a description of all the functions. If one of the functions utilised the functionality of another, it will be stated in the end of the description. \\
 
 \begin{description}
     \item[hasCorrectSize] \hfill \\ Can be used to check whether or not a \emph{net} has a correct size, i.e. the number of \emph{stops} in the \emph{net}.
-    \item[isNetConnected] Can be used to check that the \emph{net} is connected, i.e. there is a direct or indirect connection from any stop to all other stops, by using \verb=areConnected=.
-    \item[noDirectSelfConnections] \hfill \\ Can be used to check that any \emph{stop} in the \emph{net} does not have a direct connection to itself, by using \verb=areDirectlyConnected=.
-    \item[hasOneDirectConnection] \hfill \\ Can be used to check if any \emph{stop} in the \emph{net} only has one direct connection to another \emph{stop}, by using \verb=Connections=.
-    \item[hasBiDirectConnection] \hfill \\ Can be used to check that all direct connections between two \emph{stops} in the \emph{net} are connecting the stops in both directions, by using \verb=areDirectlyConnected=.
-    \item[isNetConnected] Can be used to check that the \emph{net} is connected, i.e. there is a direct or indirect connection from any stop to all other stops, by using \verb=areConnected=.
+    \item[isNetConnected] Can be used to check that the \emph{net} is connected, i.e. there is a direct or indirect \emph{connection} from any \emph{stop} to all other \emph{stops}. Function: \verb=areConnected=.
+    \item[noDirectSelfConnections] \hfill \\ Can be used to check that any \emph{stop} in the \emph{net} does not have a direct \emph{connection} to itself. Function: \verb=areDirectlyConnected=.
+    \item[hasOneDirectConnection] \hfill \\ Can be used to check if any \emph{stop} in the \emph{net} only has one direct \emph{connection} to another \emph{stop}. Function:  \verb=Connections=.
+    \item[hasBiDirectConnection] \hfill \\ Can be used to check that all direct \emph{connections} between two \emph{stops} in the \emph{net} are connecting the \emph{stops} in both directions. Function: \verb=areDirectlyConnected=.
     \item[isIn] \hfill \\ Can be used to check whether or not a \emph{stop} is in a \emph{net}.
-    \item[capacity - stop] \hfill \\ Can be used to find out what the \emph{capacity} of a \emph{stop} is.
-    \item[areDirectlyConnected] \hfill \\ Can be used to check whether or not two \emph{stops} are directly connected in a \emph{net}, by using the \verb=hasDirectConnection=.
-    \item[minHeadway] \hfill \\ Can be used to find out what the minimum \emph{headway} between two connected \emph{stops} is, by using the \verb=getConnection=.
-    \item[capacity - connection] \hfill \\ Can be used to find out what the capacity of a connection is, by using the \verb=getConnection=.
-    \item[minDrivingTime] \hfill \\ Can be used to find out what the minimum driving time between two connected \emph{stops} is, by using the \verb=getConnection=.
+    \item[capacity - stop] \hfill \\ Can be used to find out what the capacity of a \emph{stop} is.
+    \item[areDirectlyConnected] \hfill \\ Can be used to check whether or not two \emph{stops} are directly connected in a \emph{net}. Function: \verb=hasDirectConnection=.
+    \item[minHeadway] \hfill \\ Can be used to find out what the minimum \emph{headway} between two connected \emph{stops} is. Function: \verb=getConnection=.
+    \item[capacity - connection] \hfill \\ Can be used to find out what the capacity of a \emph{connection} is. Function: \verb=getConnection=.
+    \item[minDrivingTime] \hfill \\ Can be used to find out what the minimum driving time between two connected \emph{stops} is. Function: \verb=getConnection=.
     % Our own observer functions
+    \item[getConnection] \hfill \\ Can be used to get the \emph{connection} between two directly connected \emph{stops}. Function: \verb=filterConnections=.
     \item[filterConnections] \hfill \\ Can be used to find a single \emph{connection} in a set of connections.
-    \item[getConnection] \hfill \\ Can be used to get the \emph{connection} between two \emph{stops}, by using \verb=filterConnections=.
     \item[hasDirectConnection] \hfill \\ Can be used to check if two \emph{stops} are directly connected in one direction in a \emph{net}.
-    \item[areConnected] Can be used to check if two stops are connected, either with a direct or indirect connection.
+    \item[areConnected] Can be used to check if two \emph{stops} are connected, either with a direct or indirect \emph{connection}.
 \end{description}  
 
 \section{Formal Specification of Time Tables}
