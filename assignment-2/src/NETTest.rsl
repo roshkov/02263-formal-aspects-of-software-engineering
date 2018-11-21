@@ -36,8 +36,28 @@ class
 
 	/** ---- Tests for addConnection ----  **/
 
-	/* Test that a connection   */
-	--[t201],
+	/* Test that a connection is correctly inserted in a net
+	between two stops  */
+	[t201] addConnection(s1, s2, 1, 1, 10, netTwoStops)=
+	mk_Net([s1 +> 2, s2 +> 3], [s1 +>
+	{mk_Connection(s1,s2,1,1,10)}, s2 +>
+	{mk_Connection(s2,s1,1,1,10)}]),
+
+        /* Test that a connection between two stops already in the net
+	is not inserted again */
+	[t202] addConnection(s1,s2,1,1,10,addConnection(s1, s2, 1, 1, 10, netTwoStops))= 
+        mk_Net([s1 +> 2, s2 +> 3], 
+        [s1 +> {mk_Connection(s1,s2,1,1,10)},
+         s2 +> {mk_Connection(s2,s1,1,1,10)}
+        ]),
+
+	/* Test that a connection (between two stops) already in the net
+	but with different values is added to the Net when inserted */
+	[t203] addConnection(s1,s2,2,2,20,addConnection(s1, s2, 1, 1, 10, netTwoStops))= 
+        mk_Net([s1 +> 2, s2 +> 3], 
+        [s1 +> {mk_Connection(s1,s2,1,1,10), mk_Connection(s1,s2,2,2,20)},
+         s2 +> {mk_Connection(s2,s1,1,1,10), mk_Connection(s2,s1,2,2,20)}
+        ]),
 
 	/** ---- Tests for isIn ----  **/
 
@@ -87,11 +107,57 @@ class
 	/** ---- Tests for minDrivingTime ----  **/
 
 	/* Test that the correct capacity between two stops is returned. */
-	[t901] minDrivingTime(s1, s2, net) = 10
+	[t901] minDrivingTime(s1, s2, net) = 10,
+
+        /** ---- Tests for getConnection ---- **/
+
+        /* Test that a Connection between two stops directly connected is returned  */
+        [t1000] getConnection(s1, s2, net) = mk_Connection("A","B",1,1,10),
+
+        /** ---- Tests for filterConnections  ---- **/
+       
+        /*  Test that a Connection is found by StopId in a set of
+	connections and returned */
+        [t2000] filterConnections(connections(net)("A"), "B") = mk_Connection("A","B",1,1,10),
+
+        /** ---- Tests for hasDirectConnection  ---- **/
+
+        /* Test that two stops are directly connected in one direction
+	in a net */
+        [t3000] hasDirectConnection("A", "B", net),
+
+        /** ---- Tests for areConnected  ---- **/
+	
+        /* Test that two stops are connected by a direct connection */
+        [t4000] areConnected("A", connections(net)("B"), {}, net),
+
+        /* Test that two stops are connected by a indirect connection */
+        [t5000] areConnected("A", connections(net)("D"), {}, net)
 
 	/** ---- Tests for isWellformed ----  **/
+        /* Proved by tests: hasCorrectSize, isNetConnected,
+	noDirectSelfConnections, hasOneDirectConnection, hasBiDirectConnection */
+        /** ---- Tests for hasCorrectSize ---- **/
+        /* Test that the number of Stops in the net is higher or equal
+	to 2 */
 
-	/*   */
+        /** ---- Tests for isNetConnected ---- **/
+        /* Test that all the  stops in the net are directly or
+	indirectly connected to any stop */
+
+        /** ---- Tests for noDirectSelfConnections ---- */
+        /* Test that any stop in the net does not have a direct
+	connection to itself */
+       
+        /* ---- Tests for hasOneDirectConnection ---- */
+        /* Test that each stop in the net only has one direct
+	connection to another stop */
+
+        /* ---- Tests for hasBiDirectConnection ---- */
+        /* Test that all direct connections between two stops in the
+	net are connecting the stops in both directions */
+
+       /*   */
 
  end
  
