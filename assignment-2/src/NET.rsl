@@ -82,6 +82,12 @@ class
 
     /*----- Own observer functions  -----*/
 
+    -- get the connection between two stops.
+    -- this functions seems redundant but improves readability.
+    getConnection : StopId >< StopId >< Net -~-> Connection
+    getConnection(s1, s2, n) is filterConnections(connections(n)(s1), s2)
+    pre isIn(s1,n) /\ isIn(s2,n) /\ areDirectlyConnected(s1,s2,n),
+
     -- filter a set of connections to find a single connection with toStop being s.
     filterConnections : Connection-set >< StopId -> Connection
     filterConnections(cs, s) is if card(cs) = 1 /\ toStop(hd(cs)) = s then
@@ -99,11 +105,6 @@ class
 				   end
 				end
     pre card(cs) ~= 0,
-
-    -- get the connection between two stops
-    getConnection : StopId >< StopId >< Net -~-> Connection
-    getConnection(s1, s2, n) is filterConnections(connections(n)(s1), s2)
-    pre isIn(s1,n) /\ isIn(s2,n),
 
     -- check whether two stops are directly connected in one direction in a network.
     hasDirectConnection : StopId >< StopId >< Net -> Bool
