@@ -58,7 +58,7 @@ class
 	/** ---- Tests for getConnection ----  **/
 
 	/* Test that a connection between two stops that is in the net is returned.  */
-	[t501] getConnection(s1, s2, net),
+	[t501] getConnection(s1, s2, net) = mk_Connection("A","B",1,1,10),
 	
 	/** ---- Tests for areDirectlyConnected ----  **/
 
@@ -87,7 +87,7 @@ class
 	/** ---- Tests for minDrivingTime ----  **/
 
 	/* Test that the correct capacity between two stops is returned. */
-	[t901] minDrivingTime(s1, s2, net) = 10,
+	[t901] minDrivingTime(s1, s2, net) = 10
 
 	/** ---- Tests for isWellformed ----  **/
 
