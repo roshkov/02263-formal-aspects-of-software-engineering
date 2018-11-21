@@ -85,7 +85,7 @@ class
 
     -- check whether two stops are directly connected in one direction in a network.
     hasDirectConnection : StopId >< StopId >< Net -> Bool
-    hasDirectConnection(s1, s2, n) is (exists c : Connection :- c isin connections(n)(s1) =>
+    hasDirectConnection(s1, s2, n) is (exists c : Connection :- c isin connections(n)(s1) /\
     			     	       	      fromStop(c) = s1 /\ toStop(c) = s2
     			     	      )
     pre s1 ~= s2 /\ isIn(s1,n) /\ isIn(s2,n),
@@ -107,7 +107,7 @@ class
  
     -- get minimum driving time between two connected stops
     minDrivingTime : StopId >< StopId >< Net -~-> DrivingTime
-    minDrivingTime(s1, s2, net) is minDrivingTime(getConnection(s1, s2, net))
+    minDrivingTime(s1, s2, n) is minDrivingTime(getConnection(s1, s2, n))
     pre s1 ~= s2 /\ isIn(s1,n) /\ isIn(s2,n),
 
     areConnected : StopId >< Connection-set >< Connection-set >< Net -> Bool
@@ -169,9 +169,12 @@ class
 				     )
     			     	),
 
+    hasCorrectSize : Net -> Bool
+    hasCorrectSize(n) is card(dom(stops(n))) >= 2,
+
 
     isWellformed : Net -> Bool
-    isWellformed(n) is card(dom(stops(n))) >= 2 /\
+    isWellformed(n) is hasCorrectSize(n) /\
     		       isNetConnected(n) /\
     		       noDirectSelfConnections(n) /\
 		       hasOneDirectConnection(n) /\
