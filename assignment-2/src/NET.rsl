@@ -18,11 +18,7 @@ class
     
   value /* generators */
 
-    empty_Stops : Stops = [], -- the empty stops
-
-    empty_Connections : Connections = [], -- the empty connection
-
-    empty : Net = mk_Net(empty_Stops, empty_Connections), -- the empty net
+    empty : Net = mk_Net([], []), -- the empty net
 
     -- insert a stop with a given name and capacity
     insertStop : StopId >< Capacity >< Net -> Net
@@ -51,6 +47,8 @@ class
 
   value /* observers */
 
+    /*----- Given observer functions  -----*/
+
     -- check whether a stop is in a network     
     isIn : StopId >< Net -> Bool
     isIn(s, n) is s isin dom(stops(n)),
@@ -59,6 +57,30 @@ class
     capacity : StopId >< Net -~-> Capacity
     capacity(s, n) is stops(n)(s)
     pre isIn(s,n),
+    
+    -- check whether two stops are directly connected in both directions in a network.
+    areDirectlyConnected : StopId >< StopId >< Net -> Bool
+    areDirectlyConnected(s1, s2, n) is hasDirectConnection(s1, s2, n) /\ hasDirectConnection(s2, s1, n)
+    pre s1 ~= s2 /\ isIn(s1,n) /\ isIn(s2,n),
+
+    -- get minimum headway between two connected stops
+    minHeadway : StopId >< StopId >< Net -~-> Headway
+    minHeadway(s1, s2, n) is headway(getConnection(s1, s2, n))
+    pre s1 ~= s2 /\ isIn(s1,n) /\ isIn(s2,n),
+
+    -- get the capacity for a connection between two connected stops
+    capacity : StopId >< StopId >< Net -~-> Capacity
+    capacity(s1, s2, n) is capacity(getConnection(s1, s2, n))
+    pre s1 ~= s2 /\ isIn(s1,n) /\ isIn(s2,n),
+ 
+    -- get minimum driving time between two connected stops
+    minDrivingTime : StopId >< StopId >< Net -~-> DrivingTime
+    minDrivingTime(s1, s2, n) is minDrivingTime(getConnection(s1, s2, n))
+    pre s1 ~= s2 /\ isIn(s1,n) /\ isIn(s2,n),
+
+
+
+    /*----- Own observer functions  -----*/
 
     -- filter a set of connections to find a single connection with toStop being s.
     filterConnections : Connection-set >< StopId -> Connection
@@ -89,26 +111,7 @@ class
     			     	       	      fromStop(c) = s1 /\ toStop(c) = s2
     			     	      )
     pre s1 ~= s2 /\ isIn(s1,n) /\ isIn(s2,n),
-    
-    -- check whether two stops are directly connected in both directions in a network.
-    areDirectlyConnected : StopId >< StopId >< Net -> Bool
-    areDirectlyConnected(s1, s2, n) is hasDirectConnection(s1, s2, n) /\ hasDirectConnection(s2, s1, n)
-    pre s1 ~= s2 /\ isIn(s1,n) /\ isIn(s2,n),
 
-    -- get minimum headway between two connected stops
-    minHeadway : StopId >< StopId >< Net -~-> Headway
-    minHeadway(s1, s2, n) is headway(getConnection(s1, s2, n))
-    pre s1 ~= s2 /\ isIn(s1,n) /\ isIn(s2,n),
-
-    -- get the capacity for a connection between two connected stops
-    capacity : StopId >< StopId >< Net -~-> Capacity
-    capacity(s1, s2, n) is capacity(getConnection(s1, s2, n))
-    pre s1 ~= s2 /\ isIn(s1,n) /\ isIn(s2,n),
- 
-    -- get minimum driving time between two connected stops
-    minDrivingTime : StopId >< StopId >< Net -~-> DrivingTime
-    minDrivingTime(s1, s2, n) is minDrivingTime(getConnection(s1, s2, n))
-    pre s1 ~= s2 /\ isIn(s1,n) /\ isIn(s2,n),
 
     areConnected : StopId >< Connection-set >< Connection-set >< Net -> Bool
     areConnected(des, cs, v, n) is let
@@ -139,6 +142,9 @@ class
 
   value /* predicates to check nets */
 
+    hasCorrectSize : Net -> Bool
+    hasCorrectSize(n) is card(dom(stops(n))) >= 2,
+
     isNetConnected : Net -> Bool
     isNetConnected(n) is (all s : StopId :- s isin dom(stops(n)) =>
     		      	      (all s' : StopId :- s' isin dom(stops(n)) /\ s ~= s' =>
@@ -168,10 +174,6 @@ class
 				     	  areDirectlyConnected(toStop(c), fromStop(c), n)
 				     )
     			     	),
-
-    hasCorrectSize : Net -> Bool
-    hasCorrectSize(n) is card(dom(stops(n))) >= 2,
-
 
     isWellformed : Net -> Bool
     isWellformed(n) is hasCorrectSize(n) /\
