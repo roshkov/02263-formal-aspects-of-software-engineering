@@ -26,7 +26,28 @@ This document contains a solution to the problem of representing tram nets and t
 
 \lstinputlisting{assignment-2/src/NET.rsl}
 
+\noindent Below are the requirements for a \emph{net} defined. These are the requirement that a \emph{net} has to fulfil in order to be considered wellformed. Each requirement will indicate what function is used to ensure the requirement. \\
+
 \begin{description}
+    \item[isWellformed] \hfill
+        \begin{itemize}
+            \item The \emph{net} must contain at least two \emph{stops}. Function: \verb=hasCorrectSize=.
+            \item Any \emph{stop} must have a direct or indirect connection to every other \emph{stop} in the \emph{net}, i.e. a tram can travel to any \emph{stop} from any \emph{stop}. Function: \verb=isNetConnected=.
+            \item A \emph{stop} can not have a direct \emph{connection} to itself. Function: \verb=noDirectSelfConnections=.
+            \item A \emph{stop} can not have more than one direct \emph{connection} to the same \emph{stop}. Function: \verb=hasOneDirectConnection=.
+            \item A \emph{connection} between two \emph{stops} consists of two tracks, one track for each direction, i.e. a tram can travel back and forth between the two \emph{stops} using the same \emph{connection}. Function: \verb=hasBiDirectConnection=.
+        \end{itemize}
+\end{description}
+
+\noindent In the list below one will find a description of all the functions.\\
+
+\begin{description}
+    \item[hasCorrectSize] \hfill \\ Can be used to check whether or not a \emph{net} has a correct size, i.e. the number of \emph{stops} in the \emph{net}.
+    \item[isNetConnected] Can be used to check that the \emph{net} is connected, i.e. there is a direct or indirect connection from any stop to all other stops, by using \verb=areConnected=.
+    \item[noDirectSelfConnections] \hfill \\ Can be used to check that any \emph{stop} in the \emph{net} does not have a direct connection to itself, by using \verb=areDirectlyConnected=.
+    \item[hasOneDirectConnection] \hfill \\ Can be used to check if any \emph{stop} in the \emph{net} only has one direct connection to another \emph{stop}, by using \verb=Connections=.
+    \item[hasBiDirectConnection] \hfill \\ Can be used to check that all direct connections between two \emph{stops} in the \emph{net} are connecting the stops in both directions, by using \verb=areDirectlyConnected=.
+    \item[isNetConnected] Can be used to check that the \emph{net} is connected, i.e. there is a direct or indirect connection from any stop to all other stops, by using \verb=areConnected=.
     \item[isIn] \hfill \\ Can be used to check whether or not a \emph{stop} is in a \emph{net}.
     \item[capacity - stop] \hfill \\ Can be used to find out what the \emph{capacity} of a \emph{stop} is.
     \item[areDirectlyConnected] \hfill \\ Can be used to check whether or not two \emph{stops} are directly connected in a \emph{net}, by using the \verb=hasDirectConnection=.
@@ -39,26 +60,6 @@ This document contains a solution to the problem of representing tram nets and t
     \item[hasDirectConnection] \hfill \\ Can be used to check if two \emph{stops} are directly connected in one direction in a \emph{net}.
     \item[areConnected] Can be used to check if two stops are connected, either with a direct or indirect connection.
 \end{description}  
-\begin{description}
-    %\item[] \hfill \\
-    \item[hasCorrectSize] \hfill \\ Can be used to check whether or not a \emph{net} has a correct size, i.e. the number of \emph{stops} in the \emph{net}.
-    \item[isNetConnected] Can be used to check that the \emph{net} is connected, i.e. there is a direct or indirect connection from any stop to all other stops, by using \verb=areConnected=.
-    \item[noDirectSelfConnections] \hfill \\ Can be used to check that any \emph{stop} in the \emph{net} does not have a direct connection to itself, by using \verb=areDirectlyConnected=. NOT CORRECT AT THIS POINT BECAUSE OF PRE CONDITION ON areDirectlyConnected.
-    \item[hasOneDirectConnection] \hfill \\ Can be used to check if any \emph{stop} in the \emph{net} only has one direct connection to another \emph{stop}, by using \verb=Connections=.
-    \item[hasBiDirectConnection] \hfill \\ Can be used to check that all direct connections between two \emph{stops} in the \emph{net} are connecting the stops in both directions, by using \verb=areDirectlyConnected=.
-    \item[isNetConnected] Can be used to check that the \emph{net} is connected, i.e. there is a direct or indirect connection from any stop to all other stops, by using \verb=areConnected=.
-    \item[isWellformed] \hfill
-        \begin{itemize}
-            \item The network must contain at least two \emph{stops}, by using \verb=hasCorrectSize=.
-            %\item A \emph{stop} must have at least one direct \emph{connection} to another \emph{stop}, by using \verb=Connections=.
-            \item Any \emph{stop} must have a direct or indirect connection to every other \emph{stop} in the \emph{net}, i.e. a tram can travel to any \emph{stop} from any \emph{stop}, by using \verb=isNetConnected=.
-            \item A \emph{stop} can not have a direct \emph{connection} to itself, by using \verb=noDirectSelfConnections=.
-            \item A \emph{stop} can not have more than one direct \emph{connection} to the same \emph{stop}, by using \verb=hasOneDirectConnection=.
-            \item A \emph{connection} between two \emph{stops} consists of two tracks, one track for each direction, i.e. a tram can travel back and forth between the two \emph{stops} using the same \emph{connection}, by using the \verb=hasBiDirectConnection=.
-            % TODO: Make sure the requirement below is correctly removed. The Net is not aware of the Stops outside of the net, so would it be possible to check if they are part of the net?
-            %\item All \emph{stops} must be in the \emph{net}, by using \verb=areAllStopsInNet=.
-        \end{itemize}
-\end{description}
 
 \section{Formal Specification of Time Tables}
 
