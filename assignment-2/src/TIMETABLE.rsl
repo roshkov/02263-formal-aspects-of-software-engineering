@@ -14,16 +14,16 @@ class
 
       -- add to a time table an empty plan for a new tram
       addTram : TramId >< TimeTable -> TimeTable
-      ...,
+      addTram(tId, tt) is tt !! [tId +> <..>],
 
       -- add a stop with arrival time and departure time to the plan for a given tram
       addStop : TramId >< StopId >< Time >< Time >< TimeTable -> TimeTable
-      ...
-
+      addStop(tId, sId, t1, t2, tt) is tt !! [tId +> tt(tId)^<.mk_TimeSlot(sId, t1, t2).>]
+      
   value /* observers */
      -- check whether a tram with a given name exists in a given time table
      isIn : TramId >< TimeTable -> Bool
-     ...,
+     isIn(tId, tt) is tId isin dom(tt),
 
      -- you can add more observers here
      ...
