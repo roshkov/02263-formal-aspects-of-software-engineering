@@ -5,6 +5,8 @@ extend TIMETABLE with
 class
   value
 	/* TramId values */
+	t1 : TramId = "tram1",
+	t2 : TramId = "tram2"
 	/* TramSlot values */
 	/* TramTable values */
   test_case

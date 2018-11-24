@@ -4,9 +4,15 @@ class
   type 
     TimeTable = TramId -m-> TimeSlot-list, -- time tables
     TimeSlot :: stopId : StopId
-    	     	arrivalTime : Time
-		departureTime : Time,
-    TramId = Text -- tram names
+    	     	arrival : Time
+		departure : Time,
+    TramId = Text, -- tram names
+    ConId :: from : StopId
+    	     to : StopId, -- connection names
+    ScheduleSlot :: departure : Time
+    	       	    arrival : Time,
+    ScheduleTable = ConId -m-> ScheduleSlot-list,
+    StopsTable = StopId -m-> ScheduleSlot-list
 
     value /* generators */
       -- the an empty timetable
@@ -18,20 +24,44 @@ class
 
       -- add a stop with arrival time and departure time to the plan for a given tram
       addStop : TramId >< StopId >< Time >< Time >< TimeTable -> TimeTable
-      addStop(tId, sId, t1, t2, tt) is tt !! [tId +> tt(tId)^<.mk_TimeSlot(sId, t1, t2).>]
+      addStop(tId, sId, a, d, tt) is tt !! [tId +> tt(tId)^<.mk_TimeSlot(sId, a, d).>]
+
+      --createStopsTable : TimeTable -> read st StopsTable
+      --createStopsTable(tt) is
       
   value /* observers */
      -- check whether a tram with a given name exists in a given time table
      isIn : TramId >< TimeTable -> Bool
      isIn(tId, tt) is tId isin dom(tt),
 
-     -- you can add more observers here
-     ...
+     --noStopCapacityExceeded : stopsTable >< Net -> Bool
+     --noStopCapacityExceeded(stopsTable, n) is,
+
+     --noConnectionCapacityExceeded : ScheduleTable >< Net -> Bool
+     --noConnectionCapacityExceeded(scheduleTable, n) is,
+
+     --noHeadwayViolation : ScheduleTable >< Net -> Bool
+     --noHeadwayViolation(scheduleTable, n) is,
+
+     noDrivingTimeExceeded : ScheduleTable >< Net -> Bool
+     noDrivingTimeExceeded(scheduleTable, n) is (all c : ConId :- c isin dom(scheduleTable) =>
+     					     	     (all s : ScheduleSlot :- s isin elems(scheduleTable(c)) =>
+						     	  arrival(s) - departure(s) <= minDrivingTime(from(c), to(c), n)
+						     )
+     					     	)
+						
  
   value /* predicates to check time tables */
      isWellformed : TimeTable >< Net -> Bool
-     isWellformed(t, n) is ...,
-
-     ...
-     
+     isWellformed(t, n) is let
+				--scheduleTable = createScheduleTable(t),
+				--stopsTable = createStopsTable(t)
+				
+     		     	   in
+				--noStopCapacityExceeded(stopsTable,n) /\
+     		     	   	--noConnectionCapacityExceeded(scheduleTable, n) /\
+			   	--noHeadwayViolation(scheduleTable, n) /\
+			   	noDrivingTimeExceeded(scheduleTable, n)
+--				true
+			   end     
 end  

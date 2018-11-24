@@ -24,6 +24,7 @@ class
 	netTwoStops : Net = insertStop(s2, 3, insertStop(s1, 2, emptyNet)),
 	netStops : Net = insertStop(s4, 2, insertStop(s3, 2, insertStop(s2, 3, insertStop(s1, 2, emptyNet)))), 
 	net : Net = addConnection(s2, s4, 2, 2, 7, addConnection(s2, s3, 2, 3, 12, addConnection(s1, s2, 1, 1, 10, netStops))),
+	netSingleConnection : Net = addConnection(s1, s2, 1, 1, 10, emptyNet),
 	netStopsExtended : Net = insertStop(s6, 6, insertStop(s5, 5, net)),
 	netDisconnected : Net = addConnection(s5, s6, 4, 4, 11, netStopsExtended),
 	netNoBiDirectCon : Net = mk_Net(["A" +> 2, "B" +> 3],["A" +> {mk_Connection("A","B",1,1,10)}, "B" +> {mk_Connection("","",0,0,0)}])
@@ -108,12 +109,12 @@ class
 
         /** ---- Tests for getConnection ---- **/
 
-        /* Test that a Connection between two stops directly connected is returned  */
+        /* Test that a Connection between two stops directly connected is returned. */
         [t1000] getConnection(s1, s2, net) = mk_Connection("A","B",1,1,10),
 
         /** ---- Tests for filterConnections  ---- **/
        
-        /*  Test that a direct Connection is found by StopId in a set of connections and returned */
+        /*  Test that a direct Connection is found in a set of connections by the stop ID. */
         [t1100] filterConnections(connections(net)("A"), "B") = mk_Connection("A","B",1,1,10),
 
         /** ---- Tests for hasDirectConnection  ---- **/
