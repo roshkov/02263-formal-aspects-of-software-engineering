@@ -116,9 +116,6 @@ class
         /*  Test that a direct Connection is found by StopId in a set of connections and returned */
         [t1100] filterConnections(connections(net)("A"), "B") = mk_Connection("A","B",1,1,10),
 
-	/*  Test that a indirect Connection is found by StopId in a set of connections and returned. NOTE: Precondition prevented it */
-       	[t1101] filterConnections(connections(net)("A"), "C") = mk_Connection("A","B",1,1,10),
-
         /** ---- Tests for hasDirectConnection  ---- **/
 
         /* Test that two stops are directly connected in one direction in a net */
