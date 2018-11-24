@@ -22,13 +22,11 @@ class
 	/* Net values */
 	emptyNet : Net = empty,
 	netTwoStops : Net = insertStop(s2, 3, insertStop(s1, 2, emptyNet)),
-	netStops : Net = insertStop(s4, 2, insertStop(s3, 2,
-	insertStop(s2, 3, insertStop(s1, 2, emptyNet)))), 
-	net : Net = addConnection(s2, s4, 2, 2, 7, addConnection(s2,
-	s3, 2, 3, 12, addConnection(s1, s2, 1, 1, 10, netStops))),
-	
-	netStopsExtended : Net = insertStop(s6, 6, insertStop(s5, 5, netStops)),
-	netDisconnected : Net = addConnection(s5, s6, 4, 4, 11, netStopsExtended)
+	netStops : Net = insertStop(s4, 2, insertStop(s3, 2, insertStop(s2, 3, insertStop(s1, 2, emptyNet)))), 
+	net : Net = addConnection(s2, s4, 2, 2, 7, addConnection(s2, s3, 2, 3, 12, addConnection(s1, s2, 1, 1, 10, netStops))),
+	netStopsExtended : Net = insertStop(s6, 6, insertStop(s5, 5, net)),
+	netDisconnected : Net = addConnection(s5, s6, 4, 4, 11, netStopsExtended),
+	netNoBiDirectCon : Net = mk_Net(["A" +> 2, "B" +> 3],["A" +> {mk_Connection("A","B",1,1,10)}, "B" +> {mk_Connection("","",0,0,0)}])
 
   test_case
 	/** ---- Tests for insertStop ----  **/
@@ -92,12 +90,6 @@ class
 	
 	/* Test that false is returned for two stops that are not directly connected. */
 	[t601] areDirectlyConnected(s1, s3, net) = false,
-	
-	/* Test that <> is returned for two stops, where one is in the net and the other is not. */	
-	--[t603] areDirectlyConnected(s4, s5, net) = <>,
-	
-	/* Test that <> is returned for two stops, where both are not in the net. */
-	--[t604] areDirectlyConnected(s5, s6, net) = <>
 
 	/** ---- Tests for minHeadway ----  **/
 
@@ -121,23 +113,15 @@ class
 
         /** ---- Tests for filterConnections  ---- **/
        
-        /*  Test that a direct Connection is found by StopId in a set of
-	connections and returned */
-        [t1100] filterConnections(connections(net)("A"), "B") =
-	mk_Connection("A","B",1,1,10),
+        /*  Test that a direct Connection is found by StopId in a set of connections and returned */
+        [t1100] filterConnections(connections(net)("A"), "B") = mk_Connection("A","B",1,1,10),
 
-	/*  Test that a indirect Connection is found by StopId in a set of
-	connections and returned. NOTE: Precondition prevented it */
-       -- [t1101] filterConnections(connections(net)("A"), "C") = mk_Connection("A","B",1,1,10),
-
-	 /*  Test that a Connection is not found by StopId when the
-	 Stops are disconnected. */
-	[t1102] filterConnections(connections(netDisconnected)("A"), "E") = chaos,
+	/*  Test that a indirect Connection is found by StopId in a set of connections and returned. NOTE: Precondition prevented it */
+       	[t1101] filterConnections(connections(net)("A"), "C") = mk_Connection("A","B",1,1,10),
 
         /** ---- Tests for hasDirectConnection  ---- **/
 
-        /* Test that two stops are directly connected in one direction
-	in a net */
+        /* Test that two stops are directly connected in one direction in a net */
         [t1200] hasDirectConnection("A", "B", net),
 
         /** ---- Tests for areConnected  ---- **/
@@ -148,9 +132,6 @@ class
         /* Test that two stops are connected by a indirect connection */
         [t1301] areConnected("A", connections(net)("D"), {}, net),
 
-	/** ---- Tests for isWellformed ----  **/
-        /* Proved by tests: hasCorrectSize, isNetConnected,
-	noDirectSelfConnections, hasOneDirectConnection, hasBiDirectConnection */
         /** ---- Tests for hasCorrectSize ---- **/
 
         /* Test that false is returned for an empty net(0 Stops) */
@@ -162,61 +143,47 @@ class
 	/* Test that true is returned for a net with two Stops */
 	[t1402] hasCorrectSize(netTwoStops) = true,
 
-	/* Test that true is returned for a net with more than two
-	stops */
+	/* Test that true is returned for a net with more than two stops */
         [t1403] hasCorrectSize(net) = true,
 
         /** ---- Tests for isNetConnected ---- **/
 
-        /* Test that true is returned when all stops in the net
-	are directly or indirectly connected to any stop */
+        /* Test that true is returned when all stops in the net are directly or indirectly connected to any stop */
 	[t1500] isNetConnected(net) = true, 
 
-         /* Test that false is returned when any stop in the net
-	is not directly or indirectly connected to all stops */
+         /* Test that false is returned when any stop in the net is not directly or indirectly connected to all stops */
         [t1501] isNetConnected(netDisconnected) = false,
 
         /** ---- Tests for noDirectSelfConnections ---- */
 
-        /* Test that true is returned if any stop in a connected net does not
-	have a direct connection to itself */
+        /* Test that true is returned if any stop in a connected net does not have a direct connection to itself */
 	[t1600] noDirectSelfConnections(net) = true,
 
-	/* Test that true is returned if any stop in a disconnected
-	net does not have a direct connection to itself */
+	/* Test that true is returned if any stop in a disconnected net does not have a direct connection to itself */
 	[t1601] noDirectSelfConnections(netDisconnected) = true,
 
-	/* Test that false is returned if any stop in a net does not
-	have a direct connection to itself */
+	/* Test that false is returned if any stop in a net does not have a direct connection to itself */
 	[t1602] noDirectSelfConnections(addConnection("A","A",1,1,10,net)) = false,
        
         /* ---- Tests for hasOneDirectConnection ---- */
 
-        /* Test that true is returned if each stop in the net only has
-	one direct connection to another stop */
+        /* Test that true is returned if each stop in the net only has one direct connection to another stop */
 	[t1700] hasOneDirectConnection(net) = true,
 
-	/* Test that false is returned if any stop in the net has
-	more than one direct connection to another stop */
+	/* Test that false is returned if any stop in the net has more than one direct connection to another stop */
 	[t1701] hasOneDirectConnection(addConnection("A","B",7,7,10,net)) = false,
 
         /* ---- Tests for hasBiDirectConnection ---- */
 
-        /* Test that true is returned if all direct connections
-	between two stops in the net are connecting the stops in both
-	direction */
+        /* Test that true is returned if all direct connections between two stops in the net are connecting the stops in both direction */
         [t1800] hasBiDirectConnection(net) = true,
 
-	/* Test that false is returned if any direct connections
-	between two stops in the net are not connecting the stops in both
-	direction */
+	/* Test that false is returned if any direct connections between two stops in the net are not connecting the stops in both direction */
 	-- non added connection: "B" +> {mk_Connection("B","A",1,1,10)
-        [t1801] hasBiDirectConnection(
-			 mk_Net(
-				["A" +> 2, "B" +> 3], 
-				["A" +> {mk_Connection("A","B",1,1,10)}]
-			 )
-		 ) = false
+        [t1801] hasBiDirectConnection(netNoBiDirectCon) = false
+
+	/** ---- Tests for isWellformed ----  **/
+        /* THIS NEEDS TO BE TESTED */
 
  end
  
