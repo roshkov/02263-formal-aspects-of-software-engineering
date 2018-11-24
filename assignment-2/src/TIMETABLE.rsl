@@ -24,15 +24,33 @@ class
 
       -- add a stop with arrival time and departure time to the plan for a given tram
       addStop : TramId >< StopId >< Time >< Time >< TimeTable -> TimeTable
-      addStop(tId, sId, a, d, tt) is tt !! [tId +> tt(tId)^<.mk_TimeSlot(sId, a, d).>]
+      addStop(tId, sId, a, d, tt) is tt !! [tId +> tt(tId)^<.mk_TimeSlot(sId, a, d).>],
 
       --createStopsTable : TimeTable -> read st StopsTable
       --createStopsTable(tt) is
+      createStopsTable: TimeTable -> read any StopsTable
+      createStopsTable(tt) is local
+				variable
+				    table : StopsTable := [],
+				    tIds: TramId-set := dom(tt),
+			    	    tId : TramId := hd(tIds)
+			      in
+				while card(tIds) > 0 do
+				    for ts in tt(tId) do
+				    	table := table !! [stopId(ts) +> table(stopId(ts))^<.mk_ScheduleSlot(departure(ts), arrival(ts)).>]
+			  	    end;
+				    tIds := tIds \ {tId};
+				    tId := hd(tIds)
+				end;
+				table
+		              end
       
   value /* observers */
      -- check whether a tram with a given name exists in a given time table
      isIn : TramId >< TimeTable -> Bool
      isIn(tId, tt) is tId isin dom(tt),
+
+     --hasOverlap(s1, s2
 
      --noStopCapacityExceeded : stopsTable >< Net -> Bool
      --noStopCapacityExceeded(stopsTable, n) is,
@@ -45,13 +63,13 @@ class
 
      noDrivingTimeExceeded : ScheduleTable >< Net -> Bool
      noDrivingTimeExceeded(scheduleTable, n) is (all c : ConId :- c isin dom(scheduleTable) =>
-     					     	     (all s : ScheduleSlot :- s isin elems(scheduleTable(c)) =>
+     					     	     (all s : ScheduleSlot :- s isin scheduleTable(c) => -- Maybe elems should be added.
 						     	  arrival(s) - departure(s) <= minDrivingTime(from(c), to(c), n)
 						     )
      					     	)
 						
- 
-  value /* predicates to check time tables */
+  --value /* predicates to check time tables */
+  /*
      isWellformed : TimeTable >< Net -> Bool
      isWellformed(t, n) is let
 				--scheduleTable = createScheduleTable(t),
@@ -63,5 +81,6 @@ class
 			   	--noHeadwayViolation(scheduleTable, n) /\
 			   	noDrivingTimeExceeded(scheduleTable, n)
 --				true
-			   end     
+			   end
+			   */
 end  
