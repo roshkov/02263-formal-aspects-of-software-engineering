@@ -108,38 +108,38 @@ class
 	/* Test that the correct capacity between two stops is returned. */
 	[t900] minDrivingTime(s1, s2, net) = 10,
 
-        /** ---- Tests for getConnection ---- **/
+	/** ---- Tests for getConnection ---- **/
 
-        /* Test that a Connection between two stops directly connected is returned. */
-        [t1000] getConnection(s1, s2, net) = mk_Connection("A","B",1,1,10),
+	/* Test that a Connection between two stops directly connected is returned. */
+	[t1000] getConnection(s1, s2, net) = mk_Connection("A","B",1,1,10),
 
-        /** ---- Tests for filterConnections  ---- **/
-       
-        /*  Test that a direct Connection is found in a set of connections by the stop ID. */
-        [t1100] filterConnections(connections(net)("A"), "B") = mk_Connection("A","B",1,1,10),
-
-        /** ---- Tests for hasDirectConnection  ---- **/
-
-        /* Test that two stops are directly connected in one direction in a net */
-        [t1200] hasDirectConnection("A", "B", net),
-
-        /** ---- Tests for areConnected  ---- **/
+	/** ---- Tests for filterConnections  ---- **/
 	
-        /* Test that two stops are connected by a direct connection */
-        [t1300] areConnected("A", connections(net)("B"), {}, net),
+	/*  Test that a direct Connection is found in a set of connections by the stop ID. */
+	[t1100] filterConnections(connections(net)("A"), "B") = mk_Connection("A","B",1,1,10),
 
-        /* Test that two stops are connected by a indirect connection */
-        [t1301] areConnected("A", connections(net)("D"), {}, net),
+	/** ---- Tests for hasDirectConnection  ---- **/
+
+	/* Test that two stops are directly connected in one direction in a net */
+	[t1200] hasDirectConnection("A", "B", net),
+
+	/** ---- Tests for areConnected  ---- **/
+
+	/* Test that two stops are connected by a direct connection */
+	[t1300] areConnected("A", connections(net)("B"), {}, net),
+
+	/* Test that two stops are connected by a indirect connection */
+	[t1301] areConnected("A", connections(net)("D"), {}, net),
 
 
-		/** ----> PREDICATES <---- **/
+	/** ----> PREDICATES <---- **/
 
-        /** ---- Tests for hasCorrectSize ---- **/
+	/** ---- Tests for hasCorrectSize ---- **/
 
-        /* Test that false is returned for an empty net(0 Stops) */
-        [t1400] hasCorrectSize(emptyNet)= false,
+	/* Test that false is returned for an empty net(0 Stops) */
+	[t1400] hasCorrectSize(emptyNet)= false,
 
-        /* Test that false is returned for a net with only one Stop */
+     /* Test that false is returned for a net with only one Stop */
 	[t1401] hasCorrectSize(insertStop(s1, 2, emptyNet)) = false,
 
 	/* Test that true is returned for a net with two Stops */
@@ -148,17 +148,17 @@ class
 	/* Test that true is returned for a net with more than two stops */
         [t1403] hasCorrectSize(net) = true,
 
-        /** ---- Tests for isNetConnected ---- **/
+    /** ---- Tests for isNetConnected ---- **/
 
-        /* Test that true is returned when all stops in the net are directly or indirectly connected to any stop */
+    /* Test that true is returned when all stops in the net are directly or indirectly connected to any stop */
 	[t1500] isNetConnected(net) = true, 
 
-         /* Test that false is returned when any stop in the net is not directly or indirectly connected to all stops */
-        [t1501] isNetConnected(netDisconnected) = false,
+	/* Test that false is returned when any stop in the net is not directly or indirectly connected to all stops */
+	[t1501] isNetConnected(netDisconnected) = false,
 
-        /** ---- Tests for noDirectSelfConnections ---- */
+	/** ---- Tests for noDirectSelfConnections ---- */
 
-        /* Test that true is returned if any stop in a connected net does not have a direct connection to itself */
+	/* Test that true is returned if any stop in a connected net does not have a direct connection to itself */
 	[t1600] noDirectSelfConnections(net) = true,
 
 	/* Test that true is returned if any stop in a disconnected net does not have a direct connection to itself */
@@ -167,22 +167,22 @@ class
 	/* Test that false is returned if any stop in a net does not have a direct connection to itself */
 	[t1602] noDirectSelfConnections(addConnection("A","A",1,1,10,net)) = false,
        
-        /* ---- Tests for hasOneDirectConnection ---- */
+	/* ---- Tests for hasOneDirectConnection ---- */
 
-        /* Test that true is returned if each stop in the net only has one direct connection to another stop */
+	/* Test that true is returned if each stop in the net only has one direct connection to another stop */
 	[t1700] hasOneDirectConnection(net) = true,
 
 	/* Test that false is returned if any stop in the net has more than one direct connection to another stop */
 	[t1701] hasOneDirectConnection(addConnection("A","B",7,7,10,net)) = false,
 
-        /* ---- Tests for hasBiDirectConnection ---- */
+	/* ---- Tests for hasBiDirectConnection ---- */
 
-        /* Test that true is returned if all direct connections between two stops in the net are connecting the stops in both direction */
-        [t1800] hasBiDirectConnection(net) = true,
+	/* Test that true is returned if all direct connections between two stops in the net are connecting the stops in both direction */
+	[t1800] hasBiDirectConnection(net) = true,
 
 	/* Test that false is returned if any direct connections between two stops in the net are not connecting the stops in both direction */
 	-- non added connection: "B" +> {mk_Connection("B","A",1,1,10)
-        [t1801] hasBiDirectConnection(netNoBiDirectCon) = false
+    [t1801] hasBiDirectConnection(netNoBiDirectCon) = false
 
 	/** ---- Tests for isWellformed ----  **/
         /* THIS NEEDS TO BE TESTED */
