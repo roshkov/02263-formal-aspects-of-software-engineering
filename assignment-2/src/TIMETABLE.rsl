@@ -25,9 +25,7 @@ class
       -- add a stop with arrival time and departure time to the plan for a given tram
       addStop : TramId >< StopId >< Time >< Time >< TimeTable -> TimeTable
       addStop(tId, sId, a, d, tt) is tt !! [tId +> tt(tId)^<.mk_TimeSlot(sId, a, d).>],
-
-      --createStopsTable : TimeTable -> read st StopsTable
-      --createStopsTable(tt) is
+      /*
       createStopsTable: TimeTable -> read any StopsTable
       createStopsTable(tt) is local
 				variable
@@ -44,6 +42,64 @@ class
 				end;
 				table
 		              end
+      */
+
+      getLargerItems : Time-list >< Time -> Time-list
+      getLargerItems(tList, t) is if len(tList) = 0 then
+      			       	      <..>
+				  elsif len(tList) = 1 /\ hd(tList) > t then
+      			       	      <.hd(tList).>
+				  elsif hd(tList) > t then
+				      <.hd(tList).>^getLargerItems(tl(tList),t)
+				  else
+				      getLargerItems(tl(tList),t)
+				  end,
+				  
+      getSmallerItems : Time-list >< Time -> Time-list
+      getSmallerItems(tList, t) is if len(tList) = 0 then
+      			       	      <..>
+				   elsif len(tList) = 1 /\ hd(tList) <= t then
+      			       	      <.hd(tList).>
+				   elsif hd(tList) <= t then
+				       <.hd(tList).>^getSmallerItems(tl(tList),t)
+				   else
+				       getSmallerItems(tl(tList),t)
+				   end,
+
+      sort : Time-list -> Time-list
+      sort(tList) is if len(tList) <= 1 then
+      		       	      tList
+			  else
+			      sort(getSmallerItems(tl(tList), hd(tList))) ^ <.hd(tList).> ^ sort(getLargerItems(tl(tList), hd(tList)))
+			  end,
+
+      findMaxOverlap : Time-list >< Time-list >< Int >< Time -> Int
+      findMaxOverlap(sArr, sDep, n, time) is local
+					           variable
+				    		       --sArr : Time-list := sort(arrival),
+				    		       --sDep : Time-list := sort(departure),
+				    		       curO : Int 	:= 1,
+			    	    		       maxO : Int 	:= 0,
+						       t    : Time 	:= time,
+						       -- t:Time:=hd(sArr),
+						       i    : Int	:= 2,
+						       j    : Int	:= 1
+			      			   in
+						       while i < n /\ j < n do
+						       	   if sArr(i) <= sDep(j) then
+							       curO := curO + 1;
+							       if curO > maxO then
+							       	  maxO := curO;
+								  t := sArr(i)
+							       end;
+							       i := i + 1
+							   else
+							       curO := curO - 1;
+							       j := j + 1
+							   end
+						       end;
+						       maxO
+		              			   end 
       
   value /* observers */
      -- check whether a tram with a given name exists in a given time table

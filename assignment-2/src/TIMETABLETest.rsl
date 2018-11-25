@@ -6,12 +6,20 @@ class
   value
 	/* TramId values */
 	t1 : TramId = "tram1",
-	t2 : TramId = "tram2"
+	t2 : TramId = "tram2",
+	arr : Time-list = <.1,32.>,
+	dep : Time-list = <.12,47.>,
+	sArr : Time-list = sort(arr),
+	sDep : Time-list = sort(dep),
+	t : Time = hd(sArr)
 	/* TramSlot values */
 	/* TramTable values */
   test_case
 	/** ---- Tests for addTram ----  **/
-
+	[t1801] getLargerItems(<.34,123,6,1,685.>, 34),
+	[t1821] getSmallerItems(<.34,123,6,1,685.>, 34),
+	[t1822] sort(<.34,123,6,1,685,34, 35.>),
+	[t1824] findMaxOverlap(sArr, sDep, len(sArr), t)
 	/*   */
 	
 	/** ---- Tests for addStop ----  **/
