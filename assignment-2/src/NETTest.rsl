@@ -124,14 +124,10 @@ class
 	/** ---- Tests for areConnected  ---- **/
 
 	/* Test that two stops are connected by a direct connection */
-	[t1300] areConnected("A", connections(net)("B"), {}, net) = true,
+	[t1300] areConnected("B", "A", connections(net)("B"), {}, net) = true,
 
 	/* Test that two stops are connected by a indirect connection */
-	[t1301] areConnected("A", connections(net)("D"), {}, net) = true,
-
-	/* Test that two stops are not connected if the Stops are not part of the Net */
-	[t1302] areConnected("A", connections(netSingleConnectionNoStops)("B"), {}, netSingleConnectionNoStops) = false,
-
+	[t1301] areConnected("D", "A", connections(net)("D"), {}, net) = true,
 
 	/** ----> PREDICATES <---- **/
 

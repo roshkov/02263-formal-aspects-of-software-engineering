@@ -113,8 +113,8 @@ class
     			     	      )
     pre isIn(s1,n) /\ isIn(s2,n),
 
-    areConnected : StopId >< Connection-set >< Connection-set >< Net -> Bool
-    areConnected(des, cs, v, n) is let
+    areConnected : StopId >< StopId >< Connection-set >< Connection-set >< Net -> Bool
+    areConnected(src, des, cs, v, n) is let
 					/* Extract a connection from the set. */
 					c = hd(cs),
 					/* Remove the extracted connection from the set. */
@@ -133,13 +133,14 @@ class
 					   in
 						/* If there are more candidates left, recurse, else done. */
 						if card cs'' >= 1 then
-							areConnected(des, cs'', v', n)
+							areConnected(src, des, cs'', v', n)
 						else
 							false
 						end
 					   end
 					end
 				   end
+    pre isIn(src,n) /\ isIn(des,n)
 
   value /* predicates to check nets */
 
@@ -147,11 +148,11 @@ class
     hasCorrectSize(n) is card(dom(stops(n))) >= 2,
 
     isNetConnected : Net -> Bool
-    isNetConnected(n) is (all s : StopId :- s isin dom(stops(n)) =>
-    		      	      (all s' : StopId :- s' isin dom(stops(n)) /\ s ~= s' =>
-    		      	      	   areConnected(s', connections(n)(s), {}, n)
-    		      	      )
-    		      	 ),
+    isNetConnected(n) is card(dom(stops(n))) ~= 0 /\ (all s : StopId :- s isin dom(stops(n)) =>
+    		      	      		     	     	  (all s' : StopId :- s' isin dom(stops(n)) /\ s ~= s' =>
+    		      	      	   			       areConnected(s, s', connections(n)(s), {}, n)
+    		      	      				  )
+    		      	 			     ),
 
     noDirectSelfConnections : Net -> Bool
     noDirectSelfConnections(n) is (all s : StopId :- s isin dom(stops(n)) =>
