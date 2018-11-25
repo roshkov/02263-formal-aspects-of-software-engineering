@@ -24,7 +24,9 @@ class
 	netTwoStops : Net = insertStop(s2, 3, insertStop(s1, 2, emptyNet)),
 	netStops : Net = insertStop(s4, 2, insertStop(s3, 2, insertStop(s2, 3, insertStop(s1, 2, emptyNet)))), 
 	net : Net = addConnection(s2, s4, 2, 2, 7, addConnection(s2, s3, 2, 3, 12, addConnection(s1, s2, 1, 1, 10, netStops))),
-	netSingleConnection : Net = addConnection(s1, s2, 1, 1, 10, emptyNet),
+	netSingleConnectionNoStops : Net = addConnection(s1, s2, 1, 1, 10,emptyNet),
+	netSingleConnection : Net = addConnection(s1, s2, 1, 1, 10, netTwoStops),
+	netSingleConnectionTest : Net =  mk_Net([s1 +> 2, s2 +> 3], [s1 +> {mk_Connection(s1,s2,1,1,10)}, s2 +> {mk_Connection(s2,s1,1,1,10)}]),
 	netStopsExtended : Net = insertStop(s6, 6, insertStop(s5, 5, net)),
 	netDisconnected : Net = addConnection(s5, s6, 4, 4, 11, netStopsExtended),
 	netNoBiDirectCon : Net = mk_Net(["A" +> 2, "B" +> 3],["A" +> {mk_Connection("A","B",1,1,10)}, "B" +> {mk_Connection("","",0,0,0)}])
@@ -42,22 +44,15 @@ class
 
 	/* Test that a connection is correctly inserted in a net
 	between two stops  */
-	[t200] addConnection(s1, s2, 1, 1, 10, netTwoStops)=
-	mk_Net([s1 +> 2, s2 +> 3], [s1 +>
-	{mk_Connection(s1,s2,1,1,10)}, s2 +>
-	{mk_Connection(s2,s1,1,1,10)}]),
+	[t200] netSingleConnection= netSingleConnectionTest,
 
         /* Test that a connection between two stops already in the net
 	is not inserted again */
-	[t201] addConnection(s1,s2,1,1,10,addConnection(s1, s2, 1, 1, 10, netTwoStops))= 
-        mk_Net([s1 +> 2, s2 +> 3], 
-        [s1 +> {mk_Connection(s1,s2,1,1,10)},
-         s2 +> {mk_Connection(s2,s1,1,1,10)}
-        ]),
+	[t201] addConnection(s1,s2,1,1,10, netSingleConnection)= netSingleConnectionTest,
 
 	/* Test that a connection (between two stops) already in the net
 	but with different values is added to the Net when inserted */
-	[t202] addConnection(s1,s2,2,2,20,addConnection(s1, s2, 1, 1, 10, netTwoStops))= 
+	[t202] addConnection(s1,s2,2,2,20, netSingleConnection)= 
         mk_Net([s1 +> 2, s2 +> 3], 
         [s1 +> {mk_Connection(s1,s2,1,1,10), mk_Connection(s1,s2,2,2,20)},
          s2 +> {mk_Connection(s2,s1,1,1,10), mk_Connection(s2,s1,2,2,20)}
