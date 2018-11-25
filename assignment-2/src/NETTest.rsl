@@ -45,17 +45,15 @@ class
 
 	/** ---- Tests for addConnection ----  **/
 
-	/* Test that a connection is correctly inserted in a net
-	between two stops  */
-	[t200] netSingleConnection= netSingleConnectionTest,
+	/* Test that a connection is correctly inserted in a net between two stops  */
+	[t200] netSingleConnection = netSingleConnectionTest,
 
-        /* Test that a connection between two stops already in the net
-	is not inserted again */
-	[t201] addConnection(s1,s2,1,1,10, netSingleConnection)= netSingleConnectionTest,
+    /* Test that a connection between two stops already in the net is not inserted again */
+	[t201] addConnection(s1,s2,1,1,10, netSingleConnection) = netSingleConnectionTest,
 
 	/* Test that a connection (between two stops) already in the net
 	but with different values is added to the Net when inserted */
-	[t202] addConnection(s1,s2,2,2,20, netSingleConnection)= 
+	[t202] addConnection(s1,s2,2,2,20, netSingleConnection) = 
         mk_Net([s1 +> 2, s2 +> 3], 
         [s1 +> {mk_Connection(s1,s2,1,1,10), mk_Connection(s1,s2,2,2,20)},
          s2 +> {mk_Connection(s2,s1,1,1,10), mk_Connection(s2,s1,2,2,20)}
@@ -121,15 +119,18 @@ class
 	/** ---- Tests for hasDirectConnection  ---- **/
 
 	/* Test that two stops are directly connected in one direction in a net */
-	[t1200] hasDirectConnection("A", "B", net),
+	[t1200] hasDirectConnection("A", "B", net) = true,
 
 	/** ---- Tests for areConnected  ---- **/
 
 	/* Test that two stops are connected by a direct connection */
-	[t1300] areConnected("A", connections(net)("B"), {}, net),
+	[t1300] areConnected("A", connections(net)("B"), {}, net) = true,
 
 	/* Test that two stops are connected by a indirect connection */
-	[t1301] areConnected("A", connections(net)("D"), {}, net),
+	[t1301] areConnected("A", connections(net)("D"), {}, net) = true,
+
+	/* Test that two stops are not connected if the Stops are not part of the Net */
+	[t1302] areConnected("A", connections(netSingleConnectionNoStops)("B"), {}, netSingleConnectionNoStops) = false,
 
 
 	/** ----> PREDICATES <---- **/
@@ -139,14 +140,14 @@ class
 	/* Test that false is returned for an empty net(0 Stops) */
 	[t1400] hasCorrectSize(emptyNet)= false,
 
-     /* Test that false is returned for a net with only one Stop */
+    /* Test that false is returned for a net with only one Stop */
 	[t1401] hasCorrectSize(insertStop(s1, 2, emptyNet)) = false,
 
 	/* Test that true is returned for a net with two Stops */
 	[t1402] hasCorrectSize(netTwoStops) = true,
 
 	/* Test that true is returned for a net with more than two stops */
-        [t1403] hasCorrectSize(net) = true,
+    [t1403] hasCorrectSize(net) = true,
 
     /** ---- Tests for isNetConnected ---- **/
 
@@ -155,6 +156,10 @@ class
 
 	/* Test that false is returned when any stop in the net is not directly or indirectly connected to all stops */
 	[t1501] isNetConnected(netDisconnected) = false,
+
+	/* WARNING: We need a precondition that does not allow a net where a connection to a non declared stops exist */
+	/* btw,  the result is true */
+	[t1502] isNetConnected(netSingleConnectionNoStops) = false,
 
 	/** ---- Tests for noDirectSelfConnections ---- */
 
@@ -181,11 +186,19 @@ class
 	[t1800] hasBiDirectConnection(net) = true,
 
 	/* Test that false is returned if any direct connections between two stops in the net are not connecting the stops in both direction */
-	-- non added connection: "B" +> {mk_Connection("B","A",1,1,10)
-    [t1801] hasBiDirectConnection(netNoBiDirectCon) = false
+	/* non added connection: "B" +> {mk_Connection("B","A",1,1,10) */
+    [t1801] hasBiDirectConnection(netNoBiDirectCon) = false,
 
 	/** ---- Tests for isWellformed ----  **/
-        /* THIS NEEDS TO BE TESTED */
+
+	/* Test that true is returned for a Net with Connections between every Stop and only Stops in the Net */
+    [t1900] isWellformed(net) = true,
+
+	/* Test that false is returned for a disconnected Net */
+	[t1901] isWellformed(netDisconnected) = false,
+
+	/* Test that false is returned for a Net where exists Connections between stops that are not part of the Net */
+	[t1902] isWellformed(netSingleConnectionNoStops) = false
 
  end
  
