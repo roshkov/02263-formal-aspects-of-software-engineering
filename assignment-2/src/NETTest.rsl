@@ -32,6 +32,9 @@ class
 	netNoBiDirectCon : Net = mk_Net(["A" +> 2, "B" +> 3],["A" +> {mk_Connection("A","B",1,1,10)}, "B" +> {mk_Connection("","",0,0,0)}])
 
   test_case
+
+	/** ----> GENERATORS <---- **/
+
 	/** ---- Tests for insertStop ----  **/
 
 	/* Test that a stop is inserted correctly in a net. */
@@ -57,6 +60,9 @@ class
         [s1 +> {mk_Connection(s1,s2,1,1,10), mk_Connection(s1,s2,2,2,20)},
          s2 +> {mk_Connection(s2,s1,1,1,10), mk_Connection(s2,s1,2,2,20)}
         ]),
+
+
+	/** ----> OBSERVERS <---- **/
 
 	/** ---- Tests for isIn ----  **/
 
@@ -124,6 +130,9 @@ class
 
         /* Test that two stops are connected by a indirect connection */
         [t1301] areConnected("A", connections(net)("D"), {}, net),
+
+
+		/** ----> PREDICATES <---- **/
 
         /** ---- Tests for hasCorrectSize ---- **/
 
