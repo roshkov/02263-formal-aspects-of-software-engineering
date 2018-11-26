@@ -9,13 +9,11 @@ class
     TramId = Text, -- tram names
     ConId :: from : StopId
     	     to : StopId, -- connection names
-    ScheduleSlot :: departure : Time
-    	       	    arrival   : Time,
-    ScheduleSlotsList :: arrivals   : Time-list
+    ScheduleSlots :: arrivals   : Time-list
     	       	      	 departures : Time-list,
     --ScheduleTable = ConId -m-> ScheduleSlot-list,
-    ScheduleTable = ConId -m-> ScheduleSlotsList, -- Arrival and departure times. index i in the two lists should correspond to the same connection, i.e. they should not be sorted but ordered.
-    StopsTable = StopId -m-> ScheduleSlotsList
+    ScheduleTable = ConId -m-> ScheduleSlots, -- Arrival and departure times. index i in the two lists should correspond to the same connection, i.e. they should not be sorted but ordered.
+    StopsTable = StopId -m-> ScheduleSlots
 
     value /* generators */
       -- the an empty timetable
@@ -46,6 +44,50 @@ class
 				table
 		              end,
       */
+
+	initCreateStopsTable: TimeTable -> StopsTable
+	initCreateStopsTable(tt) is createStopsTable(dom(tt), [], tt),
+
+	createStopsTable: Text-set >< StopsTable >< TimeTable -> StopsTable
+	createStopsTable(trams, st, tt) is
+								if card(trams) = 1 then
+									createStopsTableByTimeSlots(tt(hd(trams)), st)
+								else
+									let
+										tram = hd(trams),
+										trams' = trams \ {tram}
+									in
+										createStopsTable(trams', createStopsTableByTimeSlots(tt(tram), st), tt)
+									end
+								end,
+	  					
+	createStopsTableByTimeSlots: TimeSlot-list >< StopsTable -> StopsTable
+	createStopsTableByTimeSlots(tsl, st) is
+											if len(tsl) = 0 then
+												st
+											elsif len(tsl) = 1 then
+												insertTimeSlotInStopsTable(hd(tsl), st)
+											else
+												let
+													ts = hd(tsl),
+													tsl' = tl(tsl)
+												in
+													createStopsTableByTimeSlots(tsl', insertTimeSlotInStopsTable(ts, st))
+												end
+											end,
+
+	insertTimeSlotInStopsTable: TimeSlot >< StopsTable -> StopsTable
+	insertTimeSlotInStopsTable(ts, st) is
+										let
+											stopId = stopId(ts),
+											scheduleSlots = st(stopId) 
+										in
+											st !! [stopId +> mk_ScheduleSlots(
+																	arrivals(scheduleSlots) ^ <.arrival(ts).>,
+																	departures(scheduleSlots) ^ <.departure(ts).>
+																)]
+										end,
+	
 /*
       createScheduleTable: TimeTable >< TramId -> read any ScheduleTable
       createScheduleTable(tt,tramId) is local
