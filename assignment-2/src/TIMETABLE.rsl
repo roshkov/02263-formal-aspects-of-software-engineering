@@ -105,31 +105,24 @@ class
 			  end as sortedList
       post isSorted(sortedList),
 
-      findMaxOverlap : Time-list >< Time-list >< Int >< Time -> Int
-      findMaxOverlap(sArr, sDep, n, time) is local
-					           variable
-				    		       curO : Int 	:= 1,
-			    	    		       maxO : Int 	:= 0,
-						       t    : Time 	:= time,
-						       i    : Int	:= 2,
-						       j    : Int	:= 1
-			      			   in
-						       while i < n /\ j < n do
-						       	   if sArr(i) <= sDep(j) then
-							       curO := curO + 1;
-							       if curO > maxO then
-							       	  maxO := curO;
-								  t := sArr(i)
-							       end;
-							       i := i + 1
-							   else
-							       curO := curO - 1;
-							       j := j + 1
-							   end
-						       end;
-						       maxO
-		              			   end
-     pre isSorted(sArr) /\ isSorted(sDep)
+     findMaxOverlapRec : Time-list >< Time-list >< Int >< Int -> Int
+     findMaxOverlapRec(sArr, sDep, curO, maxO) is if len(sArr) > 0 /\ len(sDep) > 0 then
+     			  	   	    	         if hd(sArr) <= hd(sDep) then
+							     if curO + 1 > maxO then
+							         findMaxOverlapRec(tl(sArr), sDep, curO+1, curO+1)
+							     else
+							         findMaxOverlapRec(tl(sArr), sDep, curO+1, maxO)
+							     end
+							 else
+							     findMaxOverlapRec(sArr, tl(sDep), curO-1, maxO)
+							 end
+						     else
+						         maxO
+						     end
+     pre isSorted(sArr) /\ isSorted(sDep),
+
+     findMaxOverlap : Time-list >< Time-list -> Int
+     findMaxOverlap(arrs, deps) is findMaxOverlapRec(sort(arrs), sort(deps), 0, 0)
       
   value /* observers */
      -- check whether a tram with a given name exists in a given time table
@@ -139,25 +132,20 @@ class
      noStopCapacityExceeded : StopsTable >< Net -> Bool
      noStopCapacityExceeded(stopsTable, n) is (all sId : StopId :- sId isin dom(stopsTable) =>
      					      	  let
-						      
-						      sArr = sort(arrivals(stopsTable(sId))),
-						      sDep = sort(departures(stopsTable(sId))),
-						      length = len(sArr),
-						      t = hd(sArr)
+						      arrs = arrivals(stopsTable(sId)),
+						      deps = departures(stopsTable(sId))
 						  in
-						      findMaxOverlap(sArr, sDep, length, t) <= capacity(sId, n)
+						      findMaxOverlap(arrs, deps) <= capacity(sId, n)
 						  end
      					      ),
 
      noConnectionCapacityExceeded : ScheduleTable >< Net -> Bool
      noConnectionCapacityExceeded(scheduleTable, n) is (all c : ConId :- c isin dom(scheduleTable) =>
      						       	    let
-								sArr = sort(arrivals(scheduleTable(c))),
-								sDep = sort(departures(scheduleTable(c))),
-								length = len(sArr),
-								t = hd(sArr)
+								arrs = arrivals(scheduleTable(c)),
+								deps = departures(scheduleTable(c))
 							    in
-								findMaxOverlap(sArr, sDep, length, t) <= capacity(from(c), to(c), n)
+								findMaxOverlap(arrs, deps) <= capacity(from(c), to(c), n)
 							    end
      						       ),
 

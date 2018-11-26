@@ -19,7 +19,7 @@ class
 	[t1801] getLargerItems(<.34,123,6,1,685.>, 34),
 	[t1821] getSmallerItems(<.34,123,6,1,685.>, 34),
 	[t1822] sort(<.34,123,6,1,685,34, 35.>),
-	[t1824] findMaxOverlap(sArr, sDep, len(sArr), t)
+	[t1824] findMaxOverlap(arr, dep)
 	/*   */
 	
 	/** ---- Tests for addStop ----  **/
