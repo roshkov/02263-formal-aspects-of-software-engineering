@@ -8,12 +8,11 @@ class
 		departure : Time,
     TramId = Text, -- tram names
     ConId :: from : StopId
-    	     to : StopId, -- connection names
+    	     to   : StopId, -- connection names
     ScheduleSlot :: departure : Time
     	       	    arrival   : Time,
     ScheduleSlotsList :: arrivals   : Time-list
     	       	      	 departures : Time-list,
-    --ScheduleTable = ConId -m-> ScheduleSlot-list,
     ScheduleTable = ConId -m-> ScheduleSlotsList, -- Arrival and departure times. index i in the two lists should correspond to the same connection, i.e. they should not be sorted but ordered.
     StopsTable = StopId -m-> ScheduleSlotsList
 
@@ -102,12 +101,9 @@ class
       findMaxOverlap : Time-list >< Time-list >< Int >< Time -> Int
       findMaxOverlap(sArr, sDep, n, time) is local
 					           variable
-				    		       --sArr : Time-list := sort(arrival),
-				    		       --sDep : Time-list := sort(departure),
 				    		       curO : Int 	:= 1,
 			    	    		       maxO : Int 	:= 0,
 						       t    : Time 	:= time,
-						       -- t:Time:=hd(sArr),
 						       i    : Int	:= 2,
 						       j    : Int	:= 1
 			      			   in
@@ -132,22 +128,45 @@ class
      isIn : TramId >< TimeTable -> Bool
      isIn(tId, tt) is tId isin dom(tt),
 
-     --hasOverlap(s1, s2
+     noStopCapacityExceeded : StopsTable >< Net -> Bool
+     noStopCapacityExceeded(stopsTable, n) is (all sId : StopId :- sId isin dom(stopsTable) =>
+     					      	  let
+						      
+						      sArr = sort(arrivals(stopsTable(sId))),
+						      sDep = sort(departures(stopsTable(sId))),
+						      length = len(sArr),
+						      t = hd(sArr)
+						  in
+						      findMaxOverlap(sArr, sDep, length, t) <= capacity(sId, n)
+						  end
+     					      ),
 
-     --noStopCapacityExceeded : stopsTable >< Net -> Bool
-     --noStopCapacityExceeded(stopsTable, n) is,
-
-     --noConnectionCapacityExceeded : ScheduleTable >< Net -> Bool
-     --noConnectionCapacityExceeded(scheduleTable, n) is,
+     noConnectionCapacityExceeded : ScheduleTable >< Net -> Bool
+     noConnectionCapacityExceeded(scheduleTable, n) is (all c : ConId :- c isin dom(scheduleTable) =>
+     						       	    let
+								sArr = sort(arrivals(scheduleTable(c))),
+								sDep = sort(departures(scheduleTable(c))),
+								length = len(sArr),
+								t = hd(sArr)
+							    in
+								findMaxOverlap(sArr, sDep, length, t) <= capacity(from(c), to(c), n)
+							    end
+     						       ),
 
      --noHeadwayViolation : ScheduleTable >< Net -> Bool
      --noHeadwayViolation(scheduleTable, n) is,
 
      noDrivingTimeExceeded : ScheduleTable >< Net -> Bool
      noDrivingTimeExceeded(scheduleTable, n) is (all c : ConId :- c isin dom(scheduleTable) =>
-     					     	     (all s : ScheduleSlot :- s isin scheduleTable(c) => -- Maybe elems should be added.
-						     	  arrival(s) - departure(s) <= minDrivingTime(from(c), to(c), n)
-						     )
+						     let
+							arrs = arrivals(scheduleTable(c)),
+							deps = departures(scheduleTable(c))
+						     in
+							 (all i : Int :- i isin inds(arrs) /\ len(arrs) = len(deps) =>
+						     	     arrs(i) - deps(i) <= minDrivingTime(from(c), to(c), n)
+						     	 )
+						     end
+     					     	     
      					     	)
 						
   --value /* predicates to check time tables */
