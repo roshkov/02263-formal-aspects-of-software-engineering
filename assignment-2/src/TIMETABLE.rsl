@@ -8,10 +8,9 @@ class
 		departure : Time,
     TramId = Text, -- tram names
     ConId :: from : StopId
-    	     to : StopId, -- connection names
+    	       to   : StopId, -- connection names1
     ScheduleSlots :: arrivals   : Time-list
-    	       	      	 departures : Time-list,
-    --ScheduleTable = ConId -m-> ScheduleSlot-list,
+    	       	       departures : Time-list,
     ScheduleTable = ConId -m-> ScheduleSlots, -- Arrival and departure times. index i in the two lists should correspond to the same connection, i.e. they should not be sorted but ordered.
     StopsTable = StopId -m-> ScheduleSlots
 
@@ -133,78 +132,104 @@ class
 				   else
 				       getSmallerItems(tl(tList),t)
 				   end,
+      isSorted : Time-list -> Bool
+      isSorted(tList) is (all i : Nat :- i isin inds(tList) =>
+     			     (all i' : Nat :- i' isin inds(tList) /\ i < i' =>
+			         tList(i) <= tList(i)
+			     )
+     			 ),
 
       sort : Time-list -> Time-list
       sort(tList) is if len(tList) <= 1 then
       		       	      tList
 			  else
-			      sort(getSmallerItems(tl(tList), hd(tList))) ^ <.hd(tList).> ^ sort(getLargerItems(tl(tList), hd(tList)))
-			  end,
+			      sort(getSmallerItems(tl(tList), hd(tList))) ^
+			      <.hd(tList).> ^
+			      sort(getLargerItems(tl(tList), hd(tList)))
+			  end as sortedList
+      post isSorted(sortedList),
 
-      findMaxOverlap : Time-list >< Time-list >< Int >< Time -> Int
-      findMaxOverlap(sArr, sDep, n, time) is local
-					           variable
-				    		       --sArr : Time-list := sort(arrival),
-				    		       --sDep : Time-list := sort(departure),
-				    		       curO : Int 	:= 1,
-			    	    		       maxO : Int 	:= 0,
-						       t    : Time 	:= time,
-						       -- t:Time:=hd(sArr),
-						       i    : Int	:= 2,
-						       j    : Int	:= 1
-			      			   in
-						       while i < n /\ j < n do
-						       	   if sArr(i) <= sDep(j) then
-							       curO := curO + 1;
-							       if curO > maxO then
-							       	  maxO := curO;
-								  t := sArr(i)
-							       end;
-							       i := i + 1
-							   else
-							       curO := curO - 1;
-							       j := j + 1
-							   end
-						       end;
-						       maxO
-		              			   end 
+     findMaxOverlapRec : Time-list >< Time-list >< Int >< Int -> Int
+     findMaxOverlapRec(sArr, sDep, curO, maxO) is if len(sArr) > 0 /\ len(sDep) > 0 then
+     			  	   	    	         if hd(sArr) <= hd(sDep) then
+							     if curO + 1 > maxO then
+							         findMaxOverlapRec(tl(sArr), sDep, curO+1, curO+1)
+							     else
+							         findMaxOverlapRec(tl(sArr), sDep, curO+1, maxO)
+							     end
+							 else
+							     findMaxOverlapRec(sArr, tl(sDep), curO-1, maxO)
+							 end
+						     else
+						         maxO
+						     end
+     pre isSorted(sArr) /\ isSorted(sDep),
+
+     findMaxOverlap : Time-list >< Time-list -> Int
+     findMaxOverlap(arrs, deps) is findMaxOverlapRec(sort(arrs), sort(deps), 0, 0)
       
   value /* observers */
      -- check whether a tram with a given name exists in a given time table
      isIn : TramId >< TimeTable -> Bool
      isIn(tId, tt) is tId isin dom(tt),
 
-     --hasOverlap(s1, s2
+     noStopCapacityExceeded : StopsTable >< Net -> Bool
+     noStopCapacityExceeded(stopsTable, n) is (all sId : StopId :- sId isin dom(stopsTable) =>
+     					      	  let
+						      arrs = arrivals(stopsTable(sId)),
+						      deps = departures(stopsTable(sId))
+						  in
+						      findMaxOverlap(arrs, deps) <= capacity(sId, n)
+						  end
+     					      ),
 
-     --noStopCapacityExceeded : stopsTable >< Net -> Bool
-     --noStopCapacityExceeded(stopsTable, n) is,
+     noConnectionCapacityExceeded : ScheduleTable >< Net -> Bool
+     noConnectionCapacityExceeded(scheduleTable, n) is (all c : ConId :- c isin dom(scheduleTable) =>
+     						       	    let
+								arrs = arrivals(scheduleTable(c)),
+								deps = departures(scheduleTable(c))
+							    in
+								findMaxOverlap(arrs, deps) <= capacity(from(c), to(c), n)
+							    end
+     						       ),
 
-     --noConnectionCapacityExceeded : ScheduleTable >< Net -> Bool
-     --noConnectionCapacityExceeded(scheduleTable, n) is,
+     noHeadwayViolation : ConId >< Time-list >< Net -> Bool
+     noHeadwayViolation(conId, tList, n) is (all i : Nat :- i isin inds(tList) =>
+     					        (all i' : Nat :- i' isin inds(tList) /\ i < i' =>
+					    	    tList(i') - tList(i) >= minHeadway(from(conId), to(conId),n)
+					    	)
+     					    )
+     pre isSorted(tList),
 
-     --noHeadwayViolation : ScheduleTable >< Net -> Bool
-     --noHeadwayViolation(scheduleTable, n) is,
+     noHeadwayViolation : ScheduleTable >< Net -> Bool
+     noHeadwayViolation(scheduleTable, n) is (all c : ConId :- c isin dom(scheduleTable) =>
+     				       	         noHeadwayViolation(c, sort(departures(scheduleTable(c))),n) /\
+						 noHeadwayViolation(c, sort(arrivals(scheduleTable(c))),n)
+     				       	     ),
 
      noDrivingTimeExceeded : ScheduleTable >< Net -> Bool
      noDrivingTimeExceeded(scheduleTable, n) is (all c : ConId :- c isin dom(scheduleTable) =>
-     					     	     (all s : ScheduleSlot :- s isin scheduleTable(c) => -- Maybe elems should be added.
-						     	  arrival(s) - departure(s) <= minDrivingTime(from(c), to(c), n)
-						     )
+						     let
+							arrs = arrivals(scheduleTable(c)),
+							deps = departures(scheduleTable(c))
+						     in
+							 (all i : Nat :- i isin inds(arrs) /\ len(arrs) = len(deps) =>
+						     	     arrs(i) - deps(i) <= minDrivingTime(from(c), to(c), n)
+						     	 )
+						     end    
      					     	)
 						
   --value /* predicates to check time tables */
   /*
      isWellformed : TimeTable >< Net -> Bool
-     isWellformed(t, n) is let
-				--scheduleTable = createScheduleTable(t),
-				--stopsTable = createStopsTable(t)
-				
-     		     	   in
-				--noStopCapacityExceeded(stopsTable,n) /\
-     		     	   	--noConnectionCapacityExceeded(scheduleTable, n) /\
-			   	--noHeadwayViolation(scheduleTable, n) /\
-			   	noDrivingTimeExceeded(scheduleTable, n)
---				true
-			   end
+     isWellformed(timeTable, n) is let
+				       --scheduleTable = createScheduleTable(timeTable),
+				       --stopsTable = createStopsTable(timeTable)
+				   in
+				       noStopCapacityExceeded(stopsTable, n) /\
+     		     	   	       noConnectionCapacityExceeded(scheduleTable, n) /\
+			   	       noHeadwayViolation(scheduleTable, n) /\
+			   	       noDrivingTimeExceeded(scheduleTable, n)
+			   	   end
 			   */
 end  
