@@ -3,14 +3,14 @@ scheme TIMETABLE = extend NET with
 class
   type 
     TimeTable = TramId -m-> TimeSlot-list, -- time tables
-    TimeSlot :: stopId 	  : StopId
-    	     	arrival   : Time
-		departure : Time,
     TramId = Text, -- tram names
-    ConId :: from : StopId
-    	       to   : StopId, -- connection names1
+    TimeSlot 	  :: stopId     : StopId
+    	     	     arrival    : Time
+		     departure  : Time,
+    ConId 	  :: from       : StopId
+    	     	     to         : StopId, -- connection names1
     ScheduleSlots :: arrivals   : Time-list
-    	       	       departures : Time-list,
+    	       	     departures : Time-list,
     ScheduleTable = ConId -m-> ScheduleSlots, -- Arrival and departure times. index i in the two lists should correspond to the same connection, i.e. they should not be sorted but ordered.
     StopsTable = StopId -m-> ScheduleSlots
 
@@ -26,22 +26,37 @@ class
       addStop : TramId >< StopId >< Time >< Time >< TimeTable -> TimeTable
       addStop(tId, sId, a, d, tt) is tt !! [tId +> tt(tId)^<.mk_TimeSlot(sId, a, d).>],
 
-      initCreateStopsTable: TimeTable -> StopsTable
-      initCreateStopsTable(tt) is createStopsTable(dom(tt), [], tt),
+      createScheduleTable : TimeTable -> ScheduleTable
+      createScheduleTable(tt) is createScheduleTableRec(dom(tt), [], tt),
 
-      createStopsTable: Text-set >< StopsTable >< TimeTable -> StopsTable
-      createStopsTable(trams, st, tt) is if card(trams) = 1 then
+      createScheduleTableRec : Text-set >< StopsTable >< TimeTable -> StopsTable
+      createScheduleTableRec(trams, st, tt) is if card(trams) = 1 then
+				    	       	   createStopsTableByTimeSlots(tt(hd(trams)), st)
+					       else
+					           let
+					               tram = hd(trams),
+					   	       trams' = trams \ {tram}
+					     	   in
+						       createStopsTableRec(trams', createStopsTableByTimeSlots(tt(tram), st), tt)
+					           end
+					       end,
+
+      createStopsTable : TimeTable -> StopsTable
+      createStopsTable(tt) is createStopsTableRec(dom(tt), [], tt),
+
+      createStopsTableRec : Text-set >< StopsTable >< TimeTable -> StopsTable
+      createStopsTableRec(trams, st, tt) is if card(trams) = 1 then
 				    	     createStopsTableByTimeSlots(tt(hd(trams)), st)
 					 else
 					     let
 					         tram = hd(trams),
 					   	 trams' = trams \ {tram}
 					     in
-						 createStopsTable(trams', createStopsTableByTimeSlots(tt(tram), st), tt)
+						 createStopsTableRec(trams', createStopsTableByTimeSlots(tt(tram), st), tt)
 					     end
 					 end,
 	  					
-      createStopsTableByTimeSlots: TimeSlot-list >< StopsTable -> StopsTable
+      createStopsTableByTimeSlots : TimeSlot-list >< StopsTable -> StopsTable
       createStopsTableByTimeSlots(tsl, st) is if len(tsl) = 0 then
       				       	      	  st
 					      elsif len(tsl) = 1 then
@@ -55,16 +70,16 @@ class
 						  end
 					      end,
 
-	insertTimeSlotInStopsTable: TimeSlot >< StopsTable -> StopsTable
-	insertTimeSlotInStopsTable(ts, st) is let
-				       	          stopId = stopId(ts),
-						  scheduleSlots = st(stopId)
-					      in
-						  st !! [stopId +> mk_ScheduleSlots(arrivals(scheduleSlots) ^
-						     		   		    <.arrival(ts).>,
-						     		   		    departures(scheduleSlots) ^
-										    <.departure(ts).>)]
-					      end,
+      insertTimeSlotInStopsTable : TimeSlot >< StopsTable -> StopsTable
+      insertTimeSlotInStopsTable(ts, st) is let
+				       	        stopId = stopId(ts),
+						scheduleSlots = st(stopId)
+					    in
+						st !! [stopId +> mk_ScheduleSlots(arrivals(scheduleSlots) ^
+						     		   		  <.arrival(ts).>,
+						     		   		  departures(scheduleSlots) ^
+										  <.departure(ts).>)]
+					    end,
 	
 /*
       createScheduleTable: TimeTable >< TramId -> read any ScheduleTable
@@ -198,17 +213,17 @@ class
 						     end    
      					     	)
 						
-  --value /* predicates to check time tables */
-  /*
+  value /* predicates to check time tables */
+  
      isWellformed : TimeTable >< Net -> Bool
      isWellformed(timeTable, n) is let
 				       --scheduleTable = createScheduleTable(timeTable),
-				       --stopsTable = createStopsTable(timeTable)
+				       stopsTable = createStopsTable(timeTable)
 				   in
-				       noStopCapacityExceeded(stopsTable, n) /\
-     		     	   	       noConnectionCapacityExceeded(scheduleTable, n) /\
-			   	       noHeadwayViolation(scheduleTable, n) /\
-			   	       noDrivingTimeExceeded(scheduleTable, n)
+				       noStopCapacityExceeded(stopsTable, n) --/\
+     		     	   	       --noConnectionCapacityExceeded(scheduleTable, n) /\
+			   	       --noHeadwayViolation(scheduleTable, n) /\
+			   	       --noDrivingTimeExceeded(scheduleTable, n)
 			   	   end
-			   */
+			   
 end  
