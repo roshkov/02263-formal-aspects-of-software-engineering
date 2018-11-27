@@ -31,7 +31,7 @@ class
 
       createScheduleConnRec : TramId-set >< ScheduleConn >< TimeTable -> ScheduleConn
       createScheduleConnRec(trams, st, tt) is if card(trams) = 1 then
-                                             createScheduleConnForTram(tt(hd(trams)), st)
+                                             createScheduleConnForTimeSlots(tt(hd(trams)), st)
                                           else
                                              let
                                                  tram = hd(trams),
@@ -72,13 +72,13 @@ class
 
       createScheduleStopRec : TramId-set >< ScheduleStop >< TimeTable -> ScheduleStop
       createScheduleStopRec(trams, st, tt) is if card(trams) = 1 then
-				    	     createScheduleStopByTimeSlots(tt(hd(trams)), st)
+				    	     createScheduleStopForTimeSlots(tt(hd(trams)), st)
 					 else
 					     let
 					         tram = hd(trams),
 					   	 trams' = trams \ {tram}
 					     in
-						 createScheduleStopRec(trams', createScheduleStopByTimeSlots(tt(tram), st), tt)
+						 createScheduleStopRec(trams', createScheduleStopForTimeSlots(tt(tram), st), tt)
 					     end
 					 end,
 
@@ -92,7 +92,7 @@ class
 						      ts = hd(tsl),
 						      tsl' = tl(tsl)
 						  in
-						      createScheduleStopByTimeSlots(tsl', insertScheduleSlot(ts, st))
+						      createScheduleStopForTimeSlots(tsl', insertScheduleSlot(ts, st))
 						  end
 					      end,
 
@@ -222,8 +222,8 @@ class
 				       scheduleConn = createScheduleConn(timeTable),
 				       scheduleStop = createScheduleStop(timeTable)
 				   in
-				       noStopCapacityExceeded(scheduleStop, n) --/\
-     		     	  noConnectionCapacityExceeded(scheduleConn, n) /\
+				       noStopCapacityExceeded(scheduleStop, n) /\
+     		     	  	       noConnectionCapacityExceeded(scheduleConn, n) /\
 			   	       noHeadwayViolation(scheduleConn, n) /\
 			   	       noDrivingTimeExceeded(scheduleConn, n)
 			   	   end
