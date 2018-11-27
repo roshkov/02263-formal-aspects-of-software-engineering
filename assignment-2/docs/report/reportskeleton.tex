@@ -86,6 +86,11 @@ This document contains a solution to the problem of representing tram nets and t
 
 \subsection{Test specification}
 
+The purpose of each individual test has been added as source code comments and can be seen in the content of the \verb=NetTest.rsl=  and \verb=TIMETABLETest.rsl= files, which are shown above. The tests have been divided into three sections, corresponding to \emph{Generators, Observers and Predicates} with their respective auxiliary functions, to increase the readability. \\
+
+The general idea of the approach to test the "atomic"/individual functions, have been as follows. For the functions that returns a \verb=Bool=, we have created test data for the test cases, where we expect the result to be true. However, the focus has mainly been on creating invalid test data, that will test the robustness of the functions, that are test cases where we expect the result to be false. As for the functions that return something else than \verb=Bool=. Here has there also been created test data for test cases, where the result has been compared to the expected output, to get a truth value in the overview of the test results, which can be seen in the following section. The test data created for these functions have both been best case test data, where everything is as it should be, but also some of the test data has not been best case, to for example test wrong Nets generated with for example \emph{Connections} between \emph{Stops} that are not part of the \emph{Net}.
+
+
 \subsection{Results of evaluations}
 
 \end{document}
