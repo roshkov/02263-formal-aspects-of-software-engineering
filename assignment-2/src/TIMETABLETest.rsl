@@ -11,15 +11,21 @@ class
 	dep : Time-list = <.12,10,32.>,
 	sArr : Time-list = sort(arr),
 	sDep : Time-list = sort(dep),
-	t : Time = hd(sArr)
+	t : Time = hd(sArr),
 	/* TramSlot values */
-	/* TramTable values */
+	/* TimeTable values */
+	timeTableTramsOnly : TimeTable = addTram("tram2", addTram("tram1", empty)),
+	timeTable : TimeTable = addStop("tram1", "A", 59, 60, addStop("tram1", "B", 46, 48, addStop("tram1", "C", 28, 32, addStop("tram1", "B", 12, 14, addStop("tram1", "A", 0, 1, timeTableTramsOnly)))))
   test_case
 	/** ---- Tests for addTram ----  **/
 	[t1801] getLargerItems(<.34,123,6,1,685.>, 34),
 	[t1821] getSmallerItems(<.34,123,6,1,685.>, 34),
 	[t1822] sort(<.34,123,6,1,685,34, 35.>),
-	[t1824] findMaxOverlap(arr, dep)
+	[t1823] findMaxOverlap(arr, dep),
+	[t1824] timeTable
+
+	
+	
 	/*   */
 	
 	/** ---- Tests for addStop ----  **/

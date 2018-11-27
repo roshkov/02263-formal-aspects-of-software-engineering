@@ -8,7 +8,7 @@ class
     	     	     arrival    : Time
 		     departure  : Time,
     ConId 	  :: from       : StopId
-    	     	     to         : StopId, -- connection names1
+    	     	     to         : StopId, -- connection names
     ScheduleSlots :: arrivals   : Time-list
     	       	     departures : Time-list,
     ScheduleTable = ConId -m-> ScheduleSlots, -- Arrival and departure times. index i in the two lists should correspond to the same connection, i.e. they should not be sorted but ordered.
@@ -26,25 +26,50 @@ class
       addStop : TramId >< StopId >< Time >< Time >< TimeTable -> TimeTable
       addStop(tId, sId, a, d, tt) is tt !! [tId +> tt(tId)^<.mk_TimeSlot(sId, a, d).>],
 
-      createScheduleTable : TimeTable -> ScheduleTable
-      createScheduleTable(tt) is createScheduleTableRec(dom(tt), [], tt),
+      createSchedule : TimeTable -> ScheduleTable
+      createSchedule(tt) is createScheduleRec(dom(tt), [], tt),
 
-      createScheduleTableRec : Text-set >< StopsTable >< TimeTable -> StopsTable
-      createScheduleTableRec(trams, st, tt) is if card(trams) = 1 then
-				    	       	   createStopsTableByTimeSlots(tt(hd(trams)), st)
-					       else
-					           let
+      createScheduleRec : TramId-set >< ScheduleTable >< TimeTable -> ScheduleTable
+      createScheduleRec(trams, st, tt) is if card(trams) = 1 then
+				    	       	      createScheduleForTram(tt(hd(trams)), st)
+					      	  else
+					              let
 					               tram = hd(trams),
 					   	       trams' = trams \ {tram}
 					     	   in
-						       createStopsTableRec(trams', createStopsTableByTimeSlots(tt(tram), st), tt)
+						       createScheduleRec(trams', createScheduleForTram(tt(tram), st), tt)
 					           end
 					       end,
+      createScheduleForTram : TimeSlot-list >< ScheduleTable -> ScheduleTable
+      createScheduleForTram(tsl, st) is if len(tsl) < 2 then -- Needs two trains to create an ScheduleSlot
+      				       	      	  st
+					      elsif len(tsl) = 2 then
+					      	  insertScheduleSlot(hd(tsl), hd(tl(tsl)) ,st)
+					      else
+						  let
+						      tsFrom = hd(tsl),
+						      tsTo = hd(tl(tsl)),
+						      tsl' = tl(tsl) -- Only remove first TimeSlot from the list
+						  in
+						      createScheduleForTram(tsl', insertScheduleSlot(tsFrom, tsTo, st))
+						  end
+					      end,
+
+      insertScheduleSlot : TimeSlot >< TimeSlot >< ScheduleTable -> ScheduleTable
+      insertScheduleSlot(tsFrom, tsTo, st) is let
+      				       	          conId = mk_ConId(stopId(tsFrom), stopId(tsTo)),
+						  scheduleSlots = st(conId),
+						  arr = departure(tsFrom), -- Arrival on connection
+						  dep = arrival(tsTo) -- Departure of connection
+				    	      in
+						  st !! [conId +> mk_ScheduleSlots(arrivals(scheduleSlots) ^ <.arr.>,
+						     		          	   departures(scheduleSlots) ^ <.dep.>)]
+				              end,
 
       createStopsTable : TimeTable -> StopsTable
       createStopsTable(tt) is createStopsTableRec(dom(tt), [], tt),
 
-      createStopsTableRec : Text-set >< StopsTable >< TimeTable -> StopsTable
+      createStopsTableRec : TramId-set >< StopsTable >< TimeTable -> StopsTable
       createStopsTableRec(trams, st, tt) is if card(trams) = 1 then
 				    	     createStopsTableByTimeSlots(tt(hd(trams)), st)
 					 else
