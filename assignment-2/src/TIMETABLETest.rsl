@@ -14,28 +14,53 @@ class
 	t : Time = hd(sArr),
 	/* TramSlot values */
 	/* TimeTable values */
-	timeTableTramsOnly : TimeTable = addTram("tram2", addTram("tram1", empty)),
-	timeTable : TimeTable = addStop("tram1", "A", 59, 60, addStop("tram1", "B", 46, 48, addStop("tram1", "C", 28, 32, addStop("tram1", "B", 12, 14, addStop("tram1", "A", 0, 1, timeTableTramsOnly)))))
+	timeTableTramsOnly : TimeTable = addTram(t2, addTram(t1, empty)),
+	timeTableTramsOnlyTest : TimeTable = empty !! ["tram1" +> <..>, "tram2" +> <..>],
+	timeTable : TimeTable = addStop(t2, "D", 58, 60, addStop(t2, "B", 47, 50, addStop(t2, "A", 28, 32, addStop(t2, "B", 11, 13, addStop(t2, "D", 0, 2, addStop(t1, "A", 59, 60, addStop(t1, "B", 46, 48, addStop(t1, "C", 28, 32, addStop(t1, "B", 12, 14, addStop(t1, "A", 0, 1, timeTableTramsOnly)))))))))),
+	timeTableTest : TimeTable = addStop(t1, "A", 59, 60, addStop(t1, "B", 46, 48, addStop(t1, "C", 28, 32, addStop(t1, "B", 12, 14, addStop(t1, "A", 0, 1, timeTableTramsOnly))))),
+	timeSlotSingle : TimeSlot = mk_TimeSlot("A", 0, 1),
+	emptyScheduleStop : ScheduleStop = [],
+	scheduleStopTest : ScheduleStop = ["A" +> mk_ScheduleSlots(<.0.>, <.1.>)],
+	scheduleStop : ScheduleStop = insertScheduleSlot(timeSlotSingle, emptyScheduleStop)
+	
   test_case
 	/** ---- Tests for addTram ----  **/
 	[t1801] getLargerItems(<.34,123,6,1,685.>, 34),
 	[t1821] getSmallerItems(<.34,123,6,1,685.>, 34),
 	[t1822] sort(<.34,123,6,1,685,34, 35.>),
 	[t1823] findMaxOverlap(arr, dep),
-	[t1824] timeTable
+	[t1824] timeTable,
+
+	/* Test that a valid Stop Schedule has been generated */
+	[t1825] createScheduleStop(timeTableTest),
+	/* Test that a valid Connection Schedule has been generated */
+	[t1826] createScheduleConn(timeTableTest),
+
+	/* Test insert a Slot in a empty ScheduleStop */
+	[t1827] scheduleStop,
+	[t1828] scheduleStopTest,
+	[t1829] scheduleStop = scheduleStopTest,
+	--[t1830] scheduleStopTest("B"),
+	--[t1831] emptyScheduleStop("A"),
+
 
 	
 	
 	/*   */
 	
-	/** ---- Tests for addStop ----  **/
+	/** ---- Tests for addStop ----  **/ 
 
-	/*   */
+	/*  Test that tram1 and tram2 are inserted in the TimeTable */
+	[t1900] timeTableTramsOnly = timeTableTramsOnlyTest,
 	
 	/** ---- Tests for isIn ----  **/
 
-	/*   */
-	
+	/* Test that true is returned when a tram is in the domain of the TimeTable */
+	[t2000] isIn(t1, timeTable) = true,
+
+	/* Test that false is returned when a tram is not in the domain of the TimeTable */
+	[t2001] isIn("tram3", timeTable) = false
+
 	/** ---- Tests for  ----  **/
 
 	/*   */

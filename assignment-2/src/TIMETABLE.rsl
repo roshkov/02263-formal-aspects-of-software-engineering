@@ -97,15 +97,20 @@ class
 					      end,
 
       insertScheduleSlot : TimeSlot >< ScheduleStop -> ScheduleStop
-      insertScheduleSlot(ts, st) is let
-				       	        stopId = stopId(ts),
-						scheduleSlots = st(stopId)
-					    in
-						st !! [stopId +> mk_ScheduleSlots(arrivals(scheduleSlots) ^
-						     		   		  <.arrival(ts).>,
-						     		   		  departures(scheduleSlots) ^
-										  <.departure(ts).>)]
-					    end,
+      insertScheduleSlot(ts, st) is if isInScheduleStop(stopId(ts), st) then
+										let
+				       	        			stopId = stopId(ts),
+											scheduleSlots = st(stopId)
+					    				in
+											st !! [stopId +> mk_ScheduleSlots(arrivals(scheduleSlots) ^
+														<.arrival(ts).>,
+														departures(scheduleSlots) ^
+													<.departure(ts).>)]
+					    				end
+									else
+										st !! [stopId(ts) +> mk_ScheduleSlots(<.arrival(ts).>, <.departure(ts).>)]
+									end,
+	  						
 
       getLargerItems : Time-list >< Time -> Time-list
       getLargerItems(tList, t) is if len(tList) = 0 then
@@ -168,6 +173,9 @@ class
      -- check whether a tram with a given name exists in a given time table
      isIn : TramId >< TimeTable -> Bool
      isIn(tId, tt) is tId isin dom(tt),
+
+	 isInScheduleStop : StopId >< ScheduleStop -> Bool
+	 isInScheduleStop(stopId, ss) is stopId isin dom(ss),
 
      noStopCapacityExceeded : ScheduleStop >< Net -> Bool
      noStopCapacityExceeded(stopsTable, n) is (all sId : StopId :- sId isin dom(stopsTable) =>
