@@ -132,7 +132,7 @@ class
      findMaxCapacityRec(sArr, sDep, curO, maxO) is if len(sArr) > 0 /\ len(sDep) > 0 then
      			  	   	    	         if hd(sArr) < hd(sDep) then
 							     if curO + 1 > maxO then
-							         findMaxRec(tl(sArr), sDep, curO+1, curO+1)
+							         findMaxCapacityRec(tl(sArr), sDep, curO+1, curO+1)
 							     else
 							         findMaxCapacityRec(tl(sArr), sDep, curO+1, maxO)
 							     end
@@ -225,7 +225,7 @@ class
 						        arrs = arrivals(scheduleStop(sId)),
 						      	deps = departures(scheduleStop(sId))
 						    in
-						        findMaxOverlap(arrs, deps) <= capacity(sId, n)
+						        findMaxCapacity(arrs, deps) <= capacity(sId, n)
 						    end
      					        ),
 
@@ -235,7 +235,7 @@ class
 							      arrs = arrivals(scheduleConn(c)),
 							      deps = departures(scheduleConn(c))
 							  in
-							      findMaxOverlap(arrs, deps) <= capacity(from(c), to(c), n)
+							      findMaxCapacity(arrs, deps) <= capacity(from(c), to(c), n)
 							  end
      						      ),
 
