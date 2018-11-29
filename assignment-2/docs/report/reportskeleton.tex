@@ -67,18 +67,20 @@ This document contains a solution to the problem of representing tram nets and t
 It is assumed that two consecutive rows in a time table for a tram is implying that a tram is driving from stop $x$ to $y$ without passing any intermediate stops. Furthermore should the times in a timetable always be in increasing order.
 
 \begin{description}
-    \item[isWellformed] \hfill To the say that a \emph{Time Table} is wellformed, means that is should fulfil the following requirements.
+    \item[isWellformed] To the say that a \emph{Time Table} is wellformed, means that is should fulfil the following requirements.
         \begin{itemize}
-            \item All stops that is a part of a \emph{time table} must be part of the \emph{net}. Function: \verb=allStopsInNet=.
-            \item Any
-            Any \emph{stop} must have a direct or indirect connection to every other \emph{stop} in the \emph{net}, i.e. a tram can travel to any \emph{stop} from any \emph{stop}. Function: \verb=isNetConnected=.
-            \item A \emph{stop} can not have a direct \emph{connection} to itself. Function: \verb=noDirectSelfConnections=.
-            \item A \emph{stop} can not have more than one direct \emph{connection} to the same \emph{stop}. Function: \verb=hasOneDirectConnection=.
-            \item A \emph{connection} between two \emph{stops} consists of two tracks, one track for each direction, i.e. a tram can travel back and forth between the two \emph{stops} using the same \emph{connection}. Function: \verb=hasBiDirectConnection=.
+            \item All times in a \emph{time table} must be equal or increasing, i.e. a tram can not travel back in time. Function: \verb=hasCorrectTimes=
+            \item All stops that is a part of a \emph{time table} must be part of the \emph{net}. Function: \verb=allStopsInNet=
+            \item Any two consecutive rows in a \emph{time table} implies that the \emph{tram} is driving directly between the \emph{stops} on a direct connection, the direct connection should therefore exists in the \emph{net}. Function: \verb=noIndirectConnections=
+            \item The capacity of any \emph{stop} in the \emph{net} must not be exceeded. Function: \verb=noStopCapacityExceeded=
+            \item The capacity of any \emph{connection} in either direction in the \emph{net} must not be exceeded. Function: \verb=noConnectionCapacityExceeded=
+            \item The time between two \emph{trams} arriving and departing from a \emph{stop} must not be shorter then the headway of the connection they were arriving and departing from. Function: \verb=noHeadwayViolation=
+            \item Any \emph{tram} is not allowed to drive faster on a connection between two \emph{stops} than the connection allows. Function: \verb=noDrivingTimeExceeded=
         \end{itemize}
 \end{description}
 
 \begin{description}
+    \item[hasCorrectTimes] \hfill \\ This function can be used to check that all times in a timetable are equal or increasing. 
     \item[allStopsInNet] \hfill \\ 
     \item[noIndirectConnections] \hfill \\ 
     \item[noStopCapacityExceeded] \hfill \\ 
@@ -104,8 +106,8 @@ It is assumed that two consecutive rows in a time table for a tram is implying t
     \item[isIn] \hfill \\ 
     \item[isInSchedule - Stop] \hfill \\ 
     \item[isInSchedule - Connection] \hfill \\ 
-    \item[findMaxOverlap] \hfill \\ 
-    \item[findMaxOverlapRec] \hfill \\ 
+    \item[findMaxCapacity] \hfill \\ 
+    \item[findMaxCapacityRec] \hfill \\ 
     \item[sort] \hfill \\ 
     \item[getLargerItems] \hfill \\
     \item[getSmallerItems] \hfill \\
