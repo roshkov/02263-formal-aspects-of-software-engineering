@@ -97,61 +97,18 @@ class
 						  in
 						      createScheduleStopForTimeSlots(tsl', insertScheduleSlot(ts, ss))
 						  end
-					      end,
+					      end
 
-      insertScheduleSlot : TimeSlot >< ScheduleStop -> ScheduleStop
-      insertScheduleSlot(ts, ss) is if isInSchedule(stopId(ts), ss) then
-				        let
-					    stopId = stopId(ts),
-					    scheduleSlots = ss(stopId)
-					in
-					    ss !! [stopId +> mk_ScheduleSlots(arrivals(scheduleSlots) ^
-					       	  	     		      <.arrival(ts).>,
-									      departures(scheduleSlots) ^
-									      <.departure(ts).>)]
-					end
-				    else
-					ss !! [stopId(ts) +> mk_ScheduleSlots(<.arrival(ts).>, <.departure(ts).>)]
-				    end,
-	  						
+  value /* observers */
+     -- check whether a tram with a given name exists in a given time table
+     isIn : TramId >< TimeTable -> Bool
+     isIn(tId, tt) is tId isin dom(tt),
 
-      getLargerItems : Time-list >< Time -> Time-list
-      getLargerItems(tList, t) is if len(tList) = 0 then
-      			       	      <..>
-				  elsif len(tList) = 1 /\ hd(tList) > t then
-      			       	      <.hd(tList).>
-				  elsif hd(tList) > t then
-				      <.hd(tList).>^getLargerItems(tl(tList),t)
-				  else
-				      getLargerItems(tl(tList),t)
-				  end,
+     isInSchedule : StopId >< ScheduleStop -> Bool
+     isInSchedule(stopId, ss) is stopId isin dom(ss),
 
-      getSmallerItems : Time-list >< Time -> Time-list
-      getSmallerItems(tList, t) is if len(tList) = 0 then
-      			       	      <..>
-				   elsif len(tList) = 1 /\ hd(tList) <= t then
-      			       	      <.hd(tList).>
-				   elsif hd(tList) <= t then
-				       <.hd(tList).>^getSmallerItems(tl(tList),t)
-				   else
-				       getSmallerItems(tl(tList),t)
-				   end,
-      isSorted : Time-list -> Bool
-      isSorted(tList) is (all i : Nat :- i isin inds(tList) =>
-     			     (all i' : Nat :- i' isin inds(tList) /\ i < i' =>
-			         tList(i) <= tList(i)
-			     )
-     			 ),
-
-      sort : Time-list -> Time-list
-      sort(tList) is if len(tList) <= 1 then
-      		       	      tList
-			  else
-			      sort(getSmallerItems(tl(tList), hd(tList))) ^
-			      <.hd(tList).> ^
-			      sort(getLargerItems(tl(tList), hd(tList)))
-			  end as sortedList
-      post isSorted(sortedList),
+     isInSchedule : ConnId >< ScheduleConn -> Bool
+     isInSchedule(connId, sc) is connId isin dom(sc),
 
      findMaxOverlapRec : Time-list >< Time-list >< Int >< Int -> Int
      findMaxOverlapRec(sArr, sDep, curO, maxO) is if len(sArr) > 0 /\ len(sDep) > 0 then
@@ -170,19 +127,65 @@ class
      pre isSorted(sArr) /\ isSorted(sDep),
 
      findMaxOverlap : Time-list >< Time-list -> Int
-     findMaxOverlap(arrs, deps) is findMaxOverlapRec(sort(arrs), sort(deps), 0, 0)
+     findMaxOverlap(arrs, deps) is findMaxOverlapRec(sort(arrs), sort(deps), 0, 0),
 
-  value /* observers */
-     -- check whether a tram with a given name exists in a given time table
-     isIn : TramId >< TimeTable -> Bool
-     isIn(tId, tt) is tId isin dom(tt),
+     insertScheduleSlot : TimeSlot >< ScheduleStop -> ScheduleStop
+     insertScheduleSlot(ts, ss) is if isInSchedule(stopId(ts), ss) then
+				        let
+					    stopId = stopId(ts),
+					    scheduleSlots = ss(stopId)
+					in
+					    ss !! [stopId +> mk_ScheduleSlots(arrivals(scheduleSlots) ^
+					       	  	     		      <.arrival(ts).>,
+									      departures(scheduleSlots) ^
+									      <.departure(ts).>)]
+					end
+				    else
+					ss !! [stopId(ts) +> mk_ScheduleSlots(<.arrival(ts).>, <.departure(ts).>)]
+				    end,
+	  						
 
-     isInSchedule : StopId >< ScheduleStop -> Bool
-     isInSchedule(stopId, ss) is stopId isin dom(ss),
+     getLargerItems : Time-list >< Time -> Time-list
+     getLargerItems(tList, t) is if len(tList) = 0 then
+      			       	      <..>
+				  elsif len(tList) = 1 /\ hd(tList) > t then
+      			       	      <.hd(tList).>
+				  elsif hd(tList) > t then
+				      <.hd(tList).>^getLargerItems(tl(tList),t)
+				  else
+				      getLargerItems(tl(tList),t)
+				  end,
 
-     isInSchedule : ConnId >< ScheduleConn -> Bool
-     isInSchedule(connId, sc) is connId isin dom(sc),
+     getSmallerItems : Time-list >< Time -> Time-list
+     getSmallerItems(tList, t) is if len(tList) = 0 then
+      			       	      <..>
+				   elsif len(tList) = 1 /\ hd(tList) <= t then
+      			       	      <.hd(tList).>
+				   elsif hd(tList) <= t then
+				       <.hd(tList).>^getSmallerItems(tl(tList),t)
+				   else
+				       getSmallerItems(tl(tList),t)
+				   end,
+     isSorted : Time-list -> Bool
+     isSorted(tList) is (all i : Nat :- i isin inds(tList) =>
+     			     (all i' : Nat :- i' isin inds(tList) /\ i < i' =>
+			         tList(i) <= tList(i)
+			     )
+     			 ),
 
+     sort : Time-list -> Time-list
+     sort(tList) is if len(tList) <= 1 then
+      		       	      tList
+			  else
+			      sort(getSmallerItems(tl(tList), hd(tList))) ^
+			      <.hd(tList).> ^
+			      sort(getLargerItems(tl(tList), hd(tList)))
+			  end as sortedList
+     post isSorted(sortedList)
+
+     
+
+  value /* predicates to check time tables */
      noStopCapacityExceeded : ScheduleStop >< Net -> Bool
      noStopCapacityExceeded(stopsTable, n) is (all sId : StopId :- sId isin dom(stopsTable) =>
      					      	  let
@@ -227,9 +230,7 @@ class
 						     	     arrs(i) - deps(i) <= minDrivingTime(from(c), to(c), n)
 						     	 )
 						     end
-     					     	)
-
-  value /* predicates to check time tables */
+     					     	),
 
      isWellformed : TimeTable >< Net -> Bool
      isWellformed(timeTable, n) is let
