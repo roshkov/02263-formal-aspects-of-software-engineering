@@ -30,86 +30,91 @@ class
       createScheduleConn(tt) is createScheduleConnRec(dom(tt), [], tt),
 
       createScheduleConnRec : TramId-set >< ScheduleConn >< TimeTable -> ScheduleConn
-      createScheduleConnRec(trams, st, tt) is if card(trams) = 1 then
-                                             createScheduleConnForTimeSlots(tt(hd(trams)), st)
+      createScheduleConnRec(trams, sc, tt) is if card(trams) = 1 then
+                                             createScheduleConnForTimeSlots(tt(hd(trams)), sc)
                                           else
                                              let
                                                  tram = hd(trams),
                                                  trams' = trams \ {tram}
                                              in
-                                                 createScheduleConnRec(trams', createScheduleConnForTimeSlots(tt(tram), st), tt)
+                                                 createScheduleConnRec(trams', createScheduleConnForTimeSlots(tt(tram), sc), tt)
                                              end
                                           end,
 
       createScheduleConnForTimeSlots : TimeSlot-list >< ScheduleConn -> ScheduleConn
-      createScheduleConnForTimeSlots(tsl, st) is if len(tsl) < 2 then -- Needs two trains to create an ScheduleSlot
-      				       	      	  st
+      createScheduleConnForTimeSlots(tsl, sc) is if len(tsl) < 2 then -- Needs two trains to create an ScheduleSlot
+      				       	      	  sc
 					      elsif len(tsl) = 2 then
-					      	  insertScheduleSlot(hd(tsl), hd(tl(tsl)) ,st)
+					      	  insertScheduleSlot(hd(tsl), hd(tl(tsl)) ,sc)
 					      else
 						  let
 						      tsFrom = hd(tsl),
 						      tsTo = hd(tl(tsl)),
 						      tsl' = tl(tsl) -- Only remove first TimeSlot from the list
 						  in
-						      createScheduleConnForTimeSlots(tsl', insertScheduleSlot(tsFrom, tsTo, st))
+						      createScheduleConnForTimeSlots(tsl', insertScheduleSlot(tsFrom, tsTo, sc))
 						  end
 					      end,
 
       insertScheduleSlot : TimeSlot >< TimeSlot >< ScheduleConn -> ScheduleConn
-      insertScheduleSlot(tsFrom, tsTo, st) is let
+      insertScheduleSlot(tsFrom, tsTo, sc) is let
       				       	          connId = mk_ConnId(stopId(tsFrom), stopId(tsTo)),
-						  scheduleSlots = st(connId),
+						  scheduleSlots = sc(connId),
 						  arr = departure(tsFrom), -- Arrival on connection
 						  dep = arrival(tsTo) -- Departure of connection
 				    	      in
-						  st !! [connId +> mk_ScheduleSlots(arrivals(scheduleSlots) ^ <.arr.>,
+						  if isInSchedule(connId, sc) then
+						      sc !! [connId +> mk_ScheduleSlots(arrivals(scheduleSlots) ^ <.arr.>,
 						     		          	   departures(scheduleSlots) ^ <.dep.>)]
+						  else
+						      sc !! [connId +> mk_ScheduleSlots(<.arr.>, <.dep.>)]
+						  end
+						  
 				              end,
 
       createScheduleStop : TimeTable -> ScheduleStop
       createScheduleStop(tt) is createScheduleStopRec(dom(tt), [], tt),
 
       createScheduleStopRec : TramId-set >< ScheduleStop >< TimeTable -> ScheduleStop
-      createScheduleStopRec(trams, st, tt) is if card(trams) = 1 then
-				    	     createScheduleStopForTimeSlots(tt(hd(trams)), st)
+      createScheduleStopRec(trams, ss, tt) is if card(trams) = 1 then
+				    	     createScheduleStopForTimeSlots(tt(hd(trams)), ss)
 					 else
 					     let
 					         tram = hd(trams),
 					   	 trams' = trams \ {tram}
 					     in
-						 createScheduleStopRec(trams', createScheduleStopForTimeSlots(tt(tram), st), tt)
+						 createScheduleStopRec(trams', createScheduleStopForTimeSlots(tt(tram), ss), tt)
 					     end
 					 end,
 
       createScheduleStopForTimeSlots : TimeSlot-list >< ScheduleStop -> ScheduleStop
-      createScheduleStopForTimeSlots(tsl, st) is if len(tsl) = 0 then
-      				       	      	  st
+      createScheduleStopForTimeSlots(tsl, ss) is if len(tsl) = 0 then
+      				       	      	  ss
 					      elsif len(tsl) = 1 then
-					      	  insertScheduleSlot(hd(tsl), st)
+					      	  insertScheduleSlot(hd(tsl), ss)
 					      else
 						  let
 						      ts = hd(tsl),
 						      tsl' = tl(tsl)
 						  in
-						      createScheduleStopForTimeSlots(tsl', insertScheduleSlot(ts, st))
+						      createScheduleStopForTimeSlots(tsl', insertScheduleSlot(ts, ss))
 						  end
 					      end,
 
       insertScheduleSlot : TimeSlot >< ScheduleStop -> ScheduleStop
-      insertScheduleSlot(ts, st) is if isInScheduleStop(stopId(ts), st) then
-										let
-				       	        			stopId = stopId(ts),
-											scheduleSlots = st(stopId)
-					    				in
-											st !! [stopId +> mk_ScheduleSlots(arrivals(scheduleSlots) ^
-														<.arrival(ts).>,
-														departures(scheduleSlots) ^
-													<.departure(ts).>)]
-					    				end
-									else
-										st !! [stopId(ts) +> mk_ScheduleSlots(<.arrival(ts).>, <.departure(ts).>)]
-									end,
+      insertScheduleSlot(ts, ss) is if isInSchedule(stopId(ts), ss) then
+				        let
+					    stopId = stopId(ts),
+					    scheduleSlots = ss(stopId)
+					in
+					    ss !! [stopId +> mk_ScheduleSlots(arrivals(scheduleSlots) ^
+					       	  	     		      <.arrival(ts).>,
+									      departures(scheduleSlots) ^
+									      <.departure(ts).>)]
+					end
+				    else
+					ss !! [stopId(ts) +> mk_ScheduleSlots(<.arrival(ts).>, <.departure(ts).>)]
+				    end,
 	  						
 
       getLargerItems : Time-list >< Time -> Time-list
@@ -174,8 +179,11 @@ class
      isIn : TramId >< TimeTable -> Bool
      isIn(tId, tt) is tId isin dom(tt),
 
-	 isInScheduleStop : StopId >< ScheduleStop -> Bool
-	 isInScheduleStop(stopId, ss) is stopId isin dom(ss),
+     isInSchedule : StopId >< ScheduleStop -> Bool
+     isInSchedule(stopId, ss) is stopId isin dom(ss),
+
+     isInSchedule : ConnId >< ScheduleConn -> Bool
+     isInSchedule(connId, sc) is connId isin dom(sc),
 
      noStopCapacityExceeded : ScheduleStop >< Net -> Bool
      noStopCapacityExceeded(stopsTable, n) is (all sId : StopId :- sId isin dom(stopsTable) =>

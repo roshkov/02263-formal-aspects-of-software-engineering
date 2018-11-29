@@ -12,7 +12,7 @@ class
 	sArr : Time-list = sort(arr),
 	sDep : Time-list = sort(dep),
 	t : Time = hd(sArr),
-	/* TramSlot values */
+	
 	/* TimeTable values */
 	timeTableTramsOnly : TimeTable = addTram(t2, addTram(t1, empty)),
 	timeTableTramsOnlyTest : TimeTable = empty !! ["tram1" +> <..>, "tram2" +> <..>],
