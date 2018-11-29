@@ -32,9 +32,9 @@ class
 	[t1824] timeTable,
 
 	/* Test that a valid Stop Schedule has been generated */
-	[t1825] createScheduleStop(timeTableTest),
+	[t1825] createScheduleStop(timeTable),
 	/* Test that a valid Connection Schedule has been generated */
-	[t1826] createScheduleConn(timeTableTest),
+	[t1826] createScheduleConn(timeTable),
 
 	/* Test insert a Slot in a empty ScheduleStop */
 	[t1827] scheduleStop,

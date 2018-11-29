@@ -59,17 +59,15 @@ class
       insertScheduleSlot : TimeSlot >< TimeSlot >< ScheduleConn -> ScheduleConn
       insertScheduleSlot(tsFrom, tsTo, sc) is let
       				       	          connId = mk_ConnId(stopId(tsFrom), stopId(tsTo)),
-						  scheduleSlots = sc(connId),
 						  arr = departure(tsFrom), -- Arrival on connection
-						  dep = arrival(tsTo) -- Departure of connection
+						  dep = arrival(tsTo) -- Departure of connection 
 				    	      in
 						  if isInSchedule(connId, sc) then
-						      sc !! [connId +> mk_ScheduleSlots(arrivals(scheduleSlots) ^ <.arr.>,
-						     		          	   departures(scheduleSlots) ^ <.dep.>)]
+						      sc !! [connId +> mk_ScheduleSlots(arrivals(sc(connId)) ^ <.arr.>,
+						     		          	        departures(sc(connId)) ^ <.dep.>)]
 						  else
 						      sc !! [connId +> mk_ScheduleSlots(<.arr.>, <.dep.>)]
 						  end
-						  
 				              end,
 
       createScheduleStop : TimeTable -> ScheduleStop
