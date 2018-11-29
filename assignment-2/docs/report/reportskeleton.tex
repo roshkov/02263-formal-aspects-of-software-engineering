@@ -65,7 +65,7 @@ This document contains a solution to the problem of representing tram nets and t
 \lstinputlisting{assignment-2/src/TIMETABLE.rsl}
 
 \begin{description}
-    \item[isWellformed] \hfill To the say that a 
+    \item[isWellformed] \hfill To the say that a \emph{Time Table} is wellformed, means that is should fulfil the following requirements.
         \begin{itemize}
             \item The \emph{net} must contain at least two \emph{stops}. Function: \verb=hasCorrectSize=.
             \item Any \emph{stop} must have a direct or indirect connection to every other \emph{stop} in the \emph{net}, i.e. a tram can travel to any \emph{stop} from any \emph{stop}. Function: \verb=isNetConnected=.
@@ -73,6 +73,15 @@ This document contains a solution to the problem of representing tram nets and t
             \item A \emph{stop} can not have more than one direct \emph{connection} to the same \emph{stop}. Function: \verb=hasOneDirectConnection=.
             \item A \emph{connection} between two \emph{stops} consists of two tracks, one track for each direction, i.e. a tram can travel back and forth between the two \emph{stops} using the same \emph{connection}. Function: \verb=hasBiDirectConnection=.
         \end{itemize}
+\end{description}
+
+\begin{description}
+    \item[allStopsInNet] \hfill \\ 
+    \item[noIndirectConnections] \hfill \\ 
+    \item[noStopCapacityExceeded] \hfill \\ 
+    \item[noConnectionCapacityExceeded] \hfill \\ 
+    \item[noHeadwayViolation - list] \hfill \\ 
+    \item[noHeadwayViolation] \hfill \\
 \end{description}
 
 % ------------ GENERATORS ------------
@@ -98,14 +107,6 @@ This document contains a solution to the problem of representing tram nets and t
     \item[getLargerItems] \hfill \\
     \item[getSmallerItems] \hfill \\
     \item[isSorted] \hfill \\ 
-\end{description}
-
-\begin{description}
-    \item[isIn] \hfill \\ Can be used to check whether or not a tram with a given name exists in a given time table.
-    \item[isWellformed] \hfill \\ 
-        \begin{itemize}
-            \item item 1
-        \end{itemize}
 \end{description}
 
 \section{Testing the Specifications}
