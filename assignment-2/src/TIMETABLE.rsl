@@ -42,7 +42,7 @@ class
                                           end,
 
       createScheduleConnForTimeSlots : TimeSlot-list >< ScheduleConn -> ScheduleConn
-      createScheduleConnForTimeSlots(tsl, sc) is if len(tsl) < 2 then -- Needs two trains to create an ScheduleSlot
+      createScheduleConnForTimeSlots(tsl, sc) is if len(tsl) < 2 then
       				       	      	  sc
 					      elsif len(tsl) = 2 then
 					      	  insertScheduleSlot(hd(tsl), hd(tl(tsl)) ,sc)
@@ -126,21 +126,22 @@ class
      isInSchedule(connId, sc) is connId isin dom(sc),
 
      findMaxCapacity : Time-list >< Time-list -> Int
-     findMaxCapacity(arrs, deps) is findMaxCapacityRec(sort(arrs), sort(deps), 0, 0),
+     findMaxCapacity(arrs, deps) is findMaxCapacityRec(sort(arrs), sort(deps), 0, 0)
+     pre len(arrs) = len(deps),
 
      findMaxCapacityRec : Time-list >< Time-list >< Int >< Int -> Int
-     findMaxCapacityRec(sArr, sDep, curO, maxO) is if len(sArr) > 0 /\ len(sDep) > 0 then
+     findMaxCapacityRec(sArr, sDep, curC, maxC) is if len(sArr) > 0 /\ len(sDep) > 0 then
      			  	   	    	         if hd(sArr) < hd(sDep) then
-							     if curO + 1 > maxO then
-							         findMaxCapacityRec(tl(sArr), sDep, curO+1, curO+1)
+							     if curC + 1 > maxC then
+							         findMaxCapacityRec(tl(sArr), sDep, curC+1, curC+1)
 							     else
-							         findMaxCapacityRec(tl(sArr), sDep, curO+1, maxO)
+							         findMaxCapacityRec(tl(sArr), sDep, curC+1, maxC)
 							     end
 							 else
-							     findMaxCapacityRec(sArr, tl(sDep), curO-1, maxO)
+							     findMaxCapacityRec(sArr, tl(sDep), curC-1, maxC)
 							 end
 						     else
-						         maxO
+						         maxC
 						     end
      pre isSorted(sArr) /\ isSorted(sDep),
 
