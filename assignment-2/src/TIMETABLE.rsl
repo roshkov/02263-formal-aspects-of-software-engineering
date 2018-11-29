@@ -184,6 +184,31 @@ class
 			 
   value /* predicates to check time tables */
 
+     hasCorrectTimes : TimeSlot-list -> Bool
+     hasCorrectTimes(tsl) is if len(tsl) < 2 then
+     			         -- Check last stations times
+				 arrival(hd(tsl)) <= departure(hd(tsl))
+			     else
+				 let
+				     res = -- Check connection time
+			         	   departure(hd(tsl)) <= arrival(hd(tl(tsl))) /\
+				 	   -- Check to and from stations times
+				 	   arrival(hd(tsl)) <= departure(hd(tsl)) /\
+				 	   arrival(hd(tl(tsl))) <= departure(hd(tl(tsl)))
+				 in
+				     if res then
+				         hasCorrectTimes(tl(tsl))
+				     else
+				         false
+				     end
+				 end
+			     end,
+
+     hasCorrectTimes : TimeTable -> Bool
+     hasCorrectTimes(timeTable) is (all tram : TramId :- tram isin dom(timeTable) =>
+     				       hasCorrectTimes(timeTable(tram))
+     				   ),
+
      allStopsInNet : ScheduleStop >< Net -> Bool
      allStopsInNet(scheduleStop, n) is (all sId : StopId :- sId isin dom(scheduleStop) =>
      				           isIn(sId, n)
@@ -192,7 +217,7 @@ class
      noIndirectConnections : ScheduleConn >< Net -> Bool
      noIndirectConnections(scheduleConn, n) is (all cId : ConnId :- cId isin dom(scheduleConn) =>
      					           hasDirectConnection(from(cId), to(cId), n)
-     					       )
+     					       ),
 
      noStopCapacityExceeded : ScheduleStop >< Net -> Bool
      noStopCapacityExceeded(scheduleStop, n) is (all sId : StopId :- sId isin dom(scheduleStop) =>
@@ -241,12 +266,13 @@ class
      					     	),
 
      isWellformed : TimeTable >< Net -> Bool
-     isWellformed(timeTable, n) is let
+     isWellformed(timeTable, n) is hasCorrectTimes(timeTable) /\
+     			     	   let
 				       scheduleConn = createScheduleConn(timeTable),
 				       scheduleStop = createScheduleStop(timeTable)
 				   in
-				       allStopsInNet(scheduleStop, n),
-				       noIndirectConnections(scheduleConn, n)
+				       allStopsInNet(scheduleStop, n) /\
+				       noIndirectConnections(scheduleConn, n) /\
 				       noStopCapacityExceeded(scheduleStop, n) /\
      		     	  	       noConnectionCapacityExceeded(scheduleConn, n) /\
 			   	       noHeadwayViolation(scheduleConn, n) /\
