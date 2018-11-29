@@ -20,14 +20,14 @@
 \section{Work distribution}
 
 \section{Introduction}
-This document contains a solution to the problem of representing tram nets and tram time tables with data types, furthermore will the document describe a number of functions that can be used to check whether concrete values of the data types to describe the net and time table satisfies a number of requirements, making them wellformed.
+This document contains a solution to the problem of representing trams nets and tram time tables. These nets and time tables will be represented with new data types. Furthermore will the document describe a number of functions, that can be used to check whether concrete values of the data types to describe nets and time tables satisfies a number of requirements, making them wellformed. Lastly will the document describe the test cases that were carried out, to prove the correctness and robustness of the solution.
 
 \section{Formal Specification of Nets}
 
 \lstinputlisting{assignment-2/src/NET.rsl}
 
-\noindent Below are the requirements for a \emph{net} defined.
-
+\noindent Below are the requirements for a \emph{net} defined. 
+\\
 \begin{description}
     \item[isWellformed] To the say that a \emph{net} is wellformed, means that is should fulfil the following requirements. Each requirement will indicate what function is used to ensure the requirement.
         \begin{itemize}
