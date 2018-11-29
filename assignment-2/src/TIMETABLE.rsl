@@ -183,25 +183,36 @@ class
      			 )
 			 
   value /* predicates to check time tables */
+
+     allStopsInNet : ScheduleStop >< Net -> Bool
+     allStopsInNet(scheduleStop, n) is (all sId : StopId :- sId isin dom(scheduleStop) =>
+     				           isIn(sId, n)
+     				       ),
+
+     noIndirectConnections : ScheduleConn >< Net -> Bool
+     noIndirectConnections(scheduleConn, n) is (all cId : ConnId :- cId isin dom(scheduleConn) =>
+     					           hasDirectConnection(from(cId), to(cId), n)
+     					       )
+
      noStopCapacityExceeded : ScheduleStop >< Net -> Bool
-     noStopCapacityExceeded(stopsTable, n) is (all sId : StopId :- sId isin dom(stopsTable) =>
-     					      	  let
-						      arrs = arrivals(stopsTable(sId)),
-						      deps = departures(stopsTable(sId))
-						  in
-						      findMaxOverlap(arrs, deps) <= capacity(sId, n)
-						  end
-     					      ),
+     noStopCapacityExceeded(scheduleStop, n) is (all sId : StopId :- sId isin dom(scheduleStop) =>
+     					      	    let
+						        arrs = arrivals(scheduleStop(sId)),
+						      	deps = departures(scheduleStop(sId))
+						    in
+						        findMaxOverlap(arrs, deps) <= capacity(sId, n)
+						    end
+     					        ),
 
      noConnectionCapacityExceeded : ScheduleConn >< Net -> Bool
-     noConnectionCapacityExceeded(scheduleTable, n) is (all c : ConnId :- c isin dom(scheduleTable) =>
-     						       	    let
-								arrs = arrivals(scheduleTable(c)),
-								deps = departures(scheduleTable(c))
-							    in
-								findMaxOverlap(arrs, deps) <= capacity(from(c), to(c), n)
-							    end
-     						       ),
+     noConnectionCapacityExceeded(scheduleConn, n) is (all c : ConnId :- c isin dom(scheduleConn) =>
+     						       	  let
+							      arrs = arrivals(scheduleConn(c)),
+							      deps = departures(scheduleConn(c))
+							  in
+							      findMaxOverlap(arrs, deps) <= capacity(from(c), to(c), n)
+							  end
+     						      ),
 
      noHeadwayViolation : ConnId >< Time-list >< Net -> Bool
      noHeadwayViolation(connId, tList, n) is (all i : Nat :- i isin inds(tList) =>
@@ -212,16 +223,16 @@ class
      pre isSorted(tList),
 
      noHeadwayViolation : ScheduleConn >< Net -> Bool
-     noHeadwayViolation(scheduleTable, n) is (all c : ConnId :- c isin dom(scheduleTable) =>
-     				       	         noHeadwayViolation(c, sort(departures(scheduleTable(c))),n) /\
-						 noHeadwayViolation(c, sort(arrivals(scheduleTable(c))),n)
-     				       	     ),
+     noHeadwayViolation(scheduleConn, n) is (all c : ConnId :- c isin dom(scheduleConn) =>
+     				       	        noHeadwayViolation(c, sort(departures(scheduleConn(c))),n) /\
+						noHeadwayViolation(c, sort(arrivals(scheduleConn(c))),n)
+     				       	    ),
 
      noDrivingTimeExceeded : ScheduleConn >< Net -> Bool
-     noDrivingTimeExceeded(scheduleTable, n) is (all c : ConnId :- c isin dom(scheduleTable) =>
+     noDrivingTimeExceeded(scheduleConn, n) is (all c : ConnId :- c isin dom(scheduleConn) =>
 						     let
-							arrs = arrivals(scheduleTable(c)),
-							deps = departures(scheduleTable(c))
+							arrs = arrivals(scheduleConn(c)),
+							deps = departures(scheduleConn(c))
 						     in
 							 (all i : Nat :- i isin inds(arrs) /\ len(arrs) = len(deps) =>
 						     	     arrs(i) - deps(i) <= minDrivingTime(from(c), to(c), n)
@@ -234,10 +245,13 @@ class
 				       scheduleConn = createScheduleConn(timeTable),
 				       scheduleStop = createScheduleStop(timeTable)
 				   in
+				       allStopsInNet(scheduleStop, n),
+				       noIndirectConnections(scheduleConn, n)
 				       noStopCapacityExceeded(scheduleStop, n) /\
      		     	  	       noConnectionCapacityExceeded(scheduleConn, n) /\
 			   	       noHeadwayViolation(scheduleConn, n) /\
 			   	       noDrivingTimeExceeded(scheduleConn, n)
 			   	   end
+     pre isWellformed(n)
 
 end
