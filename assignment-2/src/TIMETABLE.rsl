@@ -2,17 +2,18 @@ NET
 scheme TIMETABLE = extend NET with
 class
   type
-    TimeTable = TramId -m-> TimeSlot-list, -- time tables
+    TimeTable = TramId -m-> Plan, -- time tables
+    Plan = TimeSlot-list,
     TramId = Text, -- tram names
-    TimeSlot 	  :: stopId     : StopId
-    	     	     arrival    : Time
-		     departure  : Time,
-    ConnId 	  :: from       : StopId
-    	     	     to         : StopId, -- connection names
-    ScheduleSlots :: arrivals   : Time-list
-    	       	     departures : Time-list,
-    ScheduleConn = ConnId -m-> ScheduleSlots,
-    ScheduleStop = StopId -m-> ScheduleSlots
+    TimeSlot  :: stopId     : StopId
+    	     	 arrival    : Time
+		 departure  : Time,
+    ConnId    :: from       : StopId
+    	     	 to         : StopId, -- connection names
+    PlanSlots :: arrivals   : Time-list
+    	       	 departures : Time-list,
+    PlanConns = ConnId -m-> PlanSlots,
+    PlanStops = StopId -m-> PlanSlots
 
     value /* generators */
       -- the an empty timetable
@@ -26,92 +27,92 @@ class
       addStop : TramId >< StopId >< Time >< Time >< TimeTable -> TimeTable
       addStop(tId, sId, a, d, tt) is tt !! [tId +> tt(tId)^<.mk_TimeSlot(sId, a, d).>],
 
-      createScheduleConn : TimeTable -> ScheduleConn
-      createScheduleConn(tt) is createScheduleConnRec(dom(tt), [], tt),
+      createPlanConns : TimeTable -> PlanConns
+      createPlanConns(tt) is createPlanConnsRec(dom(tt), [], tt),
 
-      createScheduleConnRec : TramId-set >< ScheduleConn >< TimeTable -> ScheduleConn
-      createScheduleConnRec(trams, sc, tt) is if card(trams) = 1 then
-                                             createScheduleConnForTimeSlots(tt(hd(trams)), sc)
+      createPlanConnsRec : TramId-set >< PlanConns >< TimeTable -> PlanConns
+      createPlanConnsRec(trams, pc, tt) is if card(trams) = 1 then
+                                             createPlanConnsForTimeSlots(tt(hd(trams)), pc)
                                           else
                                              let
                                                  tram = hd(trams),
                                                  trams' = trams \ {tram}
                                              in
-                                                 createScheduleConnRec(trams', createScheduleConnForTimeSlots(tt(tram), sc), tt)
+                                                 createPlanConnsRec(trams', createPlanConnsForTimeSlots(tt(tram), pc), tt)
                                              end
                                           end,
 
-      createScheduleConnForTimeSlots : TimeSlot-list >< ScheduleConn -> ScheduleConn
-      createScheduleConnForTimeSlots(tsl, sc) is if len(tsl) < 2 then
-      				       	      	  sc
-					      elsif len(tsl) = 2 then
-					      	  insertScheduleSlot(hd(tsl), hd(tl(tsl)) ,sc)
+      createPlanConnsForTimeSlots : Plan >< PlanConns -> PlanConns
+      createPlanConnsForTimeSlots(plan, pc) is if len(plan) < 2 then
+      				       	      	  pc
+					      elsif len(plan) = 2 then
+					      	  insertPlanSlot(hd(plan), hd(tl(plan)), pc)
 					      else
 						  let
-						      tsFrom = hd(tsl),
-						      tsTo = hd(tl(tsl)),
-						      tsl' = tl(tsl) -- Only remove first TimeSlot from the list
+						      tsFrom = hd(plan),
+						      tsTo = hd(tl(plan)),
+						      plan' = tl(plan) -- Only remove first TimeSlot from the list
 						  in
-						      createScheduleConnForTimeSlots(tsl', insertScheduleSlot(tsFrom, tsTo, sc))
+						      createPlanConnsForTimeSlots(plan', insertPlanSlot(tsFrom, tsTo, pc))
 						  end
 					      end,
 
-      insertScheduleSlot : TimeSlot >< TimeSlot >< ScheduleConn -> ScheduleConn
-      insertScheduleSlot(tsFrom, tsTo, sc) is let
+      insertPlanSlot : TimeSlot >< TimeSlot >< PlanConns -> PlanConns
+      insertPlanSlot(tsFrom, tsTo, pc) is let
       				       	          connId = mk_ConnId(stopId(tsFrom), stopId(tsTo)),
 						  arr = departure(tsFrom), -- Arrival on connection
-						  dep = arrival(tsTo) -- Departure of connection 
+						  dep = arrival(tsTo) -- Departure of connection
 				    	      in
-						  if isInSchedule(connId, sc) then
-						      sc !! [connId +> mk_ScheduleSlots(arrivals(sc(connId)) ^ <.arr.>,
-						     		          	        departures(sc(connId)) ^ <.dep.>)]
+						  if isInPlan(connId, pc) then
+						      pc !! [connId +> mk_PlanSlots(arrivals(pc(connId)) ^ <.arr.>,
+						     		          	    departures(pc(connId)) ^ <.dep.>)]
 						  else
-						      sc !! [connId +> mk_ScheduleSlots(<.arr.>, <.dep.>)]
+						      pc !! [connId +> mk_PlanSlots(<.arr.>, <.dep.>)]
 						  end
 				              end,
 
-      createScheduleStop : TimeTable -> ScheduleStop
-      createScheduleStop(tt) is createScheduleStopRec(dom(tt), [], tt),
+      createPlanStops : TimeTable -> PlanStops
+      createPlanStops(tt) is createPlanStopsRec(dom(tt), [], tt),
 
-      createScheduleStopRec : TramId-set >< ScheduleStop >< TimeTable -> ScheduleStop
-      createScheduleStopRec(trams, ss, tt) is if card(trams) = 1 then
-				    	     createScheduleStopForTimeSlots(tt(hd(trams)), ss)
+      createPlanStopsRec : TramId-set >< PlanStops >< TimeTable -> PlanStops
+      createPlanStopsRec(trams, ps, tt) is if card(trams) = 1 then
+				    	     createPlanStopsForTimeSlots(tt(hd(trams)), ps)
 					 else
 					     let
 					         tram = hd(trams),
 					   	 trams' = trams \ {tram}
 					     in
-						 createScheduleStopRec(trams', createScheduleStopForTimeSlots(tt(tram), ss), tt)
+						 createPlanStopsRec(trams', createPlanStopsForTimeSlots(tt(tram), ps), tt)
 					     end
 					 end,
 
-      createScheduleStopForTimeSlots : TimeSlot-list >< ScheduleStop -> ScheduleStop
-      createScheduleStopForTimeSlots(tsl, ss) is if len(tsl) = 0 then
-      				       	      	  ss
-					      elsif len(tsl) = 1 then
-					      	  insertScheduleSlot(hd(tsl), ss)
+      createPlanStopsForTimeSlots : Plan >< PlanStops -> PlanStops
+      createPlanStopsForTimeSlots(plan, ps) is if len(plan) = 0 then
+      				       	      	  ps
+					      elsif len(plan) = 1 then
+					      	  insertPlanSlot(hd(plan), ps)
 					      else
 						  let
-						      ts = hd(tsl),
-						      tsl' = tl(tsl)
+						      ts = hd(plan),
+						      plan' = tl(plan)
 						  in
-						      createScheduleStopForTimeSlots(tsl', insertScheduleSlot(ts, ss))
+						      createPlanStopsForTimeSlots(plan', insertPlanSlot(ts, ps))
 						  end
 					      end,
-					      
-     insertScheduleSlot : TimeSlot >< ScheduleStop -> ScheduleStop
-     insertScheduleSlot(ts, ss) is if isInSchedule(stopId(ts), ss) then
+
+     insertPlanSlot : TimeSlot >< PlanStops -> PlanStops
+     insertPlanSlot(ts, ps) is if isInPlan(stopId(ts), ps) then
 				        let
 					    stopId = stopId(ts),
-					    scheduleSlots = ss(stopId)
+					    planSlots = ps(stopId)
 					in
-					    ss !! [stopId +> mk_ScheduleSlots(arrivals(scheduleSlots) ^
-					       	  	     		      <.arrival(ts).>,
-									      departures(scheduleSlots) ^
-									      <.departure(ts).>)]
+					    ps !! [stopId +> mk_PlanSlots(arrivals(planSlots) ^
+					       	  	     		  <.arrival(ts).>,
+									  departures(planSlots) ^
+									  <.departure(ts).>)]
 					end
 				    else
-					ss !! [stopId(ts) +> mk_ScheduleSlots(<.arrival(ts).>, <.departure(ts).>)]
+					ps !! [stopId(ts) +> mk_PlanSlots(<.arrival(ts).>, <.departure(ts).>)]
 				    end
 
   value /* observers */
@@ -119,11 +120,11 @@ class
      isIn : TramId >< TimeTable -> Bool
      isIn(tId, tt) is tId isin dom(tt),
 
-     isInSchedule : StopId >< ScheduleStop -> Bool
-     isInSchedule(stopId, ss) is stopId isin dom(ss),
+     isInPlan : StopId >< PlanStops -> Bool
+     isInPlan(stopId, ps) is stopId isin dom(ps),
 
-     isInSchedule : ConnId >< ScheduleConn -> Bool
-     isInSchedule(connId, sc) is connId isin dom(sc),
+     isInPlan : ConnId >< PlanConns -> Bool
+     isInPlan(connId, pc) is connId isin dom(pc),
 
      findMaxCapacity : Time-list >< Time-list -> Int
      findMaxCapacity(arrs, deps) is findMaxCapacityRec(sort(arrs), sort(deps), 0, 0)
@@ -182,10 +183,10 @@ class
 			         tList(i) <= tList(i)
 			     )
      			 )
-			 
+
   value /* predicates to check time tables */
 
-     hasCorrectTimes : TimeSlot-list -> Bool
+     hasCorrectTimes : Plan -> Bool
      hasCorrectTimes(tsl) is if len(tsl) < 2 then
      			         -- Check last stations times
 				 arrival(hd(tsl)) <= departure(hd(tsl))
@@ -210,31 +211,31 @@ class
      				       hasCorrectTimes(timeTable(tram))
      				   ),
 
-     allStopsInNet : ScheduleStop >< Net -> Bool
-     allStopsInNet(scheduleStop, n) is (all sId : StopId :- sId isin dom(scheduleStop) =>
+     allStopsInNet : PlanStops >< Net -> Bool
+     allStopsInNet(planStop, n) is (all sId : StopId :- sId isin dom(planStop) =>
      				           isIn(sId, n)
      				       ),
 
-     noIndirectConnections : ScheduleConn >< Net -> Bool
-     noIndirectConnections(scheduleConn, n) is (all cId : ConnId :- cId isin dom(scheduleConn) =>
+     noIndirectConnections : PlanConns >< Net -> Bool
+     noIndirectConnections(planConn, n) is (all cId : ConnId :- cId isin dom(planConn) =>
      					           hasDirectConnection(from(cId), to(cId), n)
      					       ),
 
-     noStopCapacityExceeded : ScheduleStop >< Net -> Bool
-     noStopCapacityExceeded(scheduleStop, n) is (all sId : StopId :- sId isin dom(scheduleStop) =>
+     noStopCapacityExceeded : PlanStops >< Net -> Bool
+     noStopCapacityExceeded(planStop, n) is (all sId : StopId :- sId isin dom(planStop) =>
      					      	    let
-						        arrs = arrivals(scheduleStop(sId)),
-						      	deps = departures(scheduleStop(sId))
+						        arrs = arrivals(planStop(sId)),
+						      	deps = departures(planStop(sId))
 						    in
 						        findMaxCapacity(arrs, deps) <= capacity(sId, n)
 						    end
      					        ),
 
-     noConnectionCapacityExceeded : ScheduleConn >< Net -> Bool
-     noConnectionCapacityExceeded(scheduleConn, n) is (all c : ConnId :- c isin dom(scheduleConn) =>
+     noConnectionCapacityExceeded : PlanConns >< Net -> Bool
+     noConnectionCapacityExceeded(planConn, n) is (all c : ConnId :- c isin dom(planConn) =>
      						       	  let
-							      arrs = arrivals(scheduleConn(c)),
-							      deps = departures(scheduleConn(c))
+							      arrs = arrivals(planConn(c)),
+							      deps = departures(planConn(c))
 							  in
 							      findMaxCapacity(arrs, deps) <= capacity(from(c), to(c), n)
 							  end
@@ -248,17 +249,17 @@ class
      					    )
      pre isSorted(tList),
 
-     noHeadwayViolation : ScheduleConn >< Net -> Bool
-     noHeadwayViolation(scheduleConn, n) is (all c : ConnId :- c isin dom(scheduleConn) =>
-     				       	        noHeadwayViolation(c, sort(departures(scheduleConn(c))),n) /\
-						noHeadwayViolation(c, sort(arrivals(scheduleConn(c))),n)
+     noHeadwayViolation : PlanConns >< Net -> Bool
+     noHeadwayViolation(planConn, n) is (all c : ConnId :- c isin dom(planConn) =>
+     				       	        noHeadwayViolation(c, sort(departures(planConn(c))),n) /\
+						noHeadwayViolation(c, sort(arrivals(planConn(c))),n)
      				       	    ),
 
-     noDrivingTimeExceeded : ScheduleConn >< Net -> Bool
-     noDrivingTimeExceeded(scheduleConn, n) is (all c : ConnId :- c isin dom(scheduleConn) =>
+     noDrivingTimeExceeded : PlanConns >< Net -> Bool
+     noDrivingTimeExceeded(planConn, n) is (all c : ConnId :- c isin dom(planConn) =>
 						     let
-							arrs = arrivals(scheduleConn(c)),
-							deps = departures(scheduleConn(c))
+							arrs = arrivals(planConn(c)),
+							deps = departures(planConn(c))
 						     in
 							 (all i : Nat :- i isin inds(arrs) /\ len(arrs) = len(deps) =>
 						     	     arrs(i) - deps(i) <= minDrivingTime(from(c), to(c), n)
@@ -269,15 +270,15 @@ class
      isWellformed : TimeTable >< Net -> Bool
      isWellformed(timeTable, n) is hasCorrectTimes(timeTable) /\
      			     	   let
-				       scheduleConn = createScheduleConn(timeTable),
-				       scheduleStop = createScheduleStop(timeTable)
+				       planConn = createPlanConns(timeTable),
+				       planStop = createPlanStops(timeTable)
 				   in
-				       allStopsInNet(scheduleStop, n) /\
-				       noIndirectConnections(scheduleConn, n) /\
-				       noStopCapacityExceeded(scheduleStop, n) /\
-     		     	  	       noConnectionCapacityExceeded(scheduleConn, n) /\
-			   	       noHeadwayViolation(scheduleConn, n) /\
-			   	       noDrivingTimeExceeded(scheduleConn, n)
+				       allStopsInNet(planStop, n) /\
+				       noIndirectConnections(planConn, n) /\
+				       noStopCapacityExceeded(planStop, n) /\
+     		     	  	       noConnectionCapacityExceeded(planConn, n) /\
+			   	       noHeadwayViolation(planConn, n) /\
+			   	       noDrivingTimeExceeded(planConn, n)
 			   	   end
      pre isWellformed(n)
 
