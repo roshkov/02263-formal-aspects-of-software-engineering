@@ -125,19 +125,19 @@ class
      isInSchedule : ConnId >< ScheduleConn -> Bool
      isInSchedule(connId, sc) is connId isin dom(sc),
 
-     findMaxOverlap : Time-list >< Time-list -> Int
-     findMaxOverlap(arrs, deps) is findMaxOverlapRec(sort(arrs), sort(deps), 0, 0),
+     findMaxCapacity : Time-list >< Time-list -> Int
+     findMaxCapacity(arrs, deps) is findMaxCapacityRec(sort(arrs), sort(deps), 0, 0),
 
-     findMaxOverlapRec : Time-list >< Time-list >< Int >< Int -> Int
-     findMaxOverlapRec(sArr, sDep, curO, maxO) is if len(sArr) > 0 /\ len(sDep) > 0 then
-     			  	   	    	         if hd(sArr) <= hd(sDep) then
+     findMaxCapacityRec : Time-list >< Time-list >< Int >< Int -> Int
+     findMaxCapacityRec(sArr, sDep, curO, maxO) is if len(sArr) > 0 /\ len(sDep) > 0 then
+     			  	   	    	         if hd(sArr) < hd(sDep) then
 							     if curO + 1 > maxO then
-							         findMaxOverlapRec(tl(sArr), sDep, curO+1, curO+1)
+							         findMaxRec(tl(sArr), sDep, curO+1, curO+1)
 							     else
-							         findMaxOverlapRec(tl(sArr), sDep, curO+1, maxO)
+							         findMaxCapacityRec(tl(sArr), sDep, curO+1, maxO)
 							     end
 							 else
-							     findMaxOverlapRec(sArr, tl(sDep), curO-1, maxO)
+							     findMaxCapacityRec(sArr, tl(sDep), curO-1, maxO)
 							 end
 						     else
 						         maxO
