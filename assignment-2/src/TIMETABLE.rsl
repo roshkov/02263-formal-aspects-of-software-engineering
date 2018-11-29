@@ -32,18 +32,18 @@ class
 
       createPlanConnsRec : TramId-set >< PlanConns >< TimeTable -> PlanConns
       createPlanConnsRec(trams, pc, tt) is if card(trams) = 1 then
-                                             createPlanConnsForTimeSlots(tt(hd(trams)), pc)
+                                             createPlanConnsForPlan(tt(hd(trams)), pc)
                                           else
                                              let
                                                  tram = hd(trams),
                                                  trams' = trams \ {tram}
                                              in
-                                                 createPlanConnsRec(trams', createPlanConnsForTimeSlots(tt(tram), pc), tt)
+                                                 createPlanConnsRec(trams', createPlanConnsForPlan(tt(tram), pc), tt)
                                              end
                                           end,
 
-      createPlanConnsForTimeSlots : Plan >< PlanConns -> PlanConns
-      createPlanConnsForTimeSlots(plan, pc) is if len(plan) < 2 then
+      createPlanConnsForPlan : Plan >< PlanConns -> PlanConns
+      createPlanConnsForPlan(plan, pc) is if len(plan) < 2 then
       				       	      	  pc
 					      elsif len(plan) = 2 then
 					      	  insertPlanSlot(hd(plan), hd(tl(plan)), pc)
@@ -53,7 +53,7 @@ class
 						      tsTo = hd(tl(plan)),
 						      plan' = tl(plan) -- Only remove first TimeSlot from the list
 						  in
-						      createPlanConnsForTimeSlots(plan', insertPlanSlot(tsFrom, tsTo, pc))
+						      createPlanConnsForPlan(plan', insertPlanSlot(tsFrom, tsTo, pc))
 						  end
 					      end,
 
@@ -76,18 +76,18 @@ class
 
       createPlanStopsRec : TramId-set >< PlanStops >< TimeTable -> PlanStops
       createPlanStopsRec(trams, ps, tt) is if card(trams) = 1 then
-				    	     createPlanStopsForTimeSlots(tt(hd(trams)), ps)
+				    	     createPlanStopsForPlan(tt(hd(trams)), ps)
 					 else
 					     let
 					         tram = hd(trams),
 					   	 trams' = trams \ {tram}
 					     in
-						 createPlanStopsRec(trams', createPlanStopsForTimeSlots(tt(tram), ps), tt)
+						 createPlanStopsRec(trams', createPlanStopsForPlan(tt(tram), ps), tt)
 					     end
 					 end,
 
-      createPlanStopsForTimeSlots : Plan >< PlanStops -> PlanStops
-      createPlanStopsForTimeSlots(plan, ps) is if len(plan) = 0 then
+      createPlanStopsForPlan : Plan >< PlanStops -> PlanStops
+      createPlanStopsForPlan(plan, ps) is if len(plan) = 0 then
       				       	      	  ps
 					      elsif len(plan) = 1 then
 					      	  insertPlanSlot(hd(plan), ps)
@@ -96,7 +96,7 @@ class
 						      ts = hd(plan),
 						      plan' = tl(plan)
 						  in
-						      createPlanStopsForTimeSlots(plan', insertPlanSlot(ts, ps))
+						      createPlanStopsForPlan(plan', insertPlanSlot(ts, ps))
 						  end
 					      end,
 
