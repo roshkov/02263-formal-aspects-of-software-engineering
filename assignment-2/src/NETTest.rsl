@@ -62,7 +62,8 @@ class
     /* Test that a connection between two stops already in the net is not inserted again */
     [t201] addConnection(s1,s2,1,1,10, netSingleConnection) = netSingleConnectionTest,
 
-    /* Test that a connection (between two stops) already in the net but with different values is added to the Net when inserted */
+    /* Test that a connection (between two stops) already in the net but with different values is 
+    added to the Net when inserted */
     [t202] addConnection(s1,s2,2,2,20, netSingleConnection) = netTwoConnectionsSameStops,
 
 
