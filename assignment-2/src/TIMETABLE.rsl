@@ -75,8 +75,10 @@ class
       createPlanStops(tt) is createPlanStopsRec(dom(tt), [], tt),
 
       createPlanStopsRec : TramId-set >< PlanStops >< TimeTable -> PlanStops
-      createPlanStopsRec(trams, ps, tt) is if card(trams) = 1 then
-				    	     createPlanStopsForPlan(tt(hd(trams)), ps)
+      createPlanStopsRec(trams, ps, tt) is if card(trams) = 0 then
+	  			     				  ps
+					 elsif card(trams) = 1 then
+				    	 createPlanStopsForPlan(tt(hd(trams)), ps)
 					 else
 					     let
 					         tram = hd(trams),

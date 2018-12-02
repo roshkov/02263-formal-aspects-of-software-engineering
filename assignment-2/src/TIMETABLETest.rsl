@@ -80,6 +80,8 @@ class
 	/* Test that a PlanStops with invalid arrival and departures times has been generated */
 	[t1001] createPlanStops(invalidArrDepTimeTable) = ["A" +> mk_PlanSlots(<.1.>,<.0.>), "B" +> mk_PlanSlots(<.14.>,<.12.>)],
 
+	/* Test that an empty PlanStops is returned from an empty TimeTable */
+	[t1002] createPlanStops(empty) = [],
 
 	/** ---- OBSERVERS  ---- **/
 
