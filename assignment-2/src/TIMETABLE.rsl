@@ -75,8 +75,10 @@ class
       createPlanStops(tt) is createPlanStopsRec(dom(tt), [], tt),
 
       createPlanStopsRec : TramId-set >< PlanStops >< TimeTable -> PlanStops
-      createPlanStopsRec(trams, ps, tt) is if card(trams) = 1 then
-				    	     createPlanStopsForPlan(tt(hd(trams)), ps)
+      createPlanStopsRec(trams, ps, tt) is if card(trams) = 0 then
+	  			     				  ps
+					 elsif card(trams) = 1 then
+				    	 createPlanStopsForPlan(tt(hd(trams)), ps)
 					 else
 					     let
 					         tram = hd(trams),
@@ -180,14 +182,16 @@ class
      isSorted : Time-list -> Bool
      isSorted(tList) is (all i : Nat :- i isin inds(tList) =>
      			     (all i' : Nat :- i' isin inds(tList) /\ i < i' =>
-			         tList(i) <= tList(i)
+			         tList(i) <= tList(i')
 			     )
      			 )
 
   value /* predicates to check time tables */
 
      hasCorrectTimes : Plan -> Bool
-     hasCorrectTimes(tsl) is if len(tsl) < 2 then
+     hasCorrectTimes(tsl) is if len(tsl) = 0 then
+	 			 			  true
+	 			 elsif len(tsl) < 2 then
      			         -- Check last stations times
 				 arrival(hd(tsl)) <= departure(hd(tsl))
 			     else
