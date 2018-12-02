@@ -180,7 +180,7 @@ class
      isSorted : Time-list -> Bool
      isSorted(tList) is (all i : Nat :- i isin inds(tList) =>
      			     (all i' : Nat :- i' isin inds(tList) /\ i < i' =>
-			         tList(i) <= tList(i)
+			         tList(i) <= tList(i')
 			     )
      			 )
 

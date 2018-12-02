@@ -83,19 +83,13 @@ class
 
 	/** ---- OBSERVERS  ---- **/
 
-	/** ---- Tests for HasCorrectTimesRec ---- **/
-	/*  */
-
-	/** ---- Tests for HasCorrectTimes ---- **/
-	/*  */
-
 	/** ---- Tests for isIn ---- **/
 	
 	/* Test that true is returned when a tram is in the domain of the TimeTable */
-	[t1300] isIn(t1, timeTable) = true,
+	[t1100] isIn(t1, timeTable) = true,
 
 	/* Test that false is returned when a tram is not in the domain of the TimeTable */
-	[t1301] isIn("tram3", timeTable) = false,
+	[t1101] isIn("tram3", timeTable) = false,
 
 	/** ---- Tests for isInPlan (PlanStops) ---- **/
 	/*  */
@@ -109,33 +103,49 @@ class
 
 	/** ---- Tests for findMaxCapacity ---- **/
 	/* Test that the max capacity is 2 when exists an overlap between two trams*/
-	[t1700] findMaxCapacity(<.1,7.>, <.12,15.>) = 2,
+	[t1500] findMaxCapacity(<.1,7.>, <.12,15.>) = 2,
 
 	/* Test that the max capacity is 1 when does not exist an overlap */
-	[t1701] findMaxCapacity(<.1,13.>, <.12,15.>) = 1,
+	[t1501] findMaxCapacity(<.1,13.>, <.12,15.>) = 1,
 
 	/* Test that the max capacity is 1 when a tram arrives and another leaves at the same time */
-	[t1702] findMaxCapacity(<.1,12.>, <.12,15.>) = 1,
+	[t1502] findMaxCapacity(<.1,12.>, <.12,15.>) = 1,
 
 	/* Test that the max capacity is 3 when all trams schedules are overlap */
-	[t1703] findMaxCapacity(<.1, 1, 1.>, <.7, 6, 5.>) = 3,
+	[t1503] findMaxCapacity(<.1, 1, 1.>, <.7, 6, 5.>) = 3,
 
 	/** ---- Tests for getLargerItems ---- **/
 	/* Test that the numbers returned are larger than 34 */
-	[t1800] getLargerItems(<.34,123,6,1,685.>, 34) = <.123, 685.>,
+	[t1600] getLargerItems(<.34,123,6,1,685.>, 34) = <.123, 685.>,
 
 	/** ---- Tests getSmallerItems  ---- **/
 	/* Test that the numbers returned are equal or smaller than 34 */
-	[t1900] getSmallerItems(<.34,123,6,1,685.>, 34) = <.34, 6, 1.>,
+	[t1700] getSmallerItems(<.34,123,6,1,685.>, 34) = <.34, 6, 1.>,
 
 	/** ---- Tests for sort ---- **/
 	/* Test that the numbers returned are in increasing order  */
-	[t2000] sort(<.34,123,6,1,685,34, 35.>)= <.1,6,34,34,35,123,685.>
+	[t1800] sort(<.34,123,6,1,685,34, 35.>)= <.1,6,34,34,35,123,685.>,
 
 	/** ---- Tests for isSorted ---- **/
-	/*  */
+	/* Test that true is returned if the Time-list is sorted in increasing order */
+	[t1900] isSorted(<.1,6,6,34.>) = true,
+
+	/* Test that false is returned if the Time-list is sorted in decreasing order */
+	[t1901] isSorted(<.34,6,1.>) = false,
+
+	/* Test that false is returned if the Time-list is unsorted (in increasing order) */
+	[t1902] isSorted(<.6,1,34.>) = false,
+
+	/* Test that true is returned if the Time-list is empty */
+	[t1903] isSorted(<..>) = true
 
 	/** ---- PREDICATES ---- **/
+
+	/** ---- Tests for HasCorrectTimesRec ---- **/
+	/*  */
+
+	/** ---- Tests for HasCorrectTimes ---- **/
+	/*  */
 
 	/** ---- Tests for allStopsInNet ---- **/
 	/*  */
