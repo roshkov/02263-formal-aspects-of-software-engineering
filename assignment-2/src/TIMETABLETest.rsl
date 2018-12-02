@@ -94,11 +94,26 @@ class
 	[t1101] isIn("tram3", timeTable) = false,
 
 	/** ---- Tests for isInPlan (PlanStops) ---- **/
-	/*  */
-	
+
+	/* Test that true is returned if the stopId is in the domain of the PlanStops of the TimeTable */
+	[t1200] isInPlan("A", createPlanStops(timeTable)) = true,
+
+	/* Test that false is returned if the stopId is not in the domain of the PlanStops of the TimeTable */
+	[t1201] isInPlan("E", createPlanStops(timeTable)) = false,
+
+	/* Test that false is returned if the domain of PlanStops of the TimeTable is empty */
+	[t1202] isInPlan("A", emptyPlanStops) = false,
 
 	/** ---- Tests for isInPlan (PlanConns) ---- **/
-	/*  */
+
+	/* Test that true is returned if the connId is in the domain of the PlanConns of the TimeTable */
+	[t1300] isInPlan(mk_ConnId("A","B"), createPlanConns(timeTable)) = true,
+
+	/* Test that true is returned if the connId is not in the domain of the PlanConns of the TimeTable */
+	[t1301] isInPlan(mk_ConnId("A","D"), createPlanConns(timeTable)) = false,
+
+	/* Test that false is returned if the domain of PlanConns of the TimeTable is empty */
+	[t1302] isInPlan(mk_ConnId("A","B"), []) = false,
 
 	/** ---- Tests for findMaxCapacityRec ---- **/
 	/*  */
@@ -139,15 +154,25 @@ class
 	[t1902] isSorted(<.6,1,34.>) = false,
 
 	/* Test that true is returned if the Time-list is empty */
-	[t1903] isSorted(<..>) = true
+	[t1903] isSorted(<..>) = true,
 
 	/** ---- PREDICATES ---- **/
 
-	/** ---- Tests for HasCorrectTimesRec ---- **/
-	/*  */
+	/** ---- Tests for hasCorrectTimes (Plan) ---- **/
+	
+	/* Test that true is returned for an empty Plan  */
+	[t2000] hasCorrectTimes(timeTableTramsOnly) = true,
 
-	/** ---- Tests for HasCorrectTimes ---- **/
-	/*  */
+	/* Test that true is returned if the arrival is before or equal than the departure time for all the Time-Slots in the Plan */
+	[t2001] hasCorrectTimes(timeTable("tram1")) = true,
+
+	/** ---- Tests for hasCorrectTimes (TimeTable) ---- **/
+	
+	/* Test that true is returned if the arrival is before or equal than the departure time for all the Time-Slots in the Plan */
+	[t2100] hasCorrectTimes(timeTable) = true,
+
+	/* Test that false is returned if the arrival is after the departure time in any Time-Slots in the Plan */
+	[t2101] hasCorrectTimes(invalidArrDepTimeTable) = false
 
 	/** ---- Tests for allStopsInNet ---- **/
 	/*  */
