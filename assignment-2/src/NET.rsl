@@ -149,11 +149,16 @@ class
     hasCorrectSize(n) is card(dom(stops(n))) >= 2,
 
     isNetConnected : Net -> Bool
-    isNetConnected(n) is card(dom(stops(n))) ~= 0 /\ (all s : StopId :- s isin dom(stops(n)) =>
-    		      	      		     	     	  (all s' : StopId :- s' isin dom(stops(n)) /\ s ~= s' =>
-    		      	      	   			       areConnected(s, s', connections(n)(s), {}, n)
-    		      	      				  )
-    		      	 			     ),
+    isNetConnected(n) is card(dom(stops(n))) ~= 0 /\
+    		      	 if card(dom(stops(n))) = 1 then
+			     true
+			 else
+			     (all s : StopId :- s isin dom(stops(n)) =>
+    		      	         (all s' : StopId :- s' isin dom(stops(n)) /\ s ~= s' =>
+    		      	      	     areConnected(s, s', connections(n)(s), {}, n)
+    		      	      	 )
+    		      	     )
+			 end,
 
     noDirectSelfConnections : Net -> Bool
     noDirectSelfConnections(n) is (all s : StopId :- s isin dom(stops(n)) =>

@@ -17,10 +17,9 @@ class
     s10 : StopId = "J",
     s11 : StopId = "K",
 
-    /* Connection values */
-
     /* Net values */
     emptyNet : Net = empty,
+    netSingleStop : Net = insertStop(s1, 2, emptyNet),
     netTwoStops : Net = insertStop(s2, 3, insertStop(s1, 2, emptyNet)),
     netStops : Net = insertStop(s4, 2,
 		     insertStop(s3, 2,
@@ -63,8 +62,7 @@ class
     /* Test that a connection between two stops already in the net is not inserted again */
     [t201] addConnection(s1,s2,1,1,10, netSingleConnection) = netSingleConnectionTest,
 
-    /* Test that a connection (between two stops) already in the net
-    but with different values is added to the Net when inserted */
+    /* Test that a connection (between two stops) already in the net but with different values is added to the Net when inserted */
     [t202] addConnection(s1,s2,2,2,20, netSingleConnection) = netTwoConnectionsSameStops,
 
 
@@ -155,23 +153,28 @@ class
 
     /** ---- Tests for isNetConnected ---- **/
 
-    /* Test that true is returned when all stops in the net are directly or indirectly connected to any 
-    stop */
+    /* Test that true is returned when all stops in the net are directly or indirectly connected to
+    any stop */
     [t1500] isNetConnected(net) = true, 
 
-    /* Test that false is returned when any stop in the net is not directly or indirectly connected to all stops */
+    /* Test that false is returned when any stop in the net is not directly or indirectly connected 
+    to all stops */
     [t1501] isNetConnected(netDisconnected) = false,
-
-    /* WARNING: We need a precondition that does not allow a net where a connection to a non declared stops exist */
-    /* btw,  the result is true */
+    
+    /* Test that false is returned for a net with a single connection and no stops */
     [t1502] isNetConnected(netSingleConnectionNoStops) = false,
+
+    /* Test that true is returned for a net with a single stop */
+    [t1503] isNetConnected(netSingleStop) = true,
 
     /** ---- Tests for noDirectSelfConnections ---- */
 
-    /* Test that true is returned if any stop in a connected net does not have a direct connection to itself */
+    /* Test that true is returned if any stop in a connected net does not have a direct connection 
+    to itself */
     [t1600] noDirectSelfConnections(net) = true,
 
-    /* Test that true is returned if any stop in a disconnected net does not have a direct connection to itself */
+    /* Test that true is returned if any stop in a disconnected net does not have a direct connection 
+    to itself */
     [t1601] noDirectSelfConnections(netDisconnected) = true,
 
     /* Test that false is returned if any stop in a net does not have a direct connection to itself */
@@ -179,30 +182,36 @@ class
        
     /* ---- Tests for hasOneDirectConnection ---- */
 
-    /* Test that true is returned if each stop in the net only has one direct connection to another stop */
+    /* Test that true is returned if each stop in the net only has one direct connection to another 
+    stop */
     [t1700] hasOneDirectConnection(net) = true,
 
-    /* Test that false is returned if any stop in the net has more than one direct connection to another stop */
+    /* Test that false is returned if any stop in the net has more than one direct connection to 
+    another stop */
     [t1701] hasOneDirectConnection(addConnection("A","B",7,7,10,net)) = false,
 
     /* ---- Tests for hasBiDirectConnection ---- */
 
-    /* Test that true is returned if all direct connections between two stops in the net are connecting the stops in both direction */
+    /* Test that true is returned if all direct connections between two stops in the net are connecting 
+    the stops in both direction */
     [t1800] hasBiDirectConnection(net) = true,
 
-    /* Test that false is returned if any direct connections between two stops in the net are not connecting the stops in both direction */
+    /* Test that false is returned if any direct connections between two stops in the net are not 
+    connecting the stops in both direction */
     /* non added connection: "B" +> {mk_Connection("B","A",1,1,10) */
     [t1801] hasBiDirectConnection(netNoBiDirectCon) = false,
 
     /** ---- Tests for isWellformed ----  **/
 
-    /* Test that true is returned for a Net with Connections between every Stop and only Stops in the Net */
+    /* Test that true is returned for a Net with Connections between every Stop and only Stops in the 
+    Net */
     [t1900] isWellformed(net) = true,
 
     /* Test that false is returned for a disconnected Net */
     [t1901] isWellformed(netDisconnected) = false,
 
-    /* Test that false is returned for a Net where exists Connections between stops that are not part of the Net */
+    /* Test that false is returned for a Net where exists Connections between stops that are not part 
+    of the Net */
     [t1902] isWellformed(netSingleConnectionNoStops) = false
 
  end
