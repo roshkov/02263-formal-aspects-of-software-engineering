@@ -97,15 +97,18 @@ class
 
     /** ---- Tests for insertPlanSlot (PlanStops) ---- **/
 
-    /* Test that a valid scheduleStop has been generated after insert a PlanSlot in an empty PlanStops */
+    /* Test that a valid scheduleStop has been generated after insert a PlanSlot in an empty 
+    PlanStops */
     [t700] insertPlanSlot(timeSlotSingleA, emptyPlanStops) =
     	   ["A" +> mk_PlanSlots(<.0.>, <.1.>)],
 
-    /* Test that a valid scheduleStop has been generated after insert a PlanSlot with different stopId in a PlanStops */
+    /* Test that a valid scheduleStop has been generated after insert a PlanSlot with different 
+    stopId in a PlanStops */
     [t701] insertPlanSlot(timeSlotSingleB, insertPlanSlot(timeSlotSingleA, emptyPlanStops)) =
     	   ["A" +> mk_PlanSlots(<.0.>, <.1.>), "B" +> mk_PlanSlots(<.0.>, <.1.>)],
 
-    /* Test that a valid scheduleStop has been generated after insert a PlanSlot with the same stopId in a PlanStops */
+    /* Test that a valid scheduleStop has been generated after insert a PlanSlot with the same 
+    stopId in a PlanStops */
     [t702] insertPlanSlot(timeSlotSingleA, insertPlanSlot(timeSlotSingleA, emptyPlanStops)) =
     	   ["A" +> mk_PlanSlots(<.0, 0.>, <.1, 1.>)],
 
@@ -136,7 +139,8 @@ class
     /* Test that true is returned if the stopId is in the domain of the PlanStops of the TimeTable */
     [t1200] isInPlan("A", createPlanStops(timeTable)) = true,
 
-    /* Test that false is returned if the stopId is not in the domain of the PlanStops of the TimeTable */
+    /* Test that false is returned if the stopId is not in the domain of the PlanStops of the 
+    TimeTable */
     [t1201] isInPlan("E", createPlanStops(timeTable)) = false,
 
     /* Test that false is returned if the domain of PlanStops of the TimeTable is empty */
@@ -205,15 +209,18 @@ class
     /* Test that true is returned for an empty Plan  */
     [t2000] hasCorrectTimes(timeTableTramsOnly) = true,
 
-    /* Test that true is returned if the arrival is before or equal than the departure time for all the Time-Slots in the Plan */
+    /* Test that true is returned if the arrival is before or equal than the departure time for all 
+    the Time-Slots in the Plan */
     [t2001] hasCorrectTimes(timeTable("tram1")) = true,
 
     /** ---- Tests for hasCorrectTimes (TimeTable) ---- **/
 	
-    /* Test that true is returned if the arrival is before or equal than the departure time for all the Time-Slots in the Plan */
+    /* Test that true is returned if the arrival is before or equal than the departure time for all 
+    the Time-Slots in the Plan */
     [t2100] hasCorrectTimes(timeTable) = true,
 
-    /* Test that false is returned if the arrival is after the departure time in any Time-Slots in the Plan */
+    /* Test that false is returned if the arrival is after the departure time in any Time-Slots in 
+    the Plan */
     [t2101] hasCorrectTimes(invalidArrDepTimeTable) = false,
 
     /** ---- Tests for allStopsInNet ---- **/
@@ -235,10 +242,12 @@ class
 
     /** ---- Tests for noIndirectConnections ---- **/
 
-    /* Test that true is returned if the connections in the PlanConns are not connected to themself in the net */
+    /* Test that true is returned if the connections in the PlanConns are not connected to themself 
+    in the net */
     [t2300] noIndirectConnections(createPlanConns(timeTable), net) = true,
 
-    /* Test that true is returned if any connection in the PlanConns are not connected to themself in the net */
+    /* Test that true is returned if any connection in the PlanConns are not connected to themself 
+    in the net */
     [t2301] noIndirectConnections([mk_ConnId("A","A") +> mk_PlanSlots(<.32.>,<.46.>)], net) = false,
 
     /** ---- Tests for noStopCapacityExceeded ---- **/
@@ -296,11 +305,12 @@ class
     /* Test that true is returned if a TimeTable is well formed */
     [t2900] isWellformed(timeTable, net) = true,
 
-    /* Test that false is returned if a TimeTable has a wrong arrival-departure time, i.e., arrives after departure */
+    /* Test that false is returned if a TimeTable has a wrong arrival-departure time, i.e., arrives 
+    after departure */
     [t2901] isWellformed(invalidArrDepTimeTable, net) = false,
 
-    /* Test that false is returned if a TimeTable has connections in the timeTable which are not in the net */
+    /* Test that false is returned if a TimeTable has connections in the timeTable which are not in 
+    the net */
     [t2902] isWellformed(invalidStopsConnNetTimeTable, net) = false
 
  end
- 
