@@ -10,18 +10,38 @@ class
 	
     /* TimeTable values */
     timeTableTramsOnly : TimeTable = addTram(t2, addTram(t1, empty)),
-    timeTable : TimeTable = addStop(t2, "D", 58, 60, addStop(t2, "B", 47, 50, addStop(t2, "A", 28, 32, addStop(t2, "B", 11, 13, addStop(t2, "D", 0, 2, addStop(t1, "A", 59, 60, addStop(t1, "B", 46, 48, addStop(t1, "C", 28, 32, addStop(t1, "B", 12, 14, addStop(t1, "A", 0, 1, timeTableTramsOnly)))))))))),
-    invalidArrDepTimeTable : TimeTable = addStop(t1, "B", 14, 12, addStop(t1, "A", 1, 0, timeTableTramsOnly)),
-    invalidStopsConnNetTimeTable : TimeTable = addStop(t1, "C", 28, 32, addStop(t1, "A", 1, 0, timeTableTramsOnly)),	
+    timeTable : TimeTable = addStop(t2, "D", 58, 60,
+    	      		    addStop(t2, "B", 47, 50,
+			    addStop(t2, "A", 28, 32,
+			    addStop(t2, "B", 11, 13,
+			    addStop(t2, "D", 0, 2,
+			    addStop(t1, "A", 59, 60,
+			    addStop(t1, "B", 46, 48,
+			    addStop(t1, "C", 28, 32,
+			    addStop(t1, "B", 12, 14,
+			    addStop(t1, "A", 0, 1, timeTableTramsOnly)))))))))),
+    invalidArrDepTimeTable : TimeTable = addStop(t1, "B", 14, 12,
+    			     	       	 addStop(t1, "A", 1, 0, timeTableTramsOnly)),
+    invalidStopsConnNetTimeTable : TimeTable = addStop(t1, "C", 28, 32,
+    				   	       addStop(t1, "A", 1, 0, timeTableTramsOnly)),	
     timeSlotSingleA : TimeSlot = mk_TimeSlot("A", 0, 1),
     timeSlotSingleB : TimeSlot = mk_TimeSlot("B", 0, 1),
     emptyPlanStops : PlanStops = [],
-
-    planConnTest : PlanConns = [mk_ConnId("C","B") +> mk_PlanSlots(<.32.>,<.46.>), mk_ConnId("A","B") +> mk_PlanSlots(<.32,1.>,<.47,12.>), mk_ConnId("D","B") +> mk_PlanSlots(<.2.>,<.11.>), mk_ConnId("B","D") +> mk_PlanSlots(<.50.>,<.58.>), mk_ConnId("B","C") +> mk_PlanSlots(<.14.>,<.28.>), mk_ConnId("B","A") +> mk_PlanSlots(<.13,48.>,<.28,59.>)],
-    planStopTest : PlanStops = ["B" +> mk_PlanSlots(<.11,47,12,46.>,<.13,50,14,48.>), "D" +> mk_PlanSlots(<.0,58.>,<.2,60.>), "C" +> mk_PlanSlots(<.28.>,<.32.>), "A" +> mk_PlanSlots(<.28,0,59.>,<.32,1,60.>)],
-
-    planStopCapacityExceeded : PlanStops = ["A" +> mk_PlanSlots(<.0,0,0.>,<.10,9,8.>), "B" +> mk_PlanSlots(<.0.>,<.13.>), "C" +> mk_PlanSlots(<.1.>,<.13.>)],
-    planConnCapacityExceeded : PlanConns = [mk_ConnId("A", "B") +> mk_PlanSlots(<.1,2,3,4.>,<.1,9,8,7.>), mk_ConnId("B", "A") +> mk_PlanSlots(<.1,1,0,4.>,<.1,1,8,5.>)],
+    planConnTest : PlanConns = [mk_ConnId("C","B") +> mk_PlanSlots(<.32.>,<.46.>),
+    		   	        mk_ConnId("A","B") +> mk_PlanSlots(<.32,1.>,<.47,12.>),
+				mk_ConnId("D","B") +> mk_PlanSlots(<.2.>,<.11.>),
+				mk_ConnId("B","D") +> mk_PlanSlots(<.50.>,<.58.>),
+				mk_ConnId("B","C") +> mk_PlanSlots(<.14.>,<.28.>),
+				mk_ConnId("B","A") +> mk_PlanSlots(<.13,48.>,<.28,59.>)],
+    planStopTest : PlanStops = ["B" +> mk_PlanSlots(<.11,47,12,46.>,<.13,50,14,48.>),
+    		   	        "D" +> mk_PlanSlots(<.0,58.>,<.2,60.>),
+				"C" +> mk_PlanSlots(<.28.>,<.32.>),
+				"A" +> mk_PlanSlots(<.28,0,59.>,<.32,1,60.>)],
+    planStopCapacityExceeded : PlanStops = ["A" +> mk_PlanSlots(<.0,0,0.>,<.10,9,8.>),
+    			       		    "B" +> mk_PlanSlots(<.0.>,<.13.>),
+					    "C" +> mk_PlanSlots(<.1.>,<.13.>)],
+    planConnCapacityExceeded : PlanConns = [mk_ConnId("A", "B") +> mk_PlanSlots(<.1,2,3,4.>,<.1,9,8,7.>),
+    			       		    mk_ConnId("B", "A") +> mk_PlanSlots(<.1,1,0,4.>,<.1,1,8,5.>)],
     planConnHeadwayViolation : PlanConns = [mk_ConnId("A", "B") +> mk_PlanSlots(<.1,1,0,4.>,<.1,1,8,5.>)],
     planConnDrivingExceeded : PlanConns = [mk_ConnId("D", "B") +> mk_PlanSlots(<.1,2,3.>,<.100,50,3.>)],	
 	
@@ -33,8 +53,13 @@ class
 
     /* Net values */
     emptyNet : Net = empty,
-    netStops : Net = insertStop(s4, 2, insertStop(s3, 2, insertStop(s2, 3, insertStop(s1, 2, emptyNet)))), 
-    net : Net = addConnection(s2, s4, 2, 2, 7, addConnection(s2, s3, 2, 3, 12, addConnection(s1, s2, 1, 1, 10, netStops)))
+    netStops : Net = insertStop(s4, 2,
+    	       	     insertStop(s3, 2,
+		     insertStop(s2, 3,
+		     insertStop(s1, 2, emptyNet)))), 
+    net : Net = addConnection(s2, s4, 2, 2, 7,
+    	      	addConnection(s2, s3, 2, 3, 12,
+		addConnection(s1, s2, 1, 1, 10, netStops)))
 
   test_case
 
@@ -54,7 +79,8 @@ class
     [t200] addStop(t1, "A", 0, 1, addTram(t1, empty)) = ["tram1" +> <.mk_TimeSlot("A",0,1).>],
 
     /* Test that a duplicate stop has been added to the TimeTable */
-    [t201] addStop(t1, "A", 0, 1, (addStop(t1, "A", 0, 1, addTram(t1, empty)))) = ["tram1" +> <.mk_TimeSlot("A",0,1),mk_TimeSlot("A",0,1).>],
+    [t201] addStop(t1, "A", 0, 1, (addStop(t1, "A", 0, 1, addTram(t1, empty)))) =
+    	   ["tram1" +> <.mk_TimeSlot("A",0,1),mk_TimeSlot("A",0,1).>],
 
     /** ---- Tests for createPlanConns ---- **/
 
@@ -62,21 +88,26 @@ class
     [t600] createPlanConns(timeTable) = planConnTest,
 
     /* Test that a PlanConns with invalid arrival and departures times has been generated */
-    [t601] createPlanConns(invalidArrDepTimeTable) = [mk_ConnId("A","B") +> mk_PlanSlots(<.0.>,<.14.>)],
+    [t601] createPlanConns(invalidArrDepTimeTable) =
+    	   [mk_ConnId("A","B") +> mk_PlanSlots(<.0.>,<.14.>)],
 
     /* Test that a PlanConns with invalid stopsConn for the Net has been generated */
-    [t602] createPlanConns(invalidStopsConnNetTimeTable) = [mk_ConnId("A","C") +> mk_PlanSlots(<.0.>,<.28.>)],
+    [t602] createPlanConns(invalidStopsConnNetTimeTable) =
+    	   [mk_ConnId("A","C") +> mk_PlanSlots(<.0.>,<.28.>)],
 
     /** ---- Tests for insertPlanSlot (PlanStops) ---- **/
 
     /* Test that a valid scheduleStop has been generated after insert a PlanSlot in an empty PlanStops */
-    [t700] insertPlanSlot(timeSlotSingleA, emptyPlanStops) = ["A" +> mk_PlanSlots(<.0.>, <.1.>)],
+    [t700] insertPlanSlot(timeSlotSingleA, emptyPlanStops) =
+    	   ["A" +> mk_PlanSlots(<.0.>, <.1.>)],
 
     /* Test that a valid scheduleStop has been generated after insert a PlanSlot with different stopId in a PlanStops */
-    [t701] insertPlanSlot(timeSlotSingleB, insertPlanSlot(timeSlotSingleA, emptyPlanStops)) = ["A" +> mk_PlanSlots(<.0.>, <.1.>), "B" +> mk_PlanSlots(<.0.>, <.1.>)],
+    [t701] insertPlanSlot(timeSlotSingleB, insertPlanSlot(timeSlotSingleA, emptyPlanStops)) =
+    	   ["A" +> mk_PlanSlots(<.0.>, <.1.>), "B" +> mk_PlanSlots(<.0.>, <.1.>)],
 
     /* Test that a valid scheduleStop has been generated after insert a PlanSlot with the same stopId in a PlanStops */
-    [t702] insertPlanSlot(timeSlotSingleA, insertPlanSlot(timeSlotSingleA, emptyPlanStops)) = ["A" +> mk_PlanSlots(<.0, 0.>, <.1, 1.>)],
+    [t702] insertPlanSlot(timeSlotSingleA, insertPlanSlot(timeSlotSingleA, emptyPlanStops)) =
+    	   ["A" +> mk_PlanSlots(<.0, 0.>, <.1, 1.>)],
 
     /** ---- Tests for createPlanStops ---- **/
 
@@ -84,7 +115,8 @@ class
     [t1000] createPlanStops(timeTable) = planStopTest,
 
     /* Test that a PlanStops with invalid arrival and departures times has been generated */
-    [t1001] createPlanStops(invalidArrDepTimeTable) = ["A" +> mk_PlanSlots(<.1.>,<.0.>), "B" +> mk_PlanSlots(<.14.>,<.12.>)],
+    [t1001] createPlanStops(invalidArrDepTimeTable) =
+    	    ["A" +> mk_PlanSlots(<.1.>,<.0.>), "B" +> mk_PlanSlots(<.14.>,<.12.>)],
 
     /* Test that an empty PlanStops is returned from an empty TimeTable */
     [t1002] createPlanStops(empty) = [],
@@ -234,10 +266,14 @@ class
     /** ---- Tests for noHeadwayViolation (connId) ---- **/
 
     /* Test that true is returned if the headway is not violated */
-    [t2600] noHeadwayViolation(mk_ConnId("A", "B"), sort(arrivals(createPlanConns(timeTable)(mk_ConnId("A", "B")))), net) = true,
+    [t2600] noHeadwayViolation(mk_ConnId("A", "B"),
+			       sort(arrivals(createPlanConns(timeTable)(mk_ConnId("A", "B")))),
+			       net) = true,
 
     /* Test that false is returned if the headway is violated */
-    [t2601] noHeadwayViolation(mk_ConnId("A", "B"), sort(arrivals(planConnHeadwayViolation(mk_ConnId("A", "B")))), net) = false,
+    [t2601] noHeadwayViolation(mk_ConnId("A", "B"),
+			       sort(arrivals(planConnHeadwayViolation(mk_ConnId("A", "B")))),
+			       net) = false,
 
     /** ---- Tests for noHeadwayViolation (PlanConns)---- **/
 
