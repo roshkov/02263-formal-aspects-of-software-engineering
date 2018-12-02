@@ -1,20 +1,20 @@
 scheme NET =
 class
-  type 
-    Net :: stops : Stops
-    	   connections : Connections, -- tram nets
-    Headway = Time, -- minimum headways
+  type
+    Headway = Time,	-- minimum headways
     DrivingTime = Time, -- minimum driving times
-    Time = Nat, -- times in number of minutes
-    Capacity = Nat, -- capacities
-    StopId = Text,  -- names of stops
+    Time = Nat,   	-- times in number of minutes
+    Capacity = Nat, 	-- capacities
+    StopId = Text,  	-- names of stops
     Stops = StopId -m-> Capacity,
-    Connection :: fromStop : StopId
-		  toStop : StopId
-    	       	  headway : Headway
-		  capacity : Capacity
-		  minDrivingTime : DrivingTime,
-    Connections = StopId -m-> Connection-set
+    Connections = StopId -m-> Connection-set,
+    Net        :: stops		 : Stops
+    	       	  connections 	 : Connections,
+    Connection :: fromStop 	 : StopId
+		  toStop 	 : StopId
+    	       	  headway 	 : Headway
+		  capacity 	 : Capacity
+		  minDrivingTime : DrivingTime
     
   value /* generators */
 
@@ -115,31 +115,32 @@ class
 
     areConnected : StopId >< StopId >< Connection-set >< Connection-set >< Net -> Bool
     areConnected(src, des, cs, v, n) is let
-					/* Extract a connection from the set. */
-					c = hd(cs),
-					/* Remove the extracted connection from the set. */
-					cs' = cs \ {c},
-					/* Add connection to visited connections. */
-					v' = v union {c}
-				   in
-					/* There is a connection between s1 and s2. */
-					if toStop(c) = des then
-					   true
-					else
-					   let
-						/* Add conections of new candidates and removed 
-						   already visited connections. */
-						cs'' = (cs' union connections(n)(toStop(c))) \ v'
-					   in
-						/* If there are more candidates left, recurse, else done. */
-						if card cs'' >= 1 then
+					    /* Extract a connection from the set. */
+					    c = hd(cs),
+					    /* Remove the extracted connection from the set. */
+					    cs' = cs \ {c},
+					    /* Add connection to visited connections. */
+					    v' = v union {c}
+				   	in
+					    /* There is a connection between s1 and s2. */
+					    if toStop(c) = des then
+					        true
+					    else
+					        let
+						    /* Add conections of new candidates and removed 
+						    already visited connections. */
+						    cs'' = (cs' union connections(n)(toStop(c))) \ v'
+					        in
+						    /* If there are more candidates left recurse, 
+						    else done. */
+						    if card cs'' >= 1 then
 							areConnected(src, des, cs'', v', n)
-						else
+						    else
 							false
-						end
-					   end
-					end
-				   end
+						    end
+					        end
+					    end
+				        end
     pre isIn(src,n) /\ isIn(des,n)
 
   value /* predicates to check nets */
