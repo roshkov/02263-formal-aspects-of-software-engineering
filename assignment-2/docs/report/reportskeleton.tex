@@ -18,18 +18,20 @@
 \newpage
 
 \section{Work distribution}
+The work carried out during the analysis, implementation and testing of the program and this paper, has been distributed equally with the two of us both discussed with the other afterwards. What is meant by that is when one had carried out for example an analysis of part of the program, it was discussed with the other member, such that the both of us had their opinions expressed as well as ensuring that the analysis was comprehensive. This way of working has been used for all parts of the project, to ensure that both of us had part in every part of the project and to make sure that we both understand the entire solution.
 
 \section{Introduction}
-This document contains a solution to the problem of representing tram nets and tram time tables with data types, furthermore will the document describe a number of functions that can be used to check whether concrete values of the data types to describe the net and time table satisfies a number of requirements, making them wellformed.
+This document contains a solution to the problem of representing trams nets and tram time tables. These nets and time tables will be represented with new data types. Furthermore will the document describe a number of functions, that can be used to check whether concrete values of the data types to describe nets and time tables satisfies a number of requirements, making them wellformed. Lastly will the document describe the test cases that were carried out, to prove the correctness and robustness of the solution.
 
 \section{Formal Specification of Nets}
 
 \lstinputlisting{assignment-2/src/NET.rsl}
 
-\noindent Below are the requirements for a \emph{net} defined. These are the requirement that a \emph{net} has to fulfil in order to be considered wellformed. Each requirement will indicate what function is used to ensure the requirement. \\
-
+\noindent To model a \emph{net} has a few types been added, one of which is \verb=Connection=, which collects information about a connection in one direction in a net. Another is \verb=Connections= which is a type used to associate a \emph{stop} with a set of \emph{connections}. Another is \emph{Stops} which is used to associate a \emph{stop} with its \emph{capacity}. Lastly is the type \verb=Net= used to collect the \emph{stops} and \emph{connections} in a \emph{net}.
+Below are the requirements for a \emph{net} defined.
+\\
 \begin{description}
-    \item[isWellformed] \hfill
+    \item[isWellformed] To the say that a \emph{net} is wellformed, means that is should fulfil the following requirements. Each requirement will indicate what function is used to ensure the requirement.
         \begin{itemize}
             \item The \emph{net} must contain at least two \emph{stops}. Function: \verb=hasCorrectSize=.
             \item Any \emph{stop} must have a direct or indirect connection to every other \emph{stop} in the \emph{net}, i.e. a tram can travel to any \emph{stop} from any \emph{stop}. Function: \verb=isNetConnected=.
@@ -39,7 +41,7 @@ This document contains a solution to the problem of representing tram nets and t
         \end{itemize}
 \end{description}
 
-\noindent In the list below one will find a description of all the functions. If one of the functions utilised the functionality of another, it will be stated in the end of the description. \\
+\noindent In the list below one will find a description of all the functions. If one of the functions utilises the functionality of another function, it will be stated in the end of the description. \\
 
 \begin{description}
     \item[hasCorrectSize] \hfill \\ Can be used to check whether or not a \emph{net} has a correct size, i.e. the number of \emph{stops} in the \emph{net}.
@@ -64,52 +66,61 @@ This document contains a solution to the problem of representing tram nets and t
 
 \lstinputlisting{assignment-2/src/TIMETABLE.rsl}
 
-It is assumed that two consecutive rows in a time table for a tram is implying that a tram is driving from stop $x$ to $y$ without passing any intermediate stops. Furthermore should the times in a timetable always be in increasing order.
+\noindent It is assumed that two consecutive rows in a \emph{plan} for a tram is implying that a tram is driving from stop $x$ to $y$ without passing any intermediate stops, i.e. driving to a stop via a direct connection. Furthermore should the times in any \emph{plan} in a \emph{time table} be in increasing order.
+From the \emph{time table} that is created by the user and is wished to be checked whether it is wellformed or not are two data structures created. These datastructures extract information from the \emph{plans} in the \emph{time table} to present the data in a nice and more manageable way for the functions that have been created to check the wellformness. The general idea of the two datastructures \verb=PlanConns= and \verb=PlanStops= is to store the arrival and departure times in separate lists for connections and stops respectively. E.g. this means that all the arrival and departure times to the connection between stop $A$ and stop $B$ can be easily found, as well as all the arrival and departure times at stop $A$.
+\\
 
 \begin{description}
-    \item[isWellformed] \hfill To the say that a \emph{Time Table} is wellformed, means that is should fulfil the following requirements.
+    \item[isWellformed] To the say that a \emph{Time Table} is wellformed, means that is should fulfil the following requirements. Each requirement will indicate what function is used to ensure the requirement.
         \begin{itemize}
-            \item All stops that is a part of a \emph{time table} must be part of the \emph{net}. Function: \verb=allStopsInNet=.
-            \item Any
-            Any \emph{stop} must have a direct or indirect connection to every other \emph{stop} in the \emph{net}, i.e. a tram can travel to any \emph{stop} from any \emph{stop}. Function: \verb=isNetConnected=.
-            \item A \emph{stop} can not have a direct \emph{connection} to itself. Function: \verb=noDirectSelfConnections=.
-            \item A \emph{stop} can not have more than one direct \emph{connection} to the same \emph{stop}. Function: \verb=hasOneDirectConnection=.
-            \item A \emph{connection} between two \emph{stops} consists of two tracks, one track for each direction, i.e. a tram can travel back and forth between the two \emph{stops} using the same \emph{connection}. Function: \verb=hasBiDirectConnection=.
+            \item All times in a \emph{time table} must be equal or increasing, i.e. a tram can not travel back in time. Function: \verb=hasCorrectTimes=
+            \item All stops that is a part of a \emph{time table} must be part of the \emph{net}. Function: \verb=allStopsInNet=
+            \item Any two consecutive rows in a \emph{time table} implies that the \emph{tram} is driving directly between the \emph{stops} on a direct connection, the direct connection should therefore exists in the \emph{net}. Function: \verb=noIndirectConnections=
+            \item The capacity of any \emph{stop} in the \emph{net} must not be exceeded. Function: \verb=noStopCapacityExceeded=
+            \item The capacity of any \emph{connection} in either direction in the \emph{net} must not be exceeded. Function: \verb=noConnectionCapacityExceeded=
+            \item The time between two \emph{trams} arriving and departing from a \emph{stop} must not be shorter then the headway of the connection they were arriving and departing from. Function: \verb=noHeadwayViolation=
+            \item Any \emph{tram} is not allowed to drive faster on a connection between two \emph{stops} than the connection allows. Function: \verb=noDrivingTimeExceeded=
         \end{itemize}
 \end{description}
 
+\noindent In the list below one will find a description of all the functions. If one of the functions utilises the functionality of another function, it will be stated in the end of the description. \\
+
 \begin{description}
-    \item[allStopsInNet] \hfill \\ 
-    \item[noIndirectConnections] \hfill \\ 
-    \item[noStopCapacityExceeded] \hfill \\ 
-    \item[noConnectionCapacityExceeded] \hfill \\ 
-    \item[noHeadwayViolation - list] \hfill \\ 
-    \item[noHeadwayViolation] \hfill \\
+    \item[hasCorrectTimes - Time Slot list] \hfill \\ This function can be used to check that all times in a timetable are equal or increasing. 
+    \item[hasCorrectTimes - Time Table] \hfill \\ This function can be used to check that all times in \emph{time tables} for all \emph{trams} are correct. Function: \verb=hasCorrectTimes - Time Slot list=
+    \item[allStopsInNet] \hfill \\ This function can be used to check that all stops in a \emph{time table} is part of the \emph{net}. Function: \verb=isIn - Net=
+    \item[noIndirectConnections] \hfill \\ This function can be used to check that there exists a direct connection between two stops in the \emph{net} for any two consecutive rows in a \emph{time table}. Function: \verb=hasDirectConnection=
+    \item[noStopCapacityExceeded] \hfill \\ This function can be used to check that a \emph{time table} does not exceed the capacity of any \emph{stop} in a \emph{n}. Functions: \verb=findMaxCapacity=, \verb=capacity - stop=
+    \item[noConnectionCapacityExceeded] \hfill \\ This function can be used to check that a \emph{time table} does not exceed the capacity of any \emph{connection} in a \emph{n}. Functions: \verb=findMaxCapacity=, \verb=capacity - connection=
+    \item[noHeadwayViolation - list] \hfill \\ This function can be used to check that trams are not arriving at or departuring from a \emph{stop} too close to each other. Function: \verb=minHeadway=
+    \item[noHeadwayViolation] \hfill \\ This function can be used to check that a \emph{time table} does not having \emph{trams} arrive from and depart at \emph{stops} too close to each other. Function: \verb=noHeadwayViolation - list=
+    \item[noDrivingTimeExceeded] \hfill \\ This function can be used to check that a \emph{time table} does not have any \emph{trams} drive faster between any \emph{stops} than what is allowed. Function: \verb=minDrivingTime=
 \end{description}
 
 % ------------ GENERATORS ------------
+% Describe the general idea of the two need datastructure.
 \begin{description}
-    \item[createScheduleConn] \hfill \\ 
-    \item[createScheduleConnRec] \hfill \\ 
-    \item[createScheduleConnForTimeSlots] \hfill \\ 
-    \item[insertScheduleSlot - connection] \hfill \\ 
-    \item[createScheduleStop] \hfill \\ 
-    \item[createScheduleStopRec] \hfill \\ 
-    \item[createScheduleStopForTimeSlots] \hfill \\ 
-    \item[insertScheduleSlot - stop] \hfill \\ 
+    \item[createPlanConns] \hfill \\ Creates the datastructure of the plan of the \emph{connections} from a \emph{time table}. Function: \verb=createPlanConnsRec=
+    \item[createPlanConnsRec] \hfill \\ Creates the datastructure of the plan of the \emph{connections} from all the \emph{trams} from a \emph{time table}. Function: \verb=createPlanConnsRec=
+    \item[createPlanConnsForPlan] \hfill \\ Creates the plan of the \emph{connections} for a single \emph{tram}. Functions: \verb=createPlanConnsForPlan=, \verb=insertPlanSlot - connection=
+    \item[insertPlanSlot - connection] \hfill \\ Inserts the plan in the datastructure.
+    \item[createPlanStops] \hfill \\ Creates the datastructure of the plan of the \emph{stops} from a \emph{time table}. Function: \verb=createPlanStopsRec=
+    \item[createPlanStopsRec] \hfill \\ Creates the datastructure of the plan of the \emph{stops} from all the \emph{trams} from a \emph{time table}. Function: \verb=createPlanStopsRec=
+    \item[createPlanStopsForPlan] \hfill \\ Creates the plan of the \emph{stops} for a single \emph{tram}. Functions: \verb=createPlanStopsForPlan=, \verb=insertPlanSlot - stop=
+    \item[insertPlanSlot - stop] \hfill \\ Inserts the plan in the datastructure.
 \end{description}
 
 % ------------ OBSERVERS ------------
 \begin{description}
-    \item[isIn] \hfill \\ 
-    \item[isInSchedule - Stop] \hfill \\ 
-    \item[isInSchedule - Connection] \hfill \\ 
-    \item[findMaxOverlap] \hfill \\ 
-    \item[findMaxOverlapRec] \hfill \\ 
-    \item[sort] \hfill \\ 
-    \item[getLargerItems] \hfill \\
-    \item[getSmallerItems] \hfill \\
-    \item[isSorted] \hfill \\ 
+    \item[isIn] \hfill \\ Can be used to check whether a \emph{tram} exists in a \emph{time table}
+    \item[isInPlan - Stop] \hfill \\ Can be used to check whether a \emph{stop} exists in a plan.
+    \item[isInPlan - Connection] \hfill \\ Can be used to check whether a \emph{connection} exists in a plan
+    \item[findMaxCapacity] \hfill \\ Can be used to find the max capacity that is used for two time ranges. Function: \verb=findMaxCapacityRec=
+    \item[findMaxCapacityRec] \hfill \\ Can be used to run through two time ranges and calculate the maximum capacity that is needed for those, i.e. the maximum overlap. Function: \verb=findMaxCapacityRec=
+    \item[sort] \hfill \\ Can be used to sort a list of times. Functions: \verb=sort=, \verb=getSmallerItems=, \verb=getLargerItems=
+    \item[getLargerItems] \hfill \\ Can be used the find times that are larger then a given time. Function: \verb=getLargerItems=
+    \item[getSmallerItems] \hfill \\ Can be used the find times that are smaller or equal then a given time. Function: \verb=getSmallerItems=
+    \item[isSorted] \hfill \\ Can be used to check whether a list of times is sorted in increasing order
 \end{description}
 
 \section{Testing the Specifications}
@@ -126,10 +137,9 @@ It is assumed that two consecutive rows in a time table for a tram is implying t
 
 \subsection{Test specification}
 
-The purpose of each individual test has been added as source code comments and can be seen in the content of the \verb=NetTest.rsl=  and \verb=TIMETABLETest.rsl= files, which are shown above. The tests have been divided into three sections, corresponding to \emph{Generators, Observers and Predicates} with their respective auxiliary functions, to increase the readability. \\
+The purpose of each individual test has been added as source code comments and can be seen in the content of the \verb=NETTest.rsl=  and \verb=TIMETABLETest.rsl= files, which are shown above. The tests have been divided into three sections, corresponding to \emph{Generators, Observers and Predicates} with their respective auxiliary functions, to increase the readability.
 
 The general idea of the approach to test the "atomic"/individual functions, have been as follows. For the functions that returns a \verb=Bool=, we have created test data for the test cases, where we expect the result to be true. However, the focus has mainly been on creating invalid test data, that will test the robustness of the functions, that are test cases where we expect the result to be false. As for the functions that return something else than \verb=Bool=. Here has there also been created test data for test cases, where the result has been compared to the expected output, to get a truth value in the overview of the test results, which can be seen in the following section. The test data created for these functions have both been best case test data, where everything is as it should be, but also some of the test data has not been best case, to for example test wrong Nets generated with for example \emph{Connections} between \emph{Stops} that are not part of the \emph{Net}.
-
 
 \subsection{Results of evaluations}
 
