@@ -189,7 +189,9 @@ class
   value /* predicates to check time tables */
 
      hasCorrectTimes : Plan -> Bool
-     hasCorrectTimes(tsl) is if len(tsl) < 2 then
+     hasCorrectTimes(tsl) is if len(tsl) = 0 then
+	 			 			  true
+	 			 elsif len(tsl) < 2 then
      			         -- Check last stations times
 				 arrival(hd(tsl)) <= departure(hd(tsl))
 			     else
