@@ -15,10 +15,10 @@ class
 	invalidStopsConnNetTimeTable : TimeTable = addStop(t1, "C", 28, 32, addStop(t1, "A", 1, 0, timeTableTramsOnly)),	
 	timeSlotSingleA : TimeSlot = mk_TimeSlot("A", 0, 1),
 	timeSlotSingleB : TimeSlot = mk_TimeSlot("B", 0, 1),
-	emptyScheduleStop : ScheduleStop = [],
+	emptyPlanStops : PlanStops = [],
 	
-	scheduleConnTest : ScheduleConn = [mk_ConnId("C","B") +> mk_ScheduleSlots(<.32.>,<.46.>), mk_ConnId("A","B") +> mk_ScheduleSlots(<.32,1.>,<.47,12.>), mk_ConnId("D","B") +> mk_ScheduleSlots(<.2.>,<.11.>), mk_ConnId("B","D") +> mk_ScheduleSlots(<.50.>,<.58.>), mk_ConnId("B","C") +> mk_ScheduleSlots(<.14.>,<.28.>), mk_ConnId("B","A") +> mk_ScheduleSlots(<.13,48.>,<.28,59.>)],
-	scheduleStopTest : ScheduleStop = ["B" +> mk_ScheduleSlots(<.11,47,12,46.>,<.13,50,14,48.>), "D" +> mk_ScheduleSlots(<.0,58.>,<.2,60.>), "C" +> mk_ScheduleSlots(<.28.>,<.32.>), "A" +> mk_ScheduleSlots(<.28,0,59.>,<.32,1,60.>)]
+	scheduleConnTest : PlanConns = [mk_ConnId("C","B") +> mk_PlanSlots(<.32.>,<.46.>), mk_ConnId("A","B") +> mk_PlanSlots(<.32,1.>,<.47,12.>), mk_ConnId("D","B") +> mk_PlanSlots(<.2.>,<.11.>), mk_ConnId("B","D") +> mk_PlanSlots(<.50.>,<.58.>), mk_ConnId("B","C") +> mk_PlanSlots(<.14.>,<.28.>), mk_ConnId("B","A") +> mk_PlanSlots(<.13,48.>,<.28,59.>)],
+	scheduleStopTest : PlanStops = ["B" +> mk_PlanSlots(<.11,47,12,46.>,<.13,50,14,48.>), "D" +> mk_PlanSlots(<.0,58.>,<.2,60.>), "C" +> mk_PlanSlots(<.28.>,<.32.>), "A" +> mk_PlanSlots(<.28,0,59.>,<.32,1,60.>)]
 
   test_case
 
@@ -38,47 +38,47 @@ class
 	/* Test that a duplicate stop has been added to the TimeTable */
 	[t201] addStop(t1, "A", 0, 1, (addStop(t1, "A", 0, 1, addTram(t1, empty)))) = ["tram1" +> <.mk_TimeSlot("A",0,1),mk_TimeSlot("A",0,1).>],
 
-	/** ---- Tests for insertScheduleSlot (ScheduleConn)---- **/
+	/** ---- Tests for insertPlanSlot (PlanConns)---- **/
 	/*  */
 
-	/** ---- Tests for createScheduleConnForTimeSlots ---- **/
+	/** ---- Tests for createPlanConnsForTimeSlots ---- **/
 	/*  */
 
-	/** ---- Tests for createScheduleConnRec ---- **/
+	/** ---- Tests for createPlanConnsRec ---- **/
 	/*  */
 
-	/** ---- Tests for createScheduleConn ---- **/
-	/* Test that a valid ScheduleConn has been generated */
-	[t600] createScheduleConn(timeTable) = scheduleConnTest,
+	/** ---- Tests for createPlanConns ---- **/
+	/* Test that a valid PlanConns has been generated */
+	[t600] createPlanConns(timeTable) = scheduleConnTest,
 
-	/* Test that a ScheduleConn with invalid arrival and departures times has been generated */
-	[t601] createScheduleConn(invalidArrDepTimeTable) = [mk_ConnId("A","B") +> mk_ScheduleSlots(<.0.>,<.14.>)],
+	/* Test that a PlanConns with invalid arrival and departures times has been generated */
+	[t601] createPlanConns(invalidArrDepTimeTable) = [mk_ConnId("A","B") +> mk_PlanSlots(<.0.>,<.14.>)],
 
-	/* Test that a ScheduleConn with invalid stopsConn for the Net has been generated */
-	[t602] createScheduleConn(invalidStopsConnNetTimeTable) = [mk_ConnId("A","C") +> mk_ScheduleSlots(<.0.>,<.28.>)],
+	/* Test that a PlanConns with invalid stopsConn for the Net has been generated */
+	[t602] createPlanConns(invalidStopsConnNetTimeTable) = [mk_ConnId("A","C") +> mk_PlanSlots(<.0.>,<.28.>)],
 
-	/** ---- Tests for insertScheduleSlot (ScheduleStop) ---- **/
-	/* Test that a valid scheduleStop has been generated after insert a ScheduleSlot in an empty ScheduleStop */
-	[t700] insertScheduleSlot(timeSlotSingleA, emptyScheduleStop) = ["A" +> mk_ScheduleSlots(<.0.>, <.1.>)],
+	/** ---- Tests for insertPlanSlot (PlanStops) ---- **/
+	/* Test that a valid scheduleStop has been generated after insert a PlanSlot in an empty PlanStops */
+	[t700] insertPlanSlot(timeSlotSingleA, emptyPlanStops) = ["A" +> mk_PlanSlots(<.0.>, <.1.>)],
 
-	/* Test that a valid scheduleStop has been generated after insert a ScheduleSlot with different stopId in a ScheduleStop */
-	[t701] insertScheduleSlot(timeSlotSingleB, insertScheduleSlot(timeSlotSingleA, emptyScheduleStop)) = ["A" +> mk_ScheduleSlots(<.0.>, <.1.>), "B" +> mk_ScheduleSlots(<.0.>, <.1.>)],
+	/* Test that a valid scheduleStop has been generated after insert a PlanSlot with different stopId in a PlanStops */
+	[t701] insertPlanSlot(timeSlotSingleB, insertPlanSlot(timeSlotSingleA, emptyPlanStops)) = ["A" +> mk_PlanSlots(<.0.>, <.1.>), "B" +> mk_PlanSlots(<.0.>, <.1.>)],
 
-	/* Test that a valid scheduleStop has been generated after insert a ScheduleSlot with the same stopId in a ScheduleStop */
-	[t702] insertScheduleSlot(timeSlotSingleA, insertScheduleSlot(timeSlotSingleA, emptyScheduleStop)) = ["A" +> mk_ScheduleSlots(<.0, 0.>, <.1, 1.>)],
+	/* Test that a valid scheduleStop has been generated after insert a PlanSlot with the same stopId in a PlanStops */
+	[t702] insertPlanSlot(timeSlotSingleA, insertPlanSlot(timeSlotSingleA, emptyPlanStops)) = ["A" +> mk_PlanSlots(<.0, 0.>, <.1, 1.>)],
 
-	/** ---- Tests for createScheduleStopForTimeSlots ---- **/
+	/** ---- Tests for createPlanStopsForTimeSlots ---- **/
 	/*  */
 
-	/** ---- Tests for createScheduleStopRec ---- **/
+	/** ---- Tests for createPlanStopsRec ---- **/
 	/*  */
 
-	/** ---- Tests for createScheduleStop ---- **/
-	/* Test that a valid ScheduleStop has been generated */
-	[t1000] createScheduleStop(timeTable) = scheduleStopTest,
+	/** ---- Tests for createPlanStops ---- **/
+	/* Test that a valid PlanStops has been generated */
+	[t1000] createPlanStops(timeTable) = scheduleStopTest,
 
-	/* Test that a ScheduleStop with invalid arrival and departures times has been generated */
-	[t1001] createScheduleStop(invalidArrDepTimeTable) = ["A" +> mk_ScheduleSlots(<.1.>,<.0.>), "B" +> mk_ScheduleSlots(<.14.>,<.12.>)],
+	/* Test that a PlanStops with invalid arrival and departures times has been generated */
+	[t1001] createPlanStops(invalidArrDepTimeTable) = ["A" +> mk_PlanSlots(<.1.>,<.0.>), "B" +> mk_PlanSlots(<.14.>,<.12.>)],
 
 
 	/** ---- OBSERVERS  ---- **/
@@ -97,11 +97,11 @@ class
 	/* Test that false is returned when a tram is not in the domain of the TimeTable */
 	[t1301] isIn("tram3", timeTable) = false,
 
-	/** ---- Tests for isInSchedule (ScheduleStop) ---- **/
+	/** ---- Tests for isInPlan (PlanStops) ---- **/
 	/*  */
 	
 
-	/** ---- Tests for isInSchedule (ScheduleConn) ---- **/
+	/** ---- Tests for isInPlan (PlanConns) ---- **/
 	/*  */
 
 	/** ---- Tests for findMaxCapacityRec ---- **/
@@ -152,7 +152,7 @@ class
 	/** ---- Tests for noHeadwayViolation (connId) ---- **/
 	/*  */
 
-	/** ---- Tests for noHeadwayViolation (ScheduleTable)---- **/
+	/** ---- Tests for noHeadwayViolation (PlanTable)---- **/
 	/*  */
 
 	/** ---- Tests for noDrivingTimeExceeded ---- **/
