@@ -89,232 +89,232 @@ class
     /** ---- Tests for createPlanConns ---- **/
 
     /* Test that a valid PlanConns has been generated */
-    [t600] createPlanConns(timeTable) = planConnTest,
+    [t300] createPlanConns(timeTable) = planConnTest,
 
     /* Test that a PlanConns with invalid arrival and departures times has been generated */
-    [t601] createPlanConns(invalidArrDepTimeTable) =
+    [t301] createPlanConns(invalidArrDepTimeTable) =
     	   [mk_ConnId("A","B") +> mk_PlanSlots(<.0.>,<.14.>)],
 
     /* Test that a PlanConns with invalid stopsConn for the Net has been generated */
-    [t602] createPlanConns(invalidStopsConnNetTimeTable) =
+    [t302] createPlanConns(invalidStopsConnNetTimeTable) =
     	   [mk_ConnId("A","C") +> mk_PlanSlots(<.0.>,<.28.>)],
 
     /** ---- Tests for insertPlanSlot (PlanStops) ---- **/
 
     /* Test that a valid scheduleStop has been generated after insert a PlanSlot in an empty 
     PlanStops */
-    [t700] insertPlanSlot(timeSlotSingleA, emptyPlanStops) =
+    [t400] insertPlanSlot(timeSlotSingleA, emptyPlanStops) =
     	   ["A" +> mk_PlanSlots(<.0.>, <.1.>)],
 
     /* Test that a valid scheduleStop has been generated after insert a PlanSlot with different 
     stopId in a PlanStops */
-    [t701] insertPlanSlot(timeSlotSingleB, insertPlanSlot(timeSlotSingleA, emptyPlanStops)) =
+    [t401] insertPlanSlot(timeSlotSingleB, insertPlanSlot(timeSlotSingleA, emptyPlanStops)) =
     	   ["A" +> mk_PlanSlots(<.0.>, <.1.>), "B" +> mk_PlanSlots(<.0.>, <.1.>)],
 
     /* Test that a valid scheduleStop has been generated after insert a PlanSlot with the same 
     stopId in a PlanStops */
-    [t702] insertPlanSlot(timeSlotSingleA, insertPlanSlot(timeSlotSingleA, emptyPlanStops)) =
+    [t402] insertPlanSlot(timeSlotSingleA, insertPlanSlot(timeSlotSingleA, emptyPlanStops)) =
     	   ["A" +> mk_PlanSlots(<.0, 0.>, <.1, 1.>)],
 
     /** ---- Tests for createPlanStops ---- **/
 
     /* Test that a valid PlanStops has been generated */
-    [t1000] createPlanStops(timeTable) = planStopTest,
+    [t500] createPlanStops(timeTable) = planStopTest,
 
     /* Test that a PlanStops with invalid arrival and departures times has been generated */
-    [t1001] createPlanStops(invalidArrDepTimeTable) =
+    [t501] createPlanStops(invalidArrDepTimeTable) =
     	    ["A" +> mk_PlanSlots(<.1.>,<.0.>), "B" +> mk_PlanSlots(<.14.>,<.12.>)],
 
     /* Test that an empty PlanStops is returned from an empty TimeTable */
-    [t1002] createPlanStops(empty) = [],
+    [t502] createPlanStops(empty) = [],
 
     /** ---- OBSERVERS  ---- **/
 
     /** ---- Tests for isIn ---- **/
 	
     /* Test that true is returned when a tram is in the domain of the TimeTable */
-    [t1100] isIn(t1, timeTable) = true,
+    [t600] isIn(t1, timeTable) = true,
 
     /* Test that false is returned when a tram is not in the domain of the TimeTable */
-    [t1101] isIn("tram3", timeTable) = false,
+    [t601] isIn("tram3", timeTable) = false,
 
     /** ---- Tests for isInPlan (PlanStops) ---- **/
 
     /* Test that true is returned if the stopId is in the domain of the PlanStops of the TimeTable */
-    [t1200] isInPlan("A", createPlanStops(timeTable)) = true,
+    [t700] isInPlan("A", createPlanStops(timeTable)) = true,
 
     /* Test that false is returned if the stopId is not in the domain of the PlanStops of the 
     TimeTable */
-    [t1201] isInPlan("E", createPlanStops(timeTable)) = false,
+    [t701] isInPlan("E", createPlanStops(timeTable)) = false,
 
     /* Test that false is returned if the domain of PlanStops of the TimeTable is empty */
-    [t1202] isInPlan("A", emptyPlanStops) = false,
+    [t702] isInPlan("A", emptyPlanStops) = false,
 
     /** ---- Tests for isInPlan (PlanConns) ---- **/
 
     /* Test that true is returned if the connId is in the domain of the PlanConns of the TimeTable */
-    [t1300] isInPlan(mk_ConnId("A","B"), createPlanConns(timeTable)) = true,
+    [t800] isInPlan(mk_ConnId("A","B"), createPlanConns(timeTable)) = true,
 
     /* Test that true is returned if the connId is not in the domain of the PlanConns of the TimeTable */
-    [t1301] isInPlan(mk_ConnId("A","D"), createPlanConns(timeTable)) = false,
+    [t801] isInPlan(mk_ConnId("A","D"), createPlanConns(timeTable)) = false,
 
     /* Test that false is returned if the domain of PlanConns of the TimeTable is empty */
-    [t1302] isInPlan(mk_ConnId("A","B"), []) = false,
+    [t802] isInPlan(mk_ConnId("A","B"), []) = false,
 
     /** ---- Tests for findMaxCapacityRec ---- **/
     /*  */
 
     /** ---- Tests for findMaxCapacity ---- **/
     /* Test that the max capacity is 2 when exists an overlap between two trams*/
-    [t1500] findMaxCapacity(<.1,7.>, <.12,15.>) = 2,
+    [t900] findMaxCapacity(<.1,7.>, <.12,15.>) = 2,
 
     /* Test that the max capacity is 1 when does not exist an overlap */
-    [t1501] findMaxCapacity(<.1,13.>, <.12,15.>) = 1,
+    [t901] findMaxCapacity(<.1,13.>, <.12,15.>) = 1,
 
     /* Test that the max capacity is 1 when a tram arrives and another leaves at the same time */
-    [t1502] findMaxCapacity(<.1,12.>, <.12,15.>) = 1,
+    [t902] findMaxCapacity(<.1,12.>, <.12,15.>) = 1,
 
     /* Test that the max capacity is 3 when all trams schedules are overlap */
-    [t1503] findMaxCapacity(<.1, 1, 1.>, <.7, 6, 5.>) = 3,
+    [t903] findMaxCapacity(<.1, 1, 1.>, <.7, 6, 5.>) = 3,
 
     /** ---- Tests for getLargerItems ---- **/
 
     /* Test that the numbers returned are larger than 34 */
-    [t1600] getLargerItems(<.34,123,6,1,685.>, 34) = <.123, 685.>,
+    [t1000] getLargerItems(<.34,123,6,1,685.>, 34) = <.123, 685.>,
 
     /** ---- Tests getSmallerItems  ---- **/
 
     /* Test that the numbers returned are equal or smaller than 34 */
-    [t1700] getSmallerItems(<.34,123,6,1,685.>, 34) = <.34, 6, 1.>,
+    [t1100] getSmallerItems(<.34,123,6,1,685.>, 34) = <.34, 6, 1.>,
 
     /** ---- Tests for sort ---- **/
 
     /* Test that the numbers returned are in increasing order  */
-    [t1800] sort(<.34,123,6,1,685,34, 35.>)= <.1,6,34,34,35,123,685.>,
+    [t1200] sort(<.34,123,6,1,685,34, 35.>)= <.1,6,34,34,35,123,685.>,
 
     /** ---- Tests for isSorted ---- **/
 
     /* Test that true is returned if the Time-list is sorted in increasing order */
-    [t1900] isSorted(<.1,6,6,34.>) = true,
+    [t1300] isSorted(<.1,6,6,34.>) = true,
 
     /* Test that false is returned if the Time-list is sorted in decreasing order */
-    [t1901] isSorted(<.34,6,1.>) = false,
+    [t1301] isSorted(<.34,6,1.>) = false,
 
     /* Test that false is returned if the Time-list is unsorted (in increasing order) */
-    [t1902] isSorted(<.6,1,34.>) = false,
+    [t1302] isSorted(<.6,1,34.>) = false,
 
     /* Test that true is returned if the Time-list is empty */
-    [t1903] isSorted(<..>) = true,
+    [t1303] isSorted(<..>) = true,
 
     /** ---- PREDICATES ---- **/
 
     /** ---- Tests for hasCorrectTimes (Plan) ---- **/
 	
     /* Test that true is returned for an empty Plan  */
-    [t2000] hasCorrectTimes(timeTableTramsOnly) = true,
+    [t1400] hasCorrectTimes(timeTableTramsOnly) = true,
 
     /* Test that true is returned if the arrival is before or equal than the departure time for all 
     the Time-Slots in the Plan */
-    [t2001] hasCorrectTimes(timeTable("tram1")) = true,
+    [t1401] hasCorrectTimes(timeTable("tram1")) = true,
 
     /** ---- Tests for hasCorrectTimes (TimeTable) ---- **/
 	
     /* Test that true is returned if the arrival is before or equal than the departure time for all 
     the Time-Slots in the Plan */
-    [t2100] hasCorrectTimes(timeTable) = true,
+    [t1500] hasCorrectTimes(timeTable) = true,
 
     /* Test that false is returned if the arrival is after the departure time in any Time-Slots in 
     the Plan */
-    [t2101] hasCorrectTimes(invalidArrDepTimeTable) = false,
+    [t1501] hasCorrectTimes(invalidArrDepTimeTable) = false,
 
     /** ---- Tests for allStopsInNet ---- **/
 
     /* Test that true is returned if all the Stops from the Plan are in the Net */
-    [t2200] allStopsInNet(planStopTest, net) = true,
+    [t1600] allStopsInNet(planStopTest, net) = true,
 
     /* Test that false is returned if any Stops from the Plan is not in the Net */
-    [t2201] allStopsInNet(["F" +> mk_PlanSlots(<.11,47.>, <.13,50.>)], net) = false,
+    [t1601] allStopsInNet(["F" +> mk_PlanSlots(<.11,47.>, <.13,50.>)], net) = false,
 
     /* Test that false is returned if the Net is Empty (not PlanStops) */
-    [t2202] allStopsInNet(planStopTest, empty) = false,
+    [t1602] allStopsInNet(planStopTest, empty) = false,
 
     /* Test that true is returned if only the PlanStops is Empty */
-    [t2203] allStopsInNet(emptyPlanStops, net) = true,
+    [t1603] allStopsInNet(emptyPlanStops, net) = true,
 
     /* Test that true is returned if the PlanStops and the Net are Empty */
-    [t2204] allStopsInNet(emptyPlanStops, empty) = true,
+    [t1604] allStopsInNet(emptyPlanStops, empty) = true,
 
     /** ---- Tests for noIndirectConnections ---- **/
 
     /* Test that true is returned if the connections in the PlanConns are not connected to themself 
     in the net */
-    [t2300] noIndirectConnections(createPlanConns(timeTable), net) = true,
+    [t1700] noIndirectConnections(createPlanConns(timeTable), net) = true,
 
     /* Test that true is returned if any connection in the PlanConns are not connected to themself 
     in the net */
-    [t2301] noIndirectConnections([mk_ConnId("A","A") +> mk_PlanSlots(<.32.>,<.46.>)], net) = false,
+    [t1701] noIndirectConnections([mk_ConnId("A","A") +> mk_PlanSlots(<.32.>,<.46.>)], net) = false,
 
     /** ---- Tests for noStopCapacityExceeded ---- **/
 
     /* Test that true is returned if the stop capacity is not exceeded */
-    [t2400] noStopCapacityExceeded(createPlanStops(timeTable), net) = true,
+    [t1800] noStopCapacityExceeded(createPlanStops(timeTable), net) = true,
 
     /* Test that false is returned if the stop capacity is exceeded */
-    [t2401] noStopCapacityExceeded(planStopCapacityExceeded, net) = false,
+    [t1801] noStopCapacityExceeded(planStopCapacityExceeded, net) = false,
 
     /* Test that true is returned if the planStops is Empty */
-    [t2402] noStopCapacityExceeded(emptyPlanStops, net) = true,
+    [t1802] noStopCapacityExceeded(emptyPlanStops, net) = true,
 
     /** ---- Tests for noConnectionCapacityExceeded ---- **/
 
     /* Test that true is returned if the connections capacity is not exceeded */
-    [t2500] noConnectionCapacityExceeded(createPlanConns(timeTable), net) = true,
+    [t1900] noConnectionCapacityExceeded(createPlanConns(timeTable), net) = true,
 
     /* Test that false is returned if the connection capacity is exceeded */
-    [t2501] noConnectionCapacityExceeded(planConnCapacityExceeded, net) = false,
+    [t1901] noConnectionCapacityExceeded(planConnCapacityExceeded, net) = false,
 
     /* Test that true is returned if the planConns is Empty */
-    [t2502] noConnectionCapacityExceeded([], net) = true,
+    [t1902] noConnectionCapacityExceeded([], net) = true,
 
     /** ---- Tests for noHeadwayViolation (connId) ---- **/
 
     /* Test that true is returned if the headway is not violated */
-    [t2600] noHeadwayViolation(mk_ConnId("A", "B"),
+    [t2000] noHeadwayViolation(mk_ConnId("A", "B"),
 			       sort(arrivals(createPlanConns(timeTable)(mk_ConnId("A", "B")))),
 			       net) = true,
 
     /* Test that false is returned if the headway is violated */
-    [t2601] noHeadwayViolation(mk_ConnId("A", "B"),
+    [t2001] noHeadwayViolation(mk_ConnId("A", "B"),
 			       sort(arrivals(planConnHeadwayViolation(mk_ConnId("A", "B")))),
 			       net) = false,
 
     /** ---- Tests for noHeadwayViolation (PlanConns)---- **/
 
     /* Test that true is returned if the headway is not violated */
-    [t2700] noHeadwayViolation(planConnTest, net) = true,
+    [t2100] noHeadwayViolation(planConnTest, net) = true,
 
     /* Test that false is returned if the headway is violated */
-    [t2701] noHeadwayViolation(planConnHeadwayViolation, net) = false,
+    [t2101] noHeadwayViolation(planConnHeadwayViolation, net) = false,
 
     /** ---- Tests for noDrivingTimeExceeded ---- **/
 
     /* Test that true is returned if the drivingTime is not exceeded */
-    [t2800] noDrivingTimeExceeded(planConnTest, net) = true,
+    [t2200] noDrivingTimeExceeded(planConnTest, net) = true,
 
     /* Test that false is returned if the drivingTime is exceeded */
-    [t2801] noDrivingTimeExceeded(planConnDrivingExceeded, net) = false,
+    [t2201] noDrivingTimeExceeded(planConnDrivingExceeded, net) = false,
 
     /** ---- Tests for isWellformed ---- **/
 
     /* Test that true is returned if a TimeTable is well formed */
-    [t2900] isWellformed(timeTable, net) = true,
+    [t2300] isWellformed(timeTable, net) = true,
 
     /* Test that false is returned if a TimeTable has a wrong arrival-departure time, i.e., arrives 
     after departure */
-    [t2901] isWellformed(invalidArrDepTimeTable, net) = false,
+    [t2301] isWellformed(invalidArrDepTimeTable, net) = false,
 
     /* Test that false is returned if a TimeTable has connections in the timeTable which are not in 
     the net */
-    [t2902] isWellformed(invalidStopsConnNetTimeTable, net) = false
+    [t2302] isWellformed(invalidStopsConnNetTimeTable, net) = false
 
  end
