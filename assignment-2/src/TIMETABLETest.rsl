@@ -77,9 +77,13 @@ class
 
     /* Test that a stop has been added to the TimeTable */
     [t200] addStop(t1, "A", 0, 1, addTram(t1, empty)) = ["tram1" +> <.mk_TimeSlot("A",0,1).>],
+    
+    /* Test that adding a stop to a TimeTable where the tram has not been added, the tram is
+     added as well. */
+    [t201] addStop(t1, "A", 0, 1, empty) = ["tram1" +> <.mk_TimeSlot("A",0,1).>],
 
     /* Test that a duplicate stop has been added to the TimeTable */
-    [t201] addStop(t1, "A", 0, 1, (addStop(t1, "A", 0, 1, addTram(t1, empty)))) =
+    [t202] addStop(t1, "A", 0, 1, (addStop(t1, "A", 0, 1, addTram(t1, empty)))) =
     	   ["tram1" +> <.mk_TimeSlot("A",0,1),mk_TimeSlot("A",0,1).>],
 
     /** ---- Tests for createPlanConns ---- **/

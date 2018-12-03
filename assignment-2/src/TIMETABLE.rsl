@@ -25,7 +25,11 @@ class
 
       -- add a stop with arrival time and departure time to the plan for a given tram
       addStop : TramId >< StopId >< Time >< Time >< TimeTable -> TimeTable
-      addStop(tId, sId, a, d, tt) is tt !! [tId +> tt(tId)^<.mk_TimeSlot(sId, a, d).>],
+      addStop(tId, sId, a, d, tt) is if tId isin dom(tt) then
+      		   	      	         tt !! [tId +> tt(tId)^<.mk_TimeSlot(sId, a, d).>]
+				     else
+					 addTram(tId,tt) !! [tId +> <.mk_TimeSlot(sId, a, d).>]
+				     end,
 
       createPlanConns : TimeTable -> PlanConns
       createPlanConns(tt) is createPlanConnsRec(dom(tt), [], tt),
