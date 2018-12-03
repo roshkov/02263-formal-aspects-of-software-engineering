@@ -18,10 +18,10 @@
 \newpage
 
 \section{Work distribution}
-The work carried out during the analysis, implementation and testing of the program and this paper, has been distributed equally with the two of us both discussed with the other afterwards. What is meant by that is when one had carried out for example an analysis of part of the program, it was discussed with the other member, such that the both of us had their opinions expressed as well as ensuring that the analysis was comprehensive. This way of working has been used for all parts of the project, to ensure that both of us had part in every part of the project and to make sure that we both understand the entire solution.
+The work carried out during the analysis, implementation and testing of the program and this paper, has been distributed equally between the both of us, where each part of the work has been discussed with the other afterwards. What is meant by that is when one had carried out for example an analysis of part of the program, it was discussed with the other member, such that the both of us had their opinions expressed as well as ensuring that the analysis was comprehensive. This way of working has been used for all parts of the project, to ensure that both of us had part in every part of the project and to make sure that we both understand the entire solution.
 
 \section{Introduction}
-This document contains a solution to the problem of representing trams nets and tram time tables, where the trams in net must follow a Plan. These nets and time tables will be represented with new data types. Furthermore will the document describe a number of functions, that can be used to check whether concrete values of the data types to describe nets and time tables satisfies a number of requirements, making them wellformed. Lastly will the document describe the test cases that were carried out, to prove the correctness and robustness of the solution.
+This document contains a solution to the problem of representing trams nets and tram time tables, where the trams in a net must follow a plan. These nets and time tables will be represented with new data types. Furthermore will the document describe a number of functions, that can be used to check whether concrete values of the data types to describe nets and time tables satisfies a number of requirements, making them wellformed. Lastly will the document describe the test cases that were carried out, to prove the correctness and robustness of the solution.
 
 \section{Formal Specification of Nets}
 
@@ -151,18 +151,15 @@ The test data created for these functions have both been best case test data, wh
 
 The results of evaluating the SML translation of the RSL test cases for both the \verb=NET.rsl= and \verb=TIMETABLE.rsl= are that all tests are returning the expected values and thereby every tests run successfully. For a complete overview of the result of the individual test see appendix~\ref{app:results}.
 
-From the results of the tests and the implementation itself we can conclude that we have successfully created an application that can be used to check the wellformedness of a Net and a TimeTable
-From this we can conclude that we have successfully created an application for creating a plan of tables for families, such that no person from is sitting at a table with another person from the same family and that no empty tables is created in the plan.
+From the results of the tests and the implementation itself we can conclude that we have successfully created an application that can be used to check the wellformedness of a trams net and a tram time table, where trams in the net must follow a plan. The application can successfully check that no trams drive to fast between two stops, leaves enough headway to each other and do not exceed the capacities of both the connections and stops.
 
 
 \appendix
 \section{Test results} \label{app:results}
-% Please add the following required packages to your document preamble:
-% \usepackage{multirow}
-\begin{table}[]
+\begin{table}[h]
     \begin{tabular}{ll}
         \multicolumn{2}{l}{NETTest.rsl}          \\
-        \multicolumn{1}{l|}{Test case}  & Result \\
+        \multicolumn{1}{l|}{Test case}  & Result \\ \hline 
         \multicolumn{1}{l|}{{[}t100{]}} & true   \\
         \multicolumn{1}{l|}{{[}t101{]}} & true   \\
         \multicolumn{1}{l|}{{[}t200{]}} & true   \\
@@ -200,6 +197,77 @@ From this we can conclude that we have successfully created an application for c
         \multicolumn{1}{l|}{{[}t1900{]}} & true  \\
         \multicolumn{1}{l|}{{[}t1901{]}} & true  \\
         \multicolumn{1}{l|}{{[}t1902{]}} & true  
+    \end{tabular}
+\end{table}
+
+\begin{table}[h]
+    \begin{tabular}{ll}
+        \multicolumn{2}{l}{TIMETABLETest.rsl}   \\
+        \multicolumn{1}{l|}{Test case}  & Result \\ \hline 
+        \multicolumn{1}{l|}{{[}t100{]}} & true   \\
+        \multicolumn{1}{l|}{{[}t101{]}} & true   \\
+        \multicolumn{1}{l|}{{[}t200{]}} & true   \\
+        \multicolumn{1}{l|}{{[}t201{]}} & true   \\
+        \multicolumn{1}{l|}{{[}t202{]}} & true   \\
+        \multicolumn{1}{l|}{{[}t300{]}} & true   \\
+        \multicolumn{1}{l|}{{[}t301{]}} & true   \\
+        \multicolumn{1}{l|}{{[}t400{]}} & true   \\
+        \multicolumn{1}{l|}{{[}t401{]}} & true   \\
+        \multicolumn{1}{l|}{{[}t402{]}} & true   \\
+        \multicolumn{1}{l|}{{[}t500{]}} & true   \\
+        \multicolumn{1}{l|}{{[}t501{]}} & true   \\
+        \multicolumn{1}{l|}{{[}t502{]}} & true   \\
+        \multicolumn{1}{l|}{{[}t600{]}} & true   \\
+        \multicolumn{1}{l|}{{[}t601{]}} & true   \\
+        \multicolumn{1}{l|}{{[}t700{]}} & true   \\
+        \multicolumn{1}{l|}{{[}t701{]}} & true   \\
+        \multicolumn{1}{l|}{{[}t702{]}} & true   \\
+        \multicolumn{1}{l|}{{[}t800{]}} & true   \\
+        \multicolumn{1}{l|}{{[}t801{]}} & true   \\
+        \multicolumn{1}{l|}{{[}t802{]}} & true   \\
+        \multicolumn{1}{l|}{{[}t900{]}} & true   \\
+        \multicolumn{1}{l|}{{[}t901{]}} & true   \\
+        \multicolumn{1}{l|}{{[}t902{]}} & true   \\
+        \multicolumn{1}{l|}{{[}t903{]}} & true   \\
+        \multicolumn{1}{l|}{{[}t1000{]}} & true  \\
+        \multicolumn{1}{l|}{{[}t1100{]}} & true  \\
+        \multicolumn{1}{l|}{{[}t1200{]}} & true  \\
+        \multicolumn{1}{l|}{{[}t1300{]}} & true  \\
+        \multicolumn{1}{l|}{{[}t1301{]}} & true  \\
+        \multicolumn{1}{l|}{{[}t1302{]}} & true  \\
+        \multicolumn{1}{l|}{{[}t1303{]}} & true  \\
+        \multicolumn{1}{l|}{{[}t1400{]}} & true  \\
+        \multicolumn{1}{l|}{{[}t1401{]}} & true  \\
+        \multicolumn{1}{l|}{{[}t1500{]}} & true  \\
+        \multicolumn{1}{l|}{{[}t1501{]}} & true  \\
+        \multicolumn{1}{l|}{{[}t1600{]}} & true  \\
+        \multicolumn{1}{l|}{{[}t1601{]}} & true  \\
+        \multicolumn{1}{l|}{{[}t1602{]}} & true  \\
+        \multicolumn{1}{l|}{{[}t1603{]}} & true  \\
+        \multicolumn{1}{l|}{{[}t1604{]}} & true  \\
+        \multicolumn{1}{l|}{{[}t1700{]}} & true  \\
+        \multicolumn{1}{l|}{{[}t1701{]}} & true  \\
+        \multicolumn{1}{l|}{{[}t1800{]}} & true  \\
+        \multicolumn{1}{l|}{{[}t1801{]}} & true  \\
+        \multicolumn{1}{l|}{{[}t1802{]}} & true  \\
+        \multicolumn{1}{l|}{{[}t1900{]}} & true  \\
+        \multicolumn{1}{l|}{{[}t1901{]}} & true  \\
+        \multicolumn{1}{l|}{{[}t1902{]}} & true
+    \end{tabular}
+\end{table}
+
+\begin{table}[h]
+    \begin{tabular}{ll}
+        \multicolumn{2}{l}{TIMETABLETest.rsl}   \\
+        \multicolumn{1}{l|}{Test case}  & Result \\ \hline 
+        \multicolumn{1}{l|}{{[}t2000{]}} & true  \\
+        \multicolumn{1}{l|}{{[}t2001{]}} & true  \\
+        \multicolumn{1}{l|}{{[}t2100{]}} & true  \\
+        \multicolumn{1}{l|}{{[}t2101{]}} & true  \\
+        \multicolumn{1}{l|}{{[}t2200{]}} & true  \\
+        \multicolumn{1}{l|}{{[}t2300{]}} & true  \\
+        \multicolumn{1}{l|}{{[}t2301{]}} & true  \\
+        \multicolumn{1}{l|}{{[}t2302{]}} & true 
     \end{tabular}
 \end{table}
 
