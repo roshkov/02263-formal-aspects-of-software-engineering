@@ -27,8 +27,7 @@ This document contains a solution to the problem of representing trams nets and 
 
 \lstinputlisting{assignment-2/src/NET.rsl}
 
-\noindent To model a \emph{net} has a few types been added, one of which is \verb=Connection=, which collects information about a connection in one direction in a net. Another is \verb=Connections= which is a type used to associate a \emph{stop} with a set of \emph{connections}. Another is \emph{Stops} which is used to associate a \emph{stop} with its \emph{capacity}. Lastly is the type \verb=Net= used to collect the \emph{stops} and \emph{connections} in a \emph{net}.
-Below are the requirements for a \emph{net} defined.
+\noindent To model a \emph{net}, a few types have been added, one of which is \verb=Connection=, which collects information about a connection in one direction in a net. The information it collects is what stops it is connecting, the headway, the maximum capacity and the minimum time a tram should use to drive on the connection. Another is \verb=Connections= which is a type used to associate a \emph{stop} with a set of \emph{connections}, a \verb=set= is used as the order of the connections is irrelevant. Another is \emph{Stops} which is used to associate a \emph{stop} with its \emph{capacity}. Lastly is the type \verb=Net= used to collect the \emph{stops} and \emph{connections} in a \emph{net}. Below are the requirements for a \emph{net} defined.
 \\
 \begin{description}
     \item[isWellformed] To the say that a \emph{net} is wellformed, means that is should fulfil the following requirements. Each requirement will indicate what function is used to ensure the requirement.
@@ -66,8 +65,12 @@ Below are the requirements for a \emph{net} defined.
 
 \lstinputlisting{assignment-2/src/TIMETABLE.rsl}
 
-\noindent It is assumed that two consecutive rows in a \emph{plan} for a tram is implying that a tram is driving from stop $x$ to $y$ without passing any intermediate stops, i.e. driving to a stop via a direct connection. Furthermore should the times in any \emph{plan} in a \emph{time table} be in increasing order.
-From the \emph{time table} that is created by the user and is wished to be checked whether it is wellformed or not are two data structures created. These datastructures extract information from the \emph{plans} in the \emph{time table} to present the data in a nice and more manageable way for the functions that have been created to check the wellformness. The general idea of the two datastructures \verb=PlanConns= and \verb=PlanStops= is to store the arrival and departure times in separate lists for connections and stops respectively. E.g. this means that all the arrival and departure times to the connection between stop $A$ and stop $B$ can be easily found, as well as all the arrival and departure times at stop $A$.
+\noindent It is assumed that two consecutive rows in a \emph{plan} for a \emph{tram} is implying that a tram is driving from stop $x$ to $y$ without passing any intermediate stops, i.e. driving to a stop via a direct connection. Furthermore should the times in any \emph{plan} in a \emph{time table} be in increasing order. This means that should a \emph{tram} drive from \emph{stop} $x$ at 1 hour and 15 min, it should be written as 75 min. \\
+
+The type $TimeTable$ is created to associate a \verb=Tram= with a verb=Plan=, where a \verb=Plan= is a list of the type \verb=TimeSlot=. A \verb=TimeSlot= contains information about what \emph{stop} the tram should be at, as well as what time it should arrive and depart at the given \emph{stop}.
+From the \verb=TimeTable= that is created by the user and is wished to be checked whether it is wellformed or not are two data structures created. These data structures extract information from the \emph{plans} in the \emph{time table} to present the data in a nice and more manageable way for the functions that have been created to check the wellformness. The general idea of the two data structures \verb=PlanConns= and \verb=PlanStops= is to store the arrival and departure times in separate lists for connections and stops respectively. E.g. this means that all the arrival and departure times to the connection between stop $A$ and stop $B$ can be easily found, as well as all the arrival and departure times at stop $A$. \verb=PlanSlots= is used to store these arrival and departure times, where a list is used to keep the ordering of the times. \verb=PlanStops= is used to associate a \emph{stop} with a \verb=PlanSlots= and \verb=PlanConns= is used to associate a connection with a \verb=PlanSlots=. The ID of a connection is derived from the two stops it is connecting, where the direction matter. So a connection between stop $x$ and $y$ will have ID $xy$ for the track on the connection going from $x$ to $y$ and vice versa. The times in the \verb=PlanSlots= are derived from the time a tram arrives and departs from a \emph{stop}. Say a \emph{tram} departs from \emph{stop} $x$ at time $a$ and arrives at \emph{stop} $y$ at time $b$, then we say the \emph{tram} arrives at connection $xy$ at time $a$ and departs at time $b$. \\
+
+The main reason not to create the \verb=TimeTable= directly with these two types, was to reduce the amount of updates to the two types and instead create them once the \verb=TimeTable= has been finalised by the user and wants to check whether it is wellformed.
 \\
 
 \begin{description}
@@ -103,7 +106,7 @@ From the \emph{time table} that is created by the user and is wished to be check
     \item[createPlanConns] \hfill \\ Creates the datastructure of the plan of the \emph{connections} from a \emph{time table}. Function: \verb=createPlanConnsRec=
     \item[createPlanConnsRec] \hfill \\ Creates the datastructure of the plan of the \emph{connections} from all the \emph{trams} from a \emph{time table}. Function: \verb=createPlanConnsRec=
     \item[createPlanConnsForPlan] \hfill \\ Creates the plan of the \emph{connections} for a single \emph{tram}. Functions: \verb=createPlanConnsForPlan=, \\ \verb=insertPlanSlot - connection=
-    \item[insertPlanSlot - connection] \hfill \\ Inserts the plan in the datastructure.
+    \item[insertPlanSlot - connection] \hfill \\ Inserts the plan in the datastructure. 
     \item[createPlanStops] \hfill \\ Creates the datastructure of the plan of the \emph{stops} from a \emph{time table}. Function: \verb=createPlanStopsRec=
     \item[createPlanStopsRec] \hfill \\ Creates the datastructure of the plan of the \emph{stops} from all the \emph{trams} from a \emph{time table}. Function: \verb=createPlanStopsRec=
     \item[createPlanStopsForPlan] \hfill \\ Creates the plan of the \emph{stops} for a single \emph{tram}. Functions: \verb=createPlanStopsForPlan=, \\ \verb=insertPlanSlot - stop=
@@ -137,16 +140,67 @@ From the \emph{time table} that is created by the user and is wished to be check
 
 \subsection{Test specification}
 
-The purpose of each individual test has been added as source code comments and can be seen in the contents of the \verb=NETTest.rsl=  and \verb=TIMETABLETest.rsl= files, which are shown above. The tests have been divided into three sections, corresponding to \emph{Generators, Observers and Predicates} with their respective auxiliary functions, to increase the readability.
+The purpose of each individual test has been added as source code comments and can be seen in the contents of the \verb=NETTest.rsl=  and \verb=TIMETABLETest.rsl= files, which are shown above. The tests have been divided into three sections, corresponding to \emph{Generators, Observers and Predicates} with their respective auxiliary functions, to increase the readability.\\
 
 The general idea of the approach to test the "atomic"/individual functions, have been as follows. For the functions that returns a \verb=Bool= value, we have created test data for the test cases, where we expect the result to be true. Furthermore, did we have a lot of focus on creating invalid test data, to test that the functions were correctly returning false, to test their robustness. As for functions that returns other values than \verb=Bool=. 
-Here has there also been created test data for test cases, where the result has been compared to the expected output, to get a truth value in the overview of the test results, which can be seen in the following section. The test data created for these functions have both been best case test data, where everything is as it should be, but also some of the test data has not been best case, to for example test wrong Nets generated with for example \emph{Connections} between \emph{Stops} that are not part of the \emph{Net}.
+Here has there also been created test data for test cases, where the result has been compared to the expected output, to get a truth value in the overview of the test results, which can be seen in the following section.\\
+
+The test data created for these functions have both been best case test data, where everything is as it should be, but also some of the test data has not been best case, to for example test: wrong Nets generated with for example \emph{Connections} between \emph{Stops} that are not part of the \emph{Net} and to test also, wrong \emph{TimeTables} generated with for example \emph{Plans} with \emph{arrival} time before \emph{departure} time, i.e., travelling back in time.
 
 \subsection{Results of evaluations}
 
-The results of evaluating the SML translation of the RSL test cases for both the \verb=NET.rsl= and \verb=TIMETABLE.rsl= are that all tests are returning the expected values and thereby every tests run successfully.
+The results of evaluating the SML translation of the RSL test cases for both the \verb=NET.rsl= and \verb=TIMETABLE.rsl= are that all tests are returning the expected values and thereby every tests run successfully. For a complete overview of the result of the individual test see appendix~\ref{app:results}.
 
-% THIS IS A COPY PASTE --> REWRITE!!
+From the results of the tests and the implementation itself we can conclude that we have successfully created an application that can be used to check the wellformedness of a Net and a TimeTable
 From this we can conclude that we have successfully created an application for creating a plan of tables for families, such that no person from is sitting at a table with another person from the same family and that no empty tables is created in the plan.
+
+
+\appendix
+\section{Test results} \label{app:results}
+% Please add the following required packages to your document preamble:
+% \usepackage{multirow}
+\begin{table}[]
+    \begin{tabular}{ll}
+        \multicolumn{2}{l}{NETTest.rsl}          \\
+        \multicolumn{1}{l|}{Test case}  & Result \\
+        \multicolumn{1}{l|}{{[}t100{]}} & true   \\
+        \multicolumn{1}{l|}{{[}t101{]}} & true   \\
+        \multicolumn{1}{l|}{{[}t200{]}} & true   \\
+        \multicolumn{1}{l|}{{[}t201{]}} & true   \\
+        \multicolumn{1}{l|}{{[}t202{]}} & true   \\
+        \multicolumn{1}{l|}{{[}t300{]}} & true   \\
+        \multicolumn{1}{l|}{{[}t301{]}} & true   \\
+        \multicolumn{1}{l|}{{[}t302{]}} & true   \\
+        \multicolumn{1}{l|}{{[}t400{]}} & true   \\
+        \multicolumn{1}{l|}{{[}t500{]}} & true   \\
+        \multicolumn{1}{l|}{{[}t600{]}} & true   \\
+        \multicolumn{1}{l|}{{[}t601{]}} & true   \\
+        \multicolumn{1}{l|}{{[}t700{]}} & true   \\
+        \multicolumn{1}{l|}{{[}t800{]}} & true   \\
+        \multicolumn{1}{l|}{{[}t900{]}} & true   \\
+        \multicolumn{1}{l|}{{[}t1000{]}} & true  \\
+        \multicolumn{1}{l|}{{[}t1100{]}} & true  \\
+        \multicolumn{1}{l|}{{[}t1200{]}} & true  \\
+        \multicolumn{1}{l|}{{[}t1300{]}} & true  \\
+        \multicolumn{1}{l|}{{[}t1301{]}} & true  \\
+        \multicolumn{1}{l|}{{[}t1400{]}} & true  \\
+        \multicolumn{1}{l|}{{[}t1401{]}} & true  \\
+        \multicolumn{1}{l|}{{[}t1402{]}} & true  \\
+        \multicolumn{1}{l|}{{[}t1403{]}} & true  \\
+        \multicolumn{1}{l|}{{[}t1500{]}} & true  \\
+        \multicolumn{1}{l|}{{[}t1501{]}} & true  \\
+        \multicolumn{1}{l|}{{[}t1502{]}} & true  \\
+        \multicolumn{1}{l|}{{[}t1503{]}} & true  \\
+        \multicolumn{1}{l|}{{[}t1600{]}} & true  \\
+        \multicolumn{1}{l|}{{[}t1601{]}} & true  \\
+        \multicolumn{1}{l|}{{[}t1602{]}} & true  \\
+        \multicolumn{1}{l|}{{[}t1700{]}} & true  \\
+        \multicolumn{1}{l|}{{[}t1800{]}} & true  \\
+        \multicolumn{1}{l|}{{[}t1801{]}} & true  \\
+        \multicolumn{1}{l|}{{[}t1900{]}} & true  \\
+        \multicolumn{1}{l|}{{[}t1901{]}} & true  \\
+        \multicolumn{1}{l|}{{[}t1902{]}} & true  
+    \end{tabular}
+\end{table}
 
 \end{document}
