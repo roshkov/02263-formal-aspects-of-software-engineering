@@ -268,7 +268,7 @@ class
 						   deps = departures(planConn(c))
 					       in
 					           (all i : Nat :- i isin inds(arrs) /\ len(arrs) = len(deps) =>
-						       arrs(i) - deps(i) <= minDrivingTime(from(c), to(c), n)
+						       deps(i) - arrs(i) >= minDrivingTime(from(c), to(c), n)
 						   )
 					       end
      					   ),
