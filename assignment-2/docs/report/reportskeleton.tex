@@ -102,11 +102,11 @@ From the \emph{time table} that is created by the user and is wished to be check
 \begin{description}
     \item[createPlanConns] \hfill \\ Creates the datastructure of the plan of the \emph{connections} from a \emph{time table}. Function: \verb=createPlanConnsRec=
     \item[createPlanConnsRec] \hfill \\ Creates the datastructure of the plan of the \emph{connections} from all the \emph{trams} from a \emph{time table}. Function: \verb=createPlanConnsRec=
-    \item[createPlanConnsForPlan] \hfill \\ Creates the plan of the \emph{connections} for a single \emph{tram}. Functions: \verb=createPlanConnsForPlan=, \verb=insertPlanSlot - connection=
+    \item[createPlanConnsForPlan] \hfill \\ Creates the plan of the \emph{connections} for a single \emph{tram}. Functions: \verb=createPlanConnsForPlan=, \\ \verb=insertPlanSlot - connection=
     \item[insertPlanSlot - connection] \hfill \\ Inserts the plan in the datastructure.
     \item[createPlanStops] \hfill \\ Creates the datastructure of the plan of the \emph{stops} from a \emph{time table}. Function: \verb=createPlanStopsRec=
     \item[createPlanStopsRec] \hfill \\ Creates the datastructure of the plan of the \emph{stops} from all the \emph{trams} from a \emph{time table}. Function: \verb=createPlanStopsRec=
-    \item[createPlanStopsForPlan] \hfill \\ Creates the plan of the \emph{stops} for a single \emph{tram}. Functions: \verb=createPlanStopsForPlan=, \verb=insertPlanSlot - stop=
+    \item[createPlanStopsForPlan] \hfill \\ Creates the plan of the \emph{stops} for a single \emph{tram}. Functions: \verb=createPlanStopsForPlan=, \\ \verb=insertPlanSlot - stop=
     \item[insertPlanSlot - stop] \hfill \\ Inserts the plan in the datastructure.
 \end{description}
 
@@ -142,5 +142,44 @@ The purpose of each individual test has been added as source code comments and c
 The general idea of the approach to test the "atomic"/individual functions, have been as follows. For the functions that returns a \verb=Bool=, we have created test data for the test cases, where we expect the result to be true. However, the focus has mainly been on creating invalid test data, that will test the robustness of the functions, that are test cases where we expect the result to be false. As for the functions that return something else than \verb=Bool=. Here has there also been created test data for test cases, where the result has been compared to the expected output, to get a truth value in the overview of the test results, which can be seen in the following section. The test data created for these functions have both been best case test data, where everything is as it should be, but also some of the test data has not been best case, to for example test wrong Nets generated with for example \emph{Connections} between \emph{Stops} that are not part of the \emph{Net}.
 
 \subsection{Results of evaluations}
+
+The results of evaluating the SML translation of the RSL test cases for both the \verb=NET.rsl= and \verb=TIMETABLE.rsl= are that 
+
+%\begin{table}[h]
+%\begin{tabular}{l|l}
+%Test case  & Result                                                                                      \\ \hline
+%{[}t101{]} & true                                                                                        \\
+%{[}t102{]} & true                                                                                        \\
+%{[}t103{]} & true                                                                                        \\
+%{[}t104{]} & true                                                                                        \\
+%{[}t105{]} & true                                                                                        \\
+%{[}t201{]} & true                                                                                        \\
+%{[}t202{]} & true                                                                                        \\
+%{[}t204{]} & true                                                                                        \\
+%{[}t301{]} & true                                                                                        \\
+%{[}t302{]} & true                                                                                        \\
+%{[}t303{]} & true                                                                                        \\
+%{[}t304{]} & true                                                                                        \\
+%{[}t401{]} & true                                                                                        \\
+%{[}t402{]} & true                                                                                        \\
+%{[}t501{]} & true                                                                                        \\
+%{[}t601{]} & true                                                                                        \\
+%{[}t602{]} & true                                                                                        \\
+%{[}t603{]} & true                                                                                        \\
+%{[}t604{]} & true                                                                                        \\
+%{[}t605{]} & true                                                                                        \\
+%{[}t606{]} & true                                                                                        \\
+%{[}t701{]} & true                                                                                        \\
+%{[}t702{]} & true                                                                                        \\
+%{[}t801{]} & true                                                                                        \\
+%{[}t802{]} & Design.rsl:41:9: Precondition of plan(\{\{"Lillian"\},\{"Erik","Lillian"\}\}) not satisfied
+%\end{tabular}
+%\end{table}
+
+It should be mentioned, that a "flaw" in the original files and choices made for the types was discovered. This "flaw" is somewhat mentioned as a source code comment in the \verb=Basics.rsl= file. The "flaw" was discovered when executing the {[}t304{]} test case, where it was attempted to check if an instance of \verb=Families= containing two identical instances of \verb=Family= would return false. This is the desired result, as the persons are appearing in two \verb=Family=. As \verb=Families= is defined as a set, it can not contain multiple instances of an element (then it should have been a multiset), here a \verb=Family=. However, when two instances of \verb=Family= are nearly identical, i.e. one or more persons are part of both of both \verb=Family=, the test case and auxiliary functions works as expected.
+
+The last test case is showing that the precondition correctly fails, as an instance of \verb=Families= with a person appearing in two \verb=Family= was passed to the \verb=plan= function. Besides from that are every other test case returning the results as expected.
+
+\noindent From this we can conclude that we have successfully created an application for creating a plan of tables for families, such that no person from is sitting at a table with another person from the same family and that no empty tables is created in the plan.
 
 \end{document}
