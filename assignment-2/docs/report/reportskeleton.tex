@@ -21,7 +21,7 @@
 The work carried out during the analysis, implementation and testing of the program and this paper, has been distributed equally with the two of us both discussed with the other afterwards. What is meant by that is when one had carried out for example an analysis of part of the program, it was discussed with the other member, such that the both of us had their opinions expressed as well as ensuring that the analysis was comprehensive. This way of working has been used for all parts of the project, to ensure that both of us had part in every part of the project and to make sure that we both understand the entire solution.
 
 \section{Introduction}
-This document contains a solution to the problem of representing trams nets and tram time tables. These nets and time tables will be represented with new data types. Furthermore will the document describe a number of functions, that can be used to check whether concrete values of the data types to describe nets and time tables satisfies a number of requirements, making them wellformed. Lastly will the document describe the test cases that were carried out, to prove the correctness and robustness of the solution.
+This document contains a solution to the problem of representing trams nets and tram time tables, where the trams in net must follow a Plan. These nets and time tables will be represented with new data types. Furthermore will the document describe a number of functions, that can be used to check whether concrete values of the data types to describe nets and time tables satisfies a number of requirements, making them wellformed. Lastly will the document describe the test cases that were carried out, to prove the correctness and robustness of the solution.
 
 \section{Formal Specification of Nets}
 
@@ -137,49 +137,16 @@ From the \emph{time table} that is created by the user and is wished to be check
 
 \subsection{Test specification}
 
-The purpose of each individual test has been added as source code comments and can be seen in the content of the \verb=NETTest.rsl=  and \verb=TIMETABLETest.rsl= files, which are shown above. The tests have been divided into three sections, corresponding to \emph{Generators, Observers and Predicates} with their respective auxiliary functions, to increase the readability.
+The purpose of each individual test has been added as source code comments and can be seen in the contents of the \verb=NETTest.rsl=  and \verb=TIMETABLETest.rsl= files, which are shown above. The tests have been divided into three sections, corresponding to \emph{Generators, Observers and Predicates} with their respective auxiliary functions, to increase the readability.
 
-The general idea of the approach to test the "atomic"/individual functions, have been as follows. For the functions that returns a \verb=Bool=, we have created test data for the test cases, where we expect the result to be true. However, the focus has mainly been on creating invalid test data, that will test the robustness of the functions, that are test cases where we expect the result to be false. As for the functions that return something else than \verb=Bool=. Here has there also been created test data for test cases, where the result has been compared to the expected output, to get a truth value in the overview of the test results, which can be seen in the following section. The test data created for these functions have both been best case test data, where everything is as it should be, but also some of the test data has not been best case, to for example test wrong Nets generated with for example \emph{Connections} between \emph{Stops} that are not part of the \emph{Net}.
+The general idea of the approach to test the "atomic"/individual functions, have been as follows. For the functions that returns a \verb=Bool= value, we have created test data for the test cases, where we expect the result to be true. Furthermore, did we have a lot of focus on creating invalid test data, to test that the functions were correctly returning false, to test their robustness. As for functions that returns other values than \verb=Bool=. 
+Here has there also been created test data for test cases, where the result has been compared to the expected output, to get a truth value in the overview of the test results, which can be seen in the following section. The test data created for these functions have both been best case test data, where everything is as it should be, but also some of the test data has not been best case, to for example test wrong Nets generated with for example \emph{Connections} between \emph{Stops} that are not part of the \emph{Net}.
 
 \subsection{Results of evaluations}
 
-The results of evaluating the SML translation of the RSL test cases for both the \verb=NET.rsl= and \verb=TIMETABLE.rsl= are that 
+The results of evaluating the SML translation of the RSL test cases for both the \verb=NET.rsl= and \verb=TIMETABLE.rsl= are that all tests are returning the expected values and thereby every tests run successfully.
 
-%\begin{table}[h]
-%\begin{tabular}{l|l}
-%Test case  & Result                                                                                      \\ \hline
-%{[}t101{]} & true                                                                                        \\
-%{[}t102{]} & true                                                                                        \\
-%{[}t103{]} & true                                                                                        \\
-%{[}t104{]} & true                                                                                        \\
-%{[}t105{]} & true                                                                                        \\
-%{[}t201{]} & true                                                                                        \\
-%{[}t202{]} & true                                                                                        \\
-%{[}t204{]} & true                                                                                        \\
-%{[}t301{]} & true                                                                                        \\
-%{[}t302{]} & true                                                                                        \\
-%{[}t303{]} & true                                                                                        \\
-%{[}t304{]} & true                                                                                        \\
-%{[}t401{]} & true                                                                                        \\
-%{[}t402{]} & true                                                                                        \\
-%{[}t501{]} & true                                                                                        \\
-%{[}t601{]} & true                                                                                        \\
-%{[}t602{]} & true                                                                                        \\
-%{[}t603{]} & true                                                                                        \\
-%{[}t604{]} & true                                                                                        \\
-%{[}t605{]} & true                                                                                        \\
-%{[}t606{]} & true                                                                                        \\
-%{[}t701{]} & true                                                                                        \\
-%{[}t702{]} & true                                                                                        \\
-%{[}t801{]} & true                                                                                        \\
-%{[}t802{]} & Design.rsl:41:9: Precondition of plan(\{\{"Lillian"\},\{"Erik","Lillian"\}\}) not satisfied
-%\end{tabular}
-%\end{table}
-
-It should be mentioned, that a "flaw" in the original files and choices made for the types was discovered. This "flaw" is somewhat mentioned as a source code comment in the \verb=Basics.rsl= file. The "flaw" was discovered when executing the {[}t304{]} test case, where it was attempted to check if an instance of \verb=Families= containing two identical instances of \verb=Family= would return false. This is the desired result, as the persons are appearing in two \verb=Family=. As \verb=Families= is defined as a set, it can not contain multiple instances of an element (then it should have been a multiset), here a \verb=Family=. However, when two instances of \verb=Family= are nearly identical, i.e. one or more persons are part of both of both \verb=Family=, the test case and auxiliary functions works as expected.
-
-The last test case is showing that the precondition correctly fails, as an instance of \verb=Families= with a person appearing in two \verb=Family= was passed to the \verb=plan= function. Besides from that are every other test case returning the results as expected.
-
-\noindent From this we can conclude that we have successfully created an application for creating a plan of tables for families, such that no person from is sitting at a table with another person from the same family and that no empty tables is created in the plan.
+% THIS IS A COPY PASTE --> REWRITE!!
+From this we can conclude that we have successfully created an application for creating a plan of tables for families, such that no person from is sitting at a table with another person from the same family and that no empty tables is created in the plan.
 
 \end{document}
